@@ -1,0 +1,25 @@
+{
+  "name": "node-treeview",
+  "version": "0.0.1",
+  "description": "A filesystem tree view in the browser",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avine/node-treeview.git"
+  },
+  "keywords": [
+    "treeview",
+    "filesystem",
+    "browser",
+    "node"
+  ],
+  "author": "Stéphane Francel <contact@avine.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/avine/node-treeview/issues"
+  },
+  "homepage": "https://github.com/avine/node-treeview#readme"
+}
