@@ -27,7 +27,7 @@ class TreeView {
           return resolve(list);
         }
         let pending = files.length;
-        let tasks = [];
+        const tasks = [];
         files.forEach(name => {
           const item = { name, path };
           fs.stat(this._getPath(item), (error, stats) => {
@@ -36,13 +36,15 @@ class TreeView {
               list.push(item);
             } else {
               this._addTime(item, stats);
+              let task;
               if (stats.isFile()) {
-                tasks = tasks.concat(this._addFile(item, stats) || []);
+                task = this._addFile(item, stats);
                 list.push(item);
               } else if (stats.isDirectory()) {
-                tasks = tasks.concat(this._addDir(item, stats, depth) || []);
+                task = this._addDir(item, stats, depth);
                 list.push(item);
               }
+              !task || tasks.push(task);
             }
             --pending || Promise.all(tasks).then(() => resolve(list));
           });
