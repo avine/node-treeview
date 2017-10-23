@@ -1,28 +1,25 @@
 const fs = require('fs');
-const pathModule = require('path');
+const pathM = require('path'); // "M" stand for module
 
 class TreeView {
-  static process(path, callback = null, options = {}) {
-    return new TreeView(options).process(path, result =>
-      callback ? callback(result) : null);
+  static process(path, cb = null, opts = {}) {
+    return new TreeView(opts).process(path, cb ? cb : null);
   }
 
-  constructor(options = {}) {
-    this.options = Object.assign({
-      getContent: true,
-      subLevelMax: false
-    }, options);
+  constructor(opts = {}) {
+    this.opts = Object.assign({ content: true, depth: false }, opts);
   }
 
-  process(path, callback = null) {
-    const promise = this._walk(pathModule.normalize(path));
-    if (callback) {
-      promise.then(callback);
+  process(path, cb = null) {
+    const p = this._walk(pathM.normalize(path));
+    if (cb) {
+      p.then(cb);
+    } else {
+      return p;      
     }
-    return promise;
   }
 
-  _walk(path, list = [], subLevel = 0) {
+  _walk(path, list = [], depth = 0) {
     return new Promise(resolve => {
       fs.readdir(path, (error, files) => {
         if (error) {
@@ -30,33 +27,20 @@ class TreeView {
           return resolve(list);
         }
         let pending = files.length;
-        const tasks = [];
+        let tasks = [];
         files.forEach(name => {
-          const resource = `${path}${pathModule.sep}${name}`;
           const item = { name, path };
-          fs.stat(resource, (error, stats) => {
+          fs.stat(this._getPath(item), (error, stats) => {
             if (error) {
               item.error = error;
               list.push(item);
             } else {
               this._addTime(item, stats);
               if (stats.isFile()) {
-                item.type = 'file';
-                item.size = stats.size;
-                if (this.options.getContent) {
-                  tasks.push(this._getContent(resource).then(result =>
-                    Object.assign(item, result)));
-                }
+                tasks = tasks.concat(this._addFile(item, stats) || []);
                 list.push(item);
               } else if (stats.isDirectory()) {
-                item.type = 'directory';
-                if (
-                  this.options.subLevelMax === false ||
-                  subLevel < this.options.subLevelMax
-                ) {
-                  item.content = [];
-                  tasks.push(this._walk(resource, item.content, subLevel + 1));
-                }
+                tasks = tasks.concat(this._addDir(item, stats, depth) || []);
                 list.push(item);
               }
             }
@@ -68,12 +52,30 @@ class TreeView {
   }
 
   _addTime(item, stats) {
-    Object.assign(item, { birthtime: stats.birthtime, mtime: stats.mtime });
+    Object.assign(item, { created: stats.birthtime, modified: stats.mtime });
   }
 
-  _getContent(resource) {
+  _addFile(item, stats) {
+    Object.assign(item, { type: 'file', size: stats.size });
+    if (this.opts.content) {
+      return this._getContent(item).then(result => Object.assign(item, result));
+    }
+  }
+
+  _addDir(item, stats, depth) {
+    item.type = 'dir';
+    if (this.opts.depth === false || depth < this.opts.depth) {
+      return this._walk(this._getPath(item), item.content = [], depth + 1);
+    }
+  }
+
+  _getPath(item) {
+    return `${item.path}${pathM.sep}${item.name}`;
+  }
+
+  _getContent(item) {
     return new Promise(resolve =>
-      fs.readFile(resource, (error, data) =>
+      fs.readFile(this._getPath(item), (error, data) =>
         resolve(error ? { error } : { content: data.toString() })));
   }
 }
