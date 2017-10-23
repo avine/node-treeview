@@ -1,5 +1,5 @@
-const treeview = require('../index');
+const TreeView = require('../index');
 
-treeview(__dirname + '/contents').then(result => {
+TreeView.process(__dirname + '/contents').then(result => {
   process.stdout.write(JSON.stringify(result, undefined, 2) + '\n');
 });
