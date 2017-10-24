@@ -1,23 +1,23 @@
 import { readdir, readFile, stat } from 'fs';
-import { sep, normalize } from 'path';
+import { normalize, sep } from 'path';
 
 import * as Model from './model';
 
 export class TreeView {
-  static process(path: string, cb?: Model.Cb, opts?: Model.OptsParam) {
+  static process(path: string, cb?: Model.Cb, opts?: Model.IOptsParam) {
     return new TreeView(opts).process(path, cb);
   }
 
-  private static getPath(item: Model.Ref) {
+  private static getPath(item: Model.IRef) {
     return item.path + sep + item.name;
   }
 
-  private static addTime(item: Model.File | Model.Dir, stats: Model.Stats) {
+  private static addTime(item: Model.IFile | Model.IDir, stats: Model.IStats) {
     item.created = stats.birthtime;
     item.modified = stats.mtime;
   }
 
-  private static addContent(item: Model.File) {
+  private static addContent(item: Model.IFile) {
     return new Promise(resolve =>
       readFile(TreeView.getPath(item), (error, data) => {
         if (error) {
@@ -26,13 +26,12 @@ export class TreeView {
           item.content = data.toString();
         }
         resolve();
-      })
-    );
+      }));
   }
 
-  opts: Model.Opts = { content: true, depth: false };
+  opts: Model.IOpts = { content: true, depth: false };
 
-  constructor(opts?: Model.OptsParam) {
+  constructor(opts?: Model.IOptsParam) {
     Object.assign(this.opts, opts || {});
   }
 
@@ -45,7 +44,7 @@ export class TreeView {
     return p;
   }
 
-  private walk(path: string, list: (Model.Ref | Model.Item | Model.Err)[] = [], depth = 0) {
+  private walk(path: string, list: Array<Model.IRef | Model.Item | Model.IErr> = [], depth = 0) {
     return new Promise((resolve) => {
       readdir(path, (error, files) => {
         if (error) {
@@ -54,22 +53,22 @@ export class TreeView {
           return;
         }
         let pending = files.length;
-        const tasks: Promise<any>[] = [];
+        const tasks: Array<Promise<any>> = [];
         files.forEach((name) => {
-          const item: Model.Ref = { name, path };
-          stat(TreeView.getPath(item), (err, stats: Model.Stats) => {
+          const item: Model.IRef = { name, path };
+          stat(TreeView.getPath(item), (err, stats: Model.IStats) => {
             if (err) {
               item.error = err;
               list.push(item);
             } else {
-              TreeView.addTime(<Model.Item>item, stats);
+              TreeView.addTime(item as Model.Item, stats);
               let task;
               if (stats.isFile()) {
-                task = this.addFile(<Model.File>item, stats);
-                list.push(<Model.File>item);
+                task = this.addFile(item as Model.IFile, stats);
+                list.push(item as Model.IFile);
               } else if (stats.isDirectory()) {
-                task = this.addDir(<Model.Dir>item, stats, depth);
-                list.push(<Model.Dir>item);
+                task = this.addDir(item as Model.IDir, stats, depth);
+                list.push(item as Model.IDir);
               }
               if (task) tasks.push(task);
             }
@@ -81,7 +80,7 @@ export class TreeView {
     });
   }
 
-  private addFile(item: Model.File, stats: Model.Stats) {
+  private addFile(item: Model.IFile, stats: Model.IStats) {
     item.type = 'file';
     item.size = stats.size;
     if (this.opts.content) {
@@ -90,7 +89,7 @@ export class TreeView {
     return null;
   }
 
-  private addDir(item: Model.Dir, stats: Model.Stats, depth: number) {
+  private addDir(item: Model.IDir, stats: Model.IStats, depth: number) {
     item.type = 'dir';
     if (this.opts.depth === false || depth < this.opts.depth) {
       item.content = [];

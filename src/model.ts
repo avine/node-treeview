@@ -1,10 +1,10 @@
-export interface Ref {
+export interface IRef {
   name: string;
   path: string;
   error?: any;
-}  
+}
 
-export interface File extends Ref {
+export interface IFile extends IRef {
   type: 'file';
   content: string;
   created: Date;
@@ -12,32 +12,28 @@ export interface File extends Ref {
   size: number;
 }
 
-export interface Dir extends Ref {
+export interface IDir extends IRef {
   type: 'dir';
-  content: (File | Dir)[];
+  content: Array<IFile | IDir>;
   created: Date;
   modified: Date;
 }
 
-export interface Err {
+export interface IErr {
   error: any;
 }
 
-export interface Opts {
+export interface IOpts {
   content: boolean | number;
   depth: boolean | number;
 }
 
-export interface OptsParam {
+export interface IOptsParam {
   content?: boolean | number;
   depth?: boolean | number;
 }
 
-export interface Cb {
-  (result: any): any;
-}
-
-export interface Stats {
+export interface IStats {
   size: number;
   birthtime: Date;
   mtime: Date;
@@ -45,4 +41,6 @@ export interface Stats {
   isFile(): boolean;
 }
 
-export type Item = File | Dir;
+export type Item = IFile | IDir;
+
+export type Cb = (result: any) => any;
