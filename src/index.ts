@@ -8,16 +8,16 @@ export class TreeView {
     return new TreeView(opts).process(path, cb);
   }
 
-  static getPath(item: Model.Ref) {
+  private static getPath(item: Model.Ref) {
     return item.path + sep + item.name;
   }
 
-  static addTime(item: Model.File | Model.Dir, stats: Model.Stats) {
+  private static addTime(item: Model.File | Model.Dir, stats: Model.Stats) {
     item.created = stats.birthtime;
     item.modified = stats.mtime;
   }
 
-  static addContent(item: Model.File) {
+  private static addContent(item: Model.File) {
     return new Promise(resolve =>
       readFile(TreeView.getPath(item), (error, data) => {
         if (error) {
@@ -45,7 +45,7 @@ export class TreeView {
     return p;
   }
 
-  walk(path: string, list: (Model.Ref | Model.Item | Model.Err)[] = [], depth = 0) {
+  private walk(path: string, list: (Model.Ref | Model.Item | Model.Err)[] = [], depth = 0) {
     return new Promise((resolve) => {
       readdir(path, (error, files) => {
         if (error) {
@@ -81,7 +81,7 @@ export class TreeView {
     });
   }
 
-  addFile(item: Model.File, stats: Model.Stats) {
+  private addFile(item: Model.File, stats: Model.Stats) {
     item.type = 'file';
     item.size = stats.size;
     if (this.opts.content) {
@@ -90,7 +90,7 @@ export class TreeView {
     return null;
   }
 
-  addDir(item: Model.Dir, stats: Model.Stats, depth: number) {
+  private addDir(item: Model.Dir, stats: Model.Stats, depth: number) {
     item.type = 'dir';
     if (this.opts.depth === false || depth < this.opts.depth) {
       item.content = [];
