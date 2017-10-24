@@ -1,7 +1,7 @@
-const fs = require('fs');
-const pathM = require('path'); // "M" stand for module
+import fs from 'fs';
+import pathM from 'path'; // "M" stand for module
 
-class TreeView {
+export default class TreeView {
   static process(path, cb = null, opts = {}) {
     return new TreeView(opts).process(path, cb);
   }
@@ -94,5 +94,3 @@ class TreeView {
     return null;
   }
 }
-
-module.exports = TreeView;

@@ -23,7 +23,11 @@
   },
   "homepage": "https://github.com/avine/node-treeview#readme",
   "devDependencies": {
+    "eslint": "^4.9.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
     "jasmine": "^2.8.0",
-    "jasmine-spec-reporter": "^4.2.1"
+    "jasmine-spec-reporter": "^4.2.1",
+    "typescript": "^2.5.3"
   }
 }
