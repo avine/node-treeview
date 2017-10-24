@@ -1,15 +1,15 @@
-import fs from 'fs';
-import pathM from 'path';
+import { readdir, readFile, stat } from 'fs';
+import { sep, normalize } from 'path';
 
 import * as Model from './model';
 
 export class TreeView {
-  static process(path: string, cb: Model.Cb = null, opts: Model.Opts = {}) {
+  static process(path: string, cb?: Model.Cb, opts?: Model.OptsParam) {
     return new TreeView(opts).process(path, cb);
   }
 
   static getPath(item: Model.Ref) {
-    return item.path + pathM.sep + item.name;
+    return item.path + sep + item.name;
   }
 
   static addTime(item: Model.File | Model.Dir, stats: Model.Stats) {
@@ -19,7 +19,7 @@ export class TreeView {
 
   static addContent(item: Model.File) {
     return new Promise(resolve =>
-      fs.readFile(TreeView.getPath(item), (error, data) => {
+      readFile(TreeView.getPath(item), (error, data) => {
         if (error) {
           item.error = error;
         } else {
@@ -32,12 +32,12 @@ export class TreeView {
 
   opts: Model.Opts = { content: true, depth: false };
 
-  constructor(opts?: Model.Opts) {
+  constructor(opts?: Model.OptsParam) {
     Object.assign(this.opts, opts || {});
   }
 
-  process(path: string, cb: Model.Cb = null) {
-    const p = this.walk(pathM.normalize(path));
+  process(path: string, cb?: Model.Cb) {
+    const p = this.walk(normalize(path));
     if (cb) {
       p.then(cb);
       return null;
@@ -47,7 +47,7 @@ export class TreeView {
 
   walk(path: string, list: (Model.Ref | Model.Item | Model.Err)[] = [], depth = 0) {
     return new Promise((resolve) => {
-      fs.readdir(path, (error, files) => {
+      readdir(path, (error, files) => {
         if (error) {
           list.push({ error });
           resolve(list);
@@ -57,7 +57,7 @@ export class TreeView {
         const tasks: Promise<any>[] = [];
         files.forEach((name) => {
           const item: Model.Ref = { name, path };
-          fs.stat(TreeView.getPath(item), (err, stats: Model.Stats) => {
+          stat(TreeView.getPath(item), (err, stats: Model.Stats) => {
             if (err) {
               item.error = err;
               list.push(item);

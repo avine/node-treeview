@@ -24,6 +24,11 @@ export interface Err {
 }
 
 export interface Opts {
+  content: boolean | number;
+  depth: boolean | number;
+}
+
+export interface OptsParam {
   content?: boolean | number;
   depth?: boolean | number;
 }
