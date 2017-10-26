@@ -5,10 +5,10 @@
     ],
     "jsRules": {},
     "rules": {
-        "arrow-parens": ["ban-single-arg-parens"],
-        "curly": ["ignore-same-line"],
-        "member-access": ["no-public"],
-        "quotemark": ["single"]
+        "arrow-parens": [true, "ban-single-arg-parens"],
+        "curly": [true, "ignore-same-line"],
+        "member-access": [true, "no-public"],
+        "quotemark": [true, "single"]
     },
     "rulesDirectory": []
 }
