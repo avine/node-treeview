@@ -5,7 +5,6 @@
     ],
     "jsRules": {},
     "rules": {
-        "arrow-parens": [true, "ban-single-arg-parens"],
         "curly": [true, "ignore-same-line"],
         "member-access": [true, "no-public"],
         "quotemark": [true, "single"]

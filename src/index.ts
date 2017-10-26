@@ -18,7 +18,7 @@ export class TreeView {
   }
 
   private static addContent(item: Model.IFile) {
-    return new Promise<void>(resolve =>
+    return new Promise<void>((resolve) =>
       readFile(TreeView.getPath(item), (error, data) => {
         if (error) {
           item.error = error;
