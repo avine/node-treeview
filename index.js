@@ -1,1 +1,1 @@
-module.exports = require('./src/js/index');
+module.exports = require('./dist/src/index').TreeView;
