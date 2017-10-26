@@ -39,6 +39,6 @@ export interface IStats {
 
 export type Item = IFile | IDir;
 
-export type Tree = Item | IRef;
+export type TreeNode = Item | IRef;
 
 export type Cb = (result: any) => any;

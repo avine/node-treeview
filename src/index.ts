@@ -41,8 +41,8 @@ export class TreeView {
     return p;
   }
 
-  private walk(path: string, list: Model.Tree[] = [], depth = 0) {
-    return new Promise<Model.Tree[]>((resolve, reject) => {
+  private walk(path: string, list: Model.TreeNode[] = [], depth = 0) {
+    return new Promise<Model.TreeNode[]>((resolve, reject) => {
       readdir(path, (error, files) => {
         if (error) {
           reject(error);

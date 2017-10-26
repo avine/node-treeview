@@ -7,7 +7,8 @@
     "rules": {
         "curly": [true, "ignore-same-line"],
         "member-access": [true, "no-public"],
-        "quotemark": [true, "single"]
+        "quotemark": [true, "single"],
+        "trailing-comma": [true, {"esSpecCompliant": true}]
     },
     "rulesDirectory": []
 }
