@@ -4,46 +4,32 @@ import { normalize, sep } from 'path';
 import * as Model from './model';
 
 export class TreeView {
-  static process(path: string, cb?: Model.Cb, opts?: Model.IOptsParam) {
-    return new TreeView(opts).process(path, cb);
-  }
-
-  private static getPath(item: Model.IRef) {
-    return item.path + sep + item.name;
-  }
-
   private static addTime(item: Model.Item, stats: Model.IStats) {
     item.created = stats.birthtime;
     item.modified = stats.mtime;
   }
 
-  private static addContent(item: Model.IFile) {
-    return new Promise<void>((resolve) =>
-      readFile(TreeView.getPath(item), (error, data) => {
-        if (error) {
-          item.error = error;
-        } else {
-          item.content = data.toString();
-        }
-        resolve();
-      }));
-  }
-
   opts: Model.IOpts = { content: true, depth: false };
+  providers: Model.IProviders;
 
   constructor(opts?: Model.IOptsParam) {
     Object.assign(this.opts, opts || {});
+    this.inject();
+  }
+
+  inject() {
+    this.providers = { normalize, readFile, readdir, sep, stat };
   }
 
   process(path: string, cb?: Model.Cb) {
-    const p = this.walk(normalize(path));
+    const p = this.walk(this.providers.normalize(path));
     if (cb) p.then(cb);
     return p;
   }
 
   private walk(path: string, list: Model.TreeNode[] = [], depth = 0) {
     return new Promise<Model.TreeNode[]>((resolve, reject) => {
-      readdir(path, (error, files) => {
+      this.providers.readdir(path, (error, files) => {
         if (error) {
           reject(error);
           return;
@@ -52,7 +38,7 @@ export class TreeView {
         const tasks: Array<Promise<any>> = [];
         files.forEach((name) => {
           const item: Model.IRef = { name, path };
-          stat(TreeView.getPath(item), (err, stats: Model.IStats) => {
+          this.providers.stat(this.getPath(item), (err, stats: Model.IStats) => {
             if (err) {
               item.error = err;
               list.push(item);
@@ -73,23 +59,42 @@ export class TreeView {
           });
         });
       });
-    });
+    })/*.catch((error) => {
+      console.log(path, error);
+      return Promise.resolve(); // Don't break the walk...
+    })*/;
+  }
+
+  private getPath(item: Model.IRef) {
+    return item.path + this.providers.sep + item.name;
   }
 
   private addFile(item: Model.IFile, stats: Model.IStats) {
     item.type = 'file';
     item.size = stats.size;
     if (this.opts.content) {
-      return TreeView.addContent(item);
+      return this.addContent(item);
     }
     return null;
+  }
+
+  private addContent(item: Model.IFile) {
+    return new Promise<void>((resolve) =>
+      this.providers.readFile(this.getPath(item), (error, data) => {
+        if (error) {
+          item.error = error;
+        } else {
+          item.content = data.toString();
+        }
+        resolve();
+      }));
   }
 
   private addDir(item: Model.IDir, stats: Model.IStats, depth: number) {
     item.type = 'dir';
     if (this.opts.depth === false || depth < this.opts.depth) {
       item.content = [];
-      return this.walk(TreeView.getPath(item), item.content, depth + 1)
+      return this.walk(this.getPath(item), item.content, depth + 1)
         .catch((error) => {
           item.error = error;
           delete item.content;

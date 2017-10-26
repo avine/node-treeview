@@ -1,9 +1,12 @@
-// tslint:disable:no-console
-// tslint:disable:object-literal-sort-keys
 
-// import * as Model from '../../src/model';
+export const DATE = {
+  MODIFIED: new Date(),
+  CREATED: new Date( new Date().getTime() - 1000 * 60 * 60)
+};
 
 export const readdir = (path: any, cb: any) => {
+  // cb('MOCK READDIR CALLBACK');
+
   cb(null, [
     'a',
     'b',
@@ -12,19 +15,20 @@ export const readdir = (path: any, cb: any) => {
 };
 
 export const readFile = (path: any, cb: any) => {
-  let data;
+  let data = 'unknown';
+
   switch (path) {
-    case 'a': data = 'Content of a'; break;
-    case 'b': data = 'Content of b'; break;
-    case 'c': data = 'Content of c'; break;
+    case '/a': data = 'Content of a'; break;
+    case '/b': data = 'Content of b'; break;
+    case '/c': data = 'Content of c'; break;
   }
   cb(null, data);
 };
 
 export const stat = (path: any, cb: any) => {
   const stats = {
-    birthtime: new Date(),
-    mtime: new Date(),
+    birthtime: DATE.CREATED,
+    mtime: DATE.MODIFIED,
     size: 55,
     isFile() { return true; },
     isDirectory() { return false; }
@@ -34,18 +38,7 @@ export const stat = (path: any, cb: any) => {
 
 export const normalize = (path: string) => path;
 
-export const sep = (item: any) => item.path + '/' + item.name;
-
-readdir('any', (error: any, files: any) => {
-  console.log(files);
-  files.forEach((file: any) => {
-    console.log(file);
-    readFile(file, (err: any, stats: any) => {
-      console.log(stats);
-    });
-
-  });
-});
+export const sep = '/';
 
 /*
 export const mock = [

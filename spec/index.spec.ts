@@ -8,7 +8,7 @@ describe('treeview', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   it('should list files (Promise interface)', (done) => {
-    TreeView.process('sample/contents/sub2').then((result) => {
+    new TreeView().process('sample/contents/sub2').then((result) => {
       expect(result).toContainItem({ name: 'd', type: 'file' });
       expect(result).toContainItem({ name: 'e', type: 'file' });
       done();
@@ -16,7 +16,7 @@ describe('treeview', () => {
   });
 
   it('should list files and dir (callback interface)', (done) => {
-    TreeView.process('sample/contents/sub1', (result) => {
+    new TreeView().process('sample/contents/sub1', (result) => {
       expect(result).toContainItem({ name: 'c', type: 'file' });
       expect(result).toContainItem({ name: 'deep', type: 'dir' });
       done();
