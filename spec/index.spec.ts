@@ -1,6 +1,4 @@
-/* eslint-env jasmine */
-
-const TreeView = require('../index');
+import { TreeView } from '../src/index';
 
 describe('treeview', () => {
   it('should list files (Promise interface)', (done) => {

@@ -12,13 +12,13 @@ export class TreeView {
     return item.path + sep + item.name;
   }
 
-  private static addTime(item: Model.IFile | Model.IDir, stats: Model.IStats) {
+  private static addTime(item: Model.Item, stats: Model.IStats) {
     item.created = stats.birthtime;
     item.modified = stats.mtime;
   }
 
   private static addContent(item: Model.IFile) {
-    return new Promise(resolve =>
+    return new Promise<void>(resolve =>
       readFile(TreeView.getPath(item), (error, data) => {
         if (error) {
           item.error = error;
@@ -37,19 +37,15 @@ export class TreeView {
 
   process(path: string, cb?: Model.Cb) {
     const p = this.walk(normalize(path));
-    if (cb) {
-      p.then(cb);
-      return null;
-    }
+    if (cb) p.then(cb);
     return p;
   }
 
-  private walk(path: string, list: Array<Model.IRef | Model.Item | Model.IErr> = [], depth = 0) {
-    return new Promise((resolve) => {
+  private walk(path: string, list: Model.Tree[] = [], depth = 0) {
+    return new Promise<Model.Tree[]>((resolve, reject) => {
       readdir(path, (error, files) => {
         if (error) {
-          list.push({ error });
-          resolve(list);
+          reject(error);
           return;
         }
         let pending = files.length;
@@ -93,7 +89,12 @@ export class TreeView {
     item.type = 'dir';
     if (this.opts.depth === false || depth < this.opts.depth) {
       item.content = [];
-      return this.walk(TreeView.getPath(item), item.content, depth + 1);
+      return this.walk(TreeView.getPath(item), item.content, depth + 1)
+        .catch((error) => {
+          item.error = error;
+          delete item.content;
+          return Promise.resolve(); // Don't break the walk...
+        });
     }
     return null;
   }

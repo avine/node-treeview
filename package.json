@@ -4,7 +4,8 @@
   "description": "A filesystem tree view in the browser",
   "main": "index.js",
   "scripts": {
-    "test": "jasmine"
+    "test": "jasmine",
+    "start": "tsc"
   },
   "repository": {
     "type": "git",
@@ -23,12 +24,11 @@
   },
   "homepage": "https://github.com/avine/node-treeview#readme",
   "devDependencies": {
+    "@types/jasmine": "^2.6.2",
     "@types/node": "^8.0.46",
-    "eslint": "^4.9.0",
-    "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.8.0",
     "jasmine": "^2.8.0",
     "jasmine-spec-reporter": "^4.2.1",
+    "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
     "typescript": "^2.5.3"
   }

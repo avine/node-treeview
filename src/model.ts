@@ -14,13 +14,9 @@ export interface IFile extends IRef {
 
 export interface IDir extends IRef {
   type: 'dir';
-  content: Array<IFile | IDir>;
+  content: Item[];
   created: Date;
   modified: Date;
-}
-
-export interface IErr {
-  error: any;
 }
 
 export interface IOpts {
@@ -42,5 +38,7 @@ export interface IStats {
 }
 
 export type Item = IFile | IDir;
+
+export type Tree = Item | IRef;
 
 export type Cb = (result: any) => any;
