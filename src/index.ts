@@ -35,6 +35,9 @@ export class TreeView {
           return;
         }
         let pending = files.length;
+        if (!pending) {
+          resolve(list);
+        }
         const tasks: Array<Promise<any>> = [];
         files.forEach((name) => {
           const item: Model.IRef = { name, path };
