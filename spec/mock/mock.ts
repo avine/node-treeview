@@ -1,3 +1,4 @@
+// [[DEPRECATED]]
 
 export const DATE = {
   MODIFIED: new Date(),
@@ -14,7 +15,7 @@ export const readdir = (path: any, cb: any) => {
   ]);
 };
 
-export const readFile = (path: any, cb: any) => {
+export const readFile = (path: any, options: any, cb: any) => {
   let data = 'unknown';
 
   switch (path) {

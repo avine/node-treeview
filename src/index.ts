@@ -9,7 +9,7 @@ export class TreeView {
     item.modified = stats.mtime;
   }
 
-  opts: Model.IOpts = { content: true, depth: false };
+  opts: Model.IOpts = { content: true, depth: false }; // TODO: add option for fs encoding...
   providers: Model.IProviders;
 
   constructor(opts?: Model.IOptsParam) {
@@ -38,7 +38,7 @@ export class TreeView {
         if (!pending) {
           resolve(list);
         }
-        const tasks: Array<Promise<any>> = [];
+        const tasks: Promise<any>[] = [];
         files.forEach((name) => {
           const item: Model.IRef = { name, path };
           this.providers.stat(this.getPath(item), (err, stats: Model.IStats) => {
@@ -83,7 +83,7 @@ export class TreeView {
 
   private addContent(item: Model.IFile) {
     return new Promise<void>((resolve) =>
-      this.providers.readFile(this.getPath(item), (error, data) => {
+      this.providers.readFile(this.getPath(item), { encoding: 'utf8' }, (error, data) => {
         if (error) {
           item.error = error;
         } else {

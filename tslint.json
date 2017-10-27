@@ -5,6 +5,7 @@
     ],
     "jsRules": {},
     "rules": {
+        "array-type": [true, "array"],        
         "curly": [true, "ignore-same-line"],
         "member-access": [true, "no-public"],
         "object-literal-sort-keys": false,

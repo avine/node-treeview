@@ -3,11 +3,12 @@
 
 import { customMatchers } from './matchers/matchers';
 import { TreeView } from '../src/index';
-import { normalize, readFile, readdir, sep, stat, DATE } from './mock/mock';
+
+import { providers } from './mock/mock-api';
 
 class TreeViewMock extends TreeView {
   inject() {
-    this.providers = { normalize, readFile, readdir, sep, stat };
+    this.providers = providers;
   }
 }
 
@@ -15,9 +16,9 @@ describe('TreeViewMock', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   it('should works!', (done) => {
-    new TreeViewMock().process('').then((result) => {
+    new TreeViewMock().process('test1').then((result) => {
       expect(result).toContainItem({
-        name: 'a', content: 'Content of a', created: DATE.CREATED, modified: DATE.MODIFIED
+        name: 'a', content: 'aaa'
       });
       done();
     }, (error) => {
