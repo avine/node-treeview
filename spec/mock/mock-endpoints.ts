@@ -8,10 +8,13 @@ export const DATE = {
 const entrepoints: { [index: string]: { [index: string]: any } } = {
 
   'test1':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a'] },
+    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'oups'] },
 
   'test1/a':
     { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'aaa', size: 3 },
+
+    'test1/oups':
+    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: false, size: 3 },
 
 };
 
