@@ -20,6 +20,7 @@ export interface IDir extends IRef {
 }
 
 export interface IOpts {
+  encoding: string;
   content: boolean | number;
   depth: boolean | number;
 }
