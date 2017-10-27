@@ -35,9 +35,7 @@ export class TreeView {
           return;
         }
         let pending = files.length;
-        if (!pending) {
-          resolve(list);
-        }
+        if (!pending) resolve(list);
         const tasks: Promise<any>[] = [];
         files.forEach((name) => {
           const item: Model.IRef = { name, path };
@@ -52,7 +50,7 @@ export class TreeView {
                 task = this.addFile(item as Model.IFile, stats);
                 list.push(item as Model.IFile);
               } else if (stats.isDirectory()) {
-                task = this.addDir(item as Model.IDir, stats, depth);
+                task = this.addDir(item as Model.IDir, depth);
                 list.push(item as Model.IDir);
               }
               if (task) tasks.push(task);
@@ -95,7 +93,7 @@ export class TreeView {
       }));
   }
 
-  private addDir(item: Model.IDir, stats: Model.IStats, depth: number) {
+  private addDir(item: Model.IDir, depth: number) {
     item.type = 'dir';
     if (this.opts.depth === false || depth < this.opts.depth) {
       item.content = [];
