@@ -16,7 +16,7 @@ describe('treeview', () => {
   });
 
   it('should list files and dir (callback interface)', (done) => {
-    new TreeView().process('sample/contents/sub1', (result) => {
+    new TreeView().process('sample/contents/sub1', (error, result) => {
       expect(result).toContainItem({ name: 'c', type: 'file' });
       expect(result).toContainItem({ name: 'deep', type: 'dir' });
       done();

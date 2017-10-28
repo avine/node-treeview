@@ -1,49 +1,47 @@
 import * as Model from '../../src/model';
-
 import endpoints from './mock-endpoints';
 
 // TODO: improve API...
 export const providers: Model.IProviders = {
   sep: '/',
 
-  normalize(path: string) {
+  normalize(path) {
     return path;
   },
 
-  readFile(path: string, options, cb) {
+  readFile(path, options, cb) {
     const endpoint = endpoints[path];
     if (endpoint && endpoint.type === 'file') {
-      if (endpoint.content !== false) {
-        cb(null, endpoint.content || '');
-      } else {
-        cb(new Error(`Unable to read file content "${path}"`), '');
-      }
-      return;
+      cb(null, endpoint.content || '');
+    } else {
+      cb(new Error(`Unable to read file content: "${path}"`), '');
     }
-    cb(new Error(`No such file "${path}"`), '');
   },
 
   readdir(path, cb) {
     const endpoint = endpoints[path];
     if (endpoint && endpoint.type === 'dir') {
-      cb(null, endpoint.content || '');
-      return;
+      cb(null, endpoint.content || []);
+    } else {
+      cb(new Error(`Unable to read directory content: "${path}"`), []);
     }
-    cb(new Error(`No such dir "${path}"`), []);
   },
 
   stat(path: string, cb) {
     const endpoint = endpoints[path];
     if (endpoint) {
-      cb(null, {
-        size: endpoint.size,
+      const stat: any = {
         birthtime: endpoint.created,
         mtime: endpoint.modified,
         isDirectory() { return endpoint.type === 'dir'; },
         isFile() { return endpoint.type === 'file'; }
-      });
-      return;
+      };
+      if (endpoint.type === 'file') {
+        stat.size = endpoint.size || 0;
+      }
+      cb(null, stat);
+    } else {
+      cb(new Error(`Unable to retrieve stat: "${path}"`));
     }
-    cb(new Error(`No such stat "${path}"`));
   }
 };

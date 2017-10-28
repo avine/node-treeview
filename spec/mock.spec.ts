@@ -19,7 +19,7 @@ describe('TreeViewMock', () => {
 
   it('should handle bad path', (done) => {
     new TreeViewMock().process('oups').catch((error) => {
-      expect(error).toBeDefined();
+      expect(error instanceof Error).toBeTruthy();
       done();
     });
   });
@@ -29,7 +29,7 @@ describe('TreeViewMock', () => {
       expect(result).toContainItem({ name: 'a', content: 'aaa' });
       expect(result).toContainItem({ name: 'oups' });
 
-      expect(result[1].error).toBeDefined();
+      expect(result[1].error instanceof Error).toBeTruthy();
       done();
     });
   });

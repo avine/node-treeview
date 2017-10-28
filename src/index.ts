@@ -23,7 +23,7 @@ export class TreeView {
 
   process(path: string, cb?: Model.Cb) {
     const p = this.walk(this.providers.normalize(path));
-    if (cb) p.then(cb);
+    if (cb) p.then(result => cb(null, result), error => cb(error));
     return p;
   }
 
@@ -80,7 +80,7 @@ export class TreeView {
   }
 
   private addContent(item: Model.IFile) {
-    return new Promise<void>((resolve) =>
+    return new Promise<void>(resolve =>
       this.providers.readFile(this.getPath(item), {
         encoding: this.opts.encoding
       }, (error, data) => {

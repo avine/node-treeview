@@ -32,14 +32,14 @@ export interface IOptsParam {
 
 // Like require('fs').Stats
 export interface IStats {
-  size: number;
+  size: number; // FIXME: should be optional (because dir don't have size...)
   birthtime: Date;
   mtime: Date;
   isDirectory(): boolean;
   isFile(): boolean;
 }
 
- // TODO: improve interface
+ // TODO: clarify interface
 export interface IProviders {
   // Like require('path')
   sep: string;
@@ -59,4 +59,4 @@ export type Item = IFile | IDir;
 
 export type TreeNode = Item | IRef;
 
-export type Cb = (result: any) => any;
+export type Cb = (error: Error | null | undefined, result?: any) => any;
