@@ -9,6 +9,10 @@ export class TreeView {
     item.modified = stats.mtime;
   }
 
+  private static skipHidden(files: string[]) {
+    return files.filter(file => file[0] !== '.');
+  }
+
   opts: Model.IOpts = { encoding: 'utf8', content: true, depth: false };
   providers: Model.IProviders;
 
@@ -34,6 +38,7 @@ export class TreeView {
           reject(error);
           return;
         }
+        files = TreeView.skipHidden(files);
         let pending = files.length;
         if (!pending) resolve(list);
         const tasks: Promise<any>[] = [];

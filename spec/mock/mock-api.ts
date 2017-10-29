@@ -1,7 +1,6 @@
 import * as Model from '../../src/model';
 import endpoints from './mock-endpoints';
 
-// TODO: improve API...
 export const providers: Model.IProviders = {
   sep: '/',
 
@@ -12,18 +11,26 @@ export const providers: Model.IProviders = {
   readFile(path, options, cb) {
     const endpoint = endpoints[path];
     if (endpoint && endpoint.type === 'file') {
-      cb(null, endpoint.content || '');
+      if (endpoint.content !== false) {
+        cb(null, endpoint.content || '');
+      } else {
+        cb(new Error(`Unable to read file content: "${path}"`), '');
+      }
     } else {
-      cb(new Error(`Unable to read file content: "${path}"`), '');
+      cb(new Error(`Unable to find file: "${path}"`), '');
     }
   },
 
   readdir(path, cb) {
     const endpoint = endpoints[path];
     if (endpoint && endpoint.type === 'dir') {
-      cb(null, endpoint.content || []);
+      if (endpoint.content !== false) {
+        cb(null, endpoint.content || []);
+      } else {
+        cb(new Error(`Unable to read directory content: "${path}"`), []);
+      }
     } else {
-      cb(new Error(`Unable to read directory content: "${path}"`), []);
+      cb(new Error(`Unable to find directory: "${path}"`), []);
     }
   },
 

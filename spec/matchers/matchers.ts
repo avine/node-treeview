@@ -29,7 +29,7 @@ export const customMatchers: jasmine.CustomMatcherFactories = {
 export const customEqualityTester = (actual: TreeNode, expected: any) => {
   for (const prop in expected) {
     if (expected.hasOwnProperty(prop)) {
-      if (expected[prop] !== (actual as any)[prop]) {
+      if (!jasmine.matchersUtil.equals(expected[prop], (actual as any)[prop])) {
         return false;
       }
     }
