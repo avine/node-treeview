@@ -6,11 +6,16 @@ import { providers } from './mock/mock-api';
 import { DATE } from './mock/mock-endpoints';
 import { customMatchers } from './matchers/matchers';
 
+import * as Model from '../src/model';
+
 class TreeViewMock extends TreeView {
   inject() {
     this.providers = providers;
   }
 }
+
+// tslint:disable-next-line:no-console
+const log = (data: any) => console.log(JSON.stringify(data, undefined, 2));
 
 describe('TreeView', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
@@ -67,6 +72,20 @@ describe('TreeView', () => {
     });
   });
 
+  it('should find sub dirs', (done) => {
+    new TreeViewMock().process('sub-dir').then((result) => {
+      expect(result).toContainItem({ path: 'sub-dir', type: 'file', name: 'a' });
+      expect(result).toContainItem({ path: 'sub-dir', type: 'dir', name: 'b' });
+
+      const dir = result.filter(r => r.name === 'b');
+      const subDir = dir[0] as Model.IDir;
+      expect(subDir.content).toContainItem({ path: 'sub-dir/b', type: 'file', name: 'c', content: 'ccc' });
+      expect(subDir.content).toContainItem({ path: 'sub-dir/b', type: 'file', name: 'd', content: 'ddd' });
+
+      done();
+    });
+  });
+
   it('should handle not found', (done) => {
     new TreeViewMock().process('not-found').then((result) => {
       expect(result.length).toEqual(1);
@@ -81,21 +100,28 @@ describe('TreeView', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   beforeEach(() => {
-    // spyOn(providers, 'readFile');
-    // spyOn(tree.providers, 'readdir');
+    spyOn(providers, 'readFile').and.callThrough();
+    spyOn(providers, 'readdir').and.callThrough();
   });
 
-  it('should handle not readable', (done) => {
+  it('should handle not readable file or dir', (done) => {
     new TreeViewMock().process('not-readable').then((result) => {
       expect(result.length).toEqual(2);
 
       result.forEach(r => expect(r.error instanceof Error).toBeTruthy());
 
-      expect(result).toContainItem({ type: 'file', path: 'not-readable', name: 'a' });
-      expect(result).toContainItem({ type: 'dir', path: 'not-readable', name: 'b' });
+      expect(result).toContainItem({ type: 'file', name: 'a', path: 'not-readable' });
+      expect(result).toContainItem({ type: 'dir', name: 'b', path: 'not-readable' });
 
-      // expect(providers.readFile).toHaveBeenCalledTimes(1);
-      // expect(tree.providers.readdir).toHaveBeenCalledTimes(2);
+      expect(providers.readFile).toHaveBeenCalledTimes(1); // One for 'a'
+      expect(providers.readdir).toHaveBeenCalledTimes(2); // One for 'not-readable' and another for 'b'
+      done();
+    });
+  });
+
+  it('should handle not readable dir (immediately)', (done) => {
+    new TreeViewMock().process('immediate-error').catch((error) => {
+      expect(error instanceof Error).toBeTruthy();
       done();
     });
   });

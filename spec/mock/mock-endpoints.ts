@@ -31,6 +31,17 @@ const entrepoints: { [index: string]: { [index: string]: any } } = {
   'dirs/b':
     { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: [] },
 
+  'sub-dir':
+    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'b'] },
+  'sub-dir/a':
+    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'aaa', size: 3 },
+  'sub-dir/b':
+    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['c', 'd'] },
+  'sub-dir/b/c':
+    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'ccc', size: 3 },
+  'sub-dir/b/d':
+    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'ddd', size: 3 },
+
   'not-found':
     { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['oups'] },
 
@@ -40,6 +51,9 @@ const entrepoints: { [index: string]: { [index: string]: any } } = {
     { type: 'file', content: false },
   'not-readable/b':
     { type: 'dir', content: false },
+
+  'immediate-error':
+    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: false },
 
   };
 
