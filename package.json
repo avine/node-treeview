@@ -4,8 +4,8 @@
   "description": "A filesystem tree view in the browser",
   "main": "index.js",
   "scripts": {
-    "test": "jasmine",
     "start": "tsc",
+    "test": "istanbul cover jasmine",
     "lint": "tslint -p ./tsconfig.json"
   },
   "repository": {
@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/jasmine": "^2.6.2",
     "@types/node": "^8.0.46",
+    "istanbul": "^0.4.5",
     "jasmine": "^2.8.0",
     "jasmine-spec-reporter": "^4.2.1",
     "ts-node": "^3.3.0",
