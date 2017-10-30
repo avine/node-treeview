@@ -31,29 +31,29 @@ const entrepoints: { [index: string]: { [index: string]: any } } = {
   'dirs/b':
     { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: [] },
 
-  'sub-dir':
+  'sub-dirs':
     { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'b'] },
-  'sub-dir/a':
+  'sub-dirs/a':
     { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'aaa', size: 3 },
-  'sub-dir/b':
+  'sub-dirs/b':
     { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['c', 'd'] },
-  'sub-dir/b/c':
+  'sub-dirs/b/c':
     { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'ccc', size: 3 },
-  'sub-dir/b/d':
+  'sub-dirs/b/d':
     { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'ddd', size: 3 },
 
-  'not-found':
+  'sub-dir-not-found':
     { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['oups'] },
 
-  'not-readable':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'b'] },
-  'not-readable/a':
-    { type: 'file', content: false },
-  'not-readable/b':
-    { type: 'dir', content: false },
-
-  'immediate-error':
+  'not-readable-eagerly':
     { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: false },
+
+  'not-readable-lazily':
+    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'b'] },
+  'not-readable-lazily/a':
+    { type: 'file', content: false },
+  'not-readable-lazily/b':
+    { type: 'dir', content: false },
 
   };
 

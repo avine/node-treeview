@@ -65,10 +65,7 @@ export class TreeView {
           });
         });
       });
-    })/*.catch((error) => {
-      console.log(path, error);
-      return Promise.resolve(); // Don't break the walk...
-    })*/;
+    });
   }
 
   private getPath(item: Model.IRef) {
