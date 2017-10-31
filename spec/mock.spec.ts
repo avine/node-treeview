@@ -22,17 +22,31 @@ describe('TreeView', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   it('should handle bad path', (done) => {
-    new TreeViewMock().process('oups').catch((error) => {
-      expect(error instanceof Error).toBeTruthy();
-      done();
-    });
+    Promise.all([
+      // Using promise interface
+      new TreeViewMock().process('oups').catch((error) => {
+        expect(error instanceof Error).toBeTruthy();
+      }),
+
+      // Using callback interface
+      new TreeViewMock().process('oups', (error, result) => {
+        expect(error instanceof Error).toBeTruthy();
+      })
+    ]).catch(done);
   });
 
   it('should handle empty directory', (done) => {
-    new TreeViewMock().process('empty-dir').then((result) => {
-      expect(result.length).toEqual(0);
-      done();
-    });
+    Promise.all([
+      // Using promise interface
+      new TreeViewMock().process('empty-dir').then((result) => {
+        expect(result.length).toEqual(0);
+      }),
+
+      // Using callback interface
+      new TreeViewMock().process('empty-dir', (error, result) => {
+        expect(result.length).toEqual(0);
+      })
+    ]).then(done);
   });
 
   it('should find files', (done) => {
