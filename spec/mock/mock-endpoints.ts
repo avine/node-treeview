@@ -61,6 +61,22 @@ const entrepoints: { [index: string]: { [index: string]: any } } = {
     { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'aaa', size: 3 },
   'skip-content/b':
     { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'bbbb', size: 4 },
+
+  'deep-dirs':
+    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'folder'] },
+  'deep-dirs/a':
+    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'a', size: 1 },
+  'deep-dirs/folder':
+    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['b', 'folder'] },
+  'deep-dirs/folder/b':
+    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'bb', size: 2 },
+  'deep-dirs/folder/folder':
+    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['c', 'd'] },
+  'deep-dirs/folder/folder/c':
+    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'ccc', size: 3 },
+  'deep-dirs/folder/folder/d':
+    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'dddd', size: 4 },
+
   };
 
 export default entrepoints;

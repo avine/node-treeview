@@ -142,12 +142,38 @@ describe('TreeView options', () => {
       new TreeViewMock({ content: false }).process('skip-content').then((result) => {
         expect(result.length).toEqual(2);
 
-        // When `content` is set to `false`, the `size` property is still available
+        // When `content` option is set to `false`, the `size` property is still available...
         expect(result).toContainItem({ type: 'file', name: 'a', size: 3 });
         expect(result).toContainItem({ type: 'file', name: 'b', size: 4 });
 
-        // But the `content` property was skipped!
+        // ...but the `content` property is skipped!
         result.forEach(r => expect('content' in r).toBeFalsy());
+      })
+    ]).then(done);
+  });
+
+  it('should stop processing at expected depth', (done) => {
+    Promise.all([
+      new TreeViewMock({ depth: 0 }).process('deep-dirs').then((result) => {
+        expect(result).toContainItem({ type: 'file', name: 'a' });
+        expect(result).toContainItem({ type: 'dir', name: 'folder' });
+        expect(result).not.toContainItem({ type: 'dir', name: 'folder', content: ['b', 'folder'] });
+      }),
+
+      new TreeViewMock({ depth: 1 }).process('deep-dirs').then((result) => {
+        const subDir = result.filter(r => r.name === 'folder')[0] as Model.IDir;
+
+        expect(subDir.content).toContainItem({ type: 'file', name: 'b' });
+        expect(subDir.content).toContainItem({ type: 'dir', name: 'folder' });
+        expect(subDir.content).not.toContainItem({ type: 'dir', name: 'folder', content: ['c', 'd'] });
+      }),
+
+      new TreeViewMock({ depth: 2 }).process('deep-dirs').then((result) => {
+        const subDir = result.filter(r => r.name === 'folder')[0] as Model.IDir;
+        const deepDir = subDir.content.filter(r => r.name === 'folder')[0] as Model.IDir;
+
+        expect(deepDir.content).toContainItem({ type: 'file', name: 'c' });
+        expect(deepDir.content).toContainItem({ type: 'file', name: 'd' });
       })
     ]).then(done);
   });

@@ -40,7 +40,10 @@ export class TreeView {
         }
         files = TreeView.skipHidden(files);
         let pending = files.length;
-        if (!pending) resolve(list);
+        if (!pending) {
+          resolve(list);
+          return;
+        }
         const tasks: Promise<any>[] = [];
         files.forEach((name) => {
           const item: Model.IRef = { name, path };
