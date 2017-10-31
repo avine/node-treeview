@@ -1,7 +1,7 @@
 const TreeView = require('../index');
 
 // Using callback interface
-new TreeView().process(__dirname + '/contents', log);
+new TreeView().process(__dirname + '/contents', (err, result) => log(result));
 
 // Using Promise interface
 new TreeView().process(__dirname + '/contents').then(log);
