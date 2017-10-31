@@ -34,14 +34,13 @@ export interface IOptsParam {
 
 // Like require('fs').Stats
 export interface IStats {
-  size: number; // FIXME: should be optional (because dir don't have size...)
+  size: number;
   birthtime: Date;
   mtime: Date;
   isDirectory(): boolean;
   isFile(): boolean;
 }
 
- // TODO: clarify interface
 export interface IProviders {
   // Like require('path')
   sep: string;
@@ -50,15 +49,16 @@ export interface IProviders {
   // Like require('fs')
   readFile(
     path: string, options: { encoding: string; flag?: string; },
-    callback: (err: any, data: string) => void
+    callback: (err: Err, data: string) => void
   ): void;
-
-  readdir(path: string, callback: (err: any, files: string[]) => void): void;
-  stat(path: string, callback: (err: any, stats?: IStats) => void): void; // FIXME: "?" added for test...
+  readdir(path: string, callback: (err: Err, files: string[]) => void): void;
+  stat(path: string, callback: (err: Err, stats?: IStats) => void): void;
 }
 
 export type Item = IFile | IDir;
 
 export type TreeNode = Item | IRef;
 
-export type Cb = (error: Error | null | undefined, result?: any) => any;
+export type Cb = (error: Err, result?: any) => any;
+
+export type Err = Error | null | undefined;

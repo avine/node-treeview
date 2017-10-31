@@ -1,6 +1,6 @@
 {
   "name": "node-treeview",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A filesystem tree view in the browser",
   "main": "index.js",
   "scripts": {
