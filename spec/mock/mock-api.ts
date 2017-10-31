@@ -48,7 +48,7 @@ export const providers: Model.IProviders = {
       }
       cb(null, stat);
     } else {
-      cb(new Error(`Unable to retrieve stat: "${path}"`));
+      cb(new Error(`Unable to retrieve stat: "${path}"`), {} as Model.IStats);
     }
   }
 };

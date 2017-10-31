@@ -52,7 +52,7 @@ export interface IProviders {
     callback: (err: Err, data: string) => void
   ): void;
   readdir(path: string, callback: (err: Err, files: string[]) => void): void;
-  stat(path: string, callback: (err: Err, stats?: IStats) => void): void;
+  stat(path: string, callback: (err: Err, stats: IStats) => void): void;
 }
 
 export type Item = IFile | IDir;
