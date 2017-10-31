@@ -1,10 +1,11 @@
 {
   "name": "node-treeview",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A filesystem tree view in the browser",
   "main": "index.js",
   "scripts": {
-    "start": "tsc",
+    "clean": "rimraf ./dist ./coverage",
+    "build": "tsc",
     "test": "istanbul cover ./node_modules/jasmine/bin/jasmine.js",
     "lint": "tslint -p ./tsconfig.json"
   },
@@ -30,6 +31,7 @@
     "istanbul": "^0.4.5",
     "jasmine": "^2.8.0",
     "jasmine-spec-reporter": "^4.2.1",
+    "rimraf": "^2.6.2",
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
     "tslint-eslint-rules": "^4.1.1",
