@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc",
-    "test": "istanbul cover jasmine",
+    "test": "istanbul cover ./node_modules/jasmine/bin/jasmine.js",
     "lint": "tslint -p ./tsconfig.json"
   },
   "repository": {

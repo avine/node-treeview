@@ -128,4 +128,27 @@ describe('TreeView (with spy)', () => {
   });
 });
 
-// TODO: test  `this.opts.depth` option...
+describe('TreeView options', () => {
+  beforeEach(() => jasmine.addMatchers(customMatchers));
+
+  it('should skip files content', (done) => {
+    Promise.all([
+      new TreeViewMock(/*{ content: true }*/).process('skip-content').then((result) => {
+        expect(result.length).toEqual(2);
+
+        expect(result).toContainItem({ type: 'file', name: 'a', content: 'aaa', size: 3 });
+        expect(result).toContainItem({ type: 'file', name: 'b', content: 'bbbb', size: 4 });
+      }),
+      new TreeViewMock({ content: false }).process('skip-content').then((result) => {
+        expect(result.length).toEqual(2);
+
+        // When `content` is set to `false`, the `size` property is still available
+        expect(result).toContainItem({ type: 'file', name: 'a', size: 3 });
+        expect(result).toContainItem({ type: 'file', name: 'b', size: 4 });
+
+        // But the `content` property was skipped!
+        result.forEach(r => expect('content' in r).toBeFalsy());
+      })
+    ]).then(done);
+  });
+});

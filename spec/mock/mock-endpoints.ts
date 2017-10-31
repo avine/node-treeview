@@ -55,6 +55,12 @@ const entrepoints: { [index: string]: { [index: string]: any } } = {
   'not-readable-lazily/b':
     { type: 'dir', content: false },
 
+  'skip-content':
+    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'b'] },
+  'skip-content/a':
+    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'aaa', size: 3 },
+  'skip-content/b':
+    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'bbbb', size: 4 },
   };
 
 export default entrepoints;
