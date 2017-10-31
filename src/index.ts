@@ -13,12 +13,13 @@ export class TreeView {
     return files.filter(file => file[0] !== '.');
   }
 
-  opts: Model.IOpts = { encoding: 'utf8', content: true, depth: false };
+  opts: Model.IOpts = { encoding: 'utf8', content: true, depth: false, exclude: [] };
   providers: Model.IProviders;
 
   constructor(opts?: Model.IOptsParam) {
-    Object.assign(this.opts, opts || {});
     this.inject();
+    Object.assign(this.opts, opts || {});
+    this.opts.exclude.map(path => this.providers.normalize(path));
   }
 
   inject() {
@@ -47,7 +48,8 @@ export class TreeView {
         const tasks: Promise<any>[] = [];
         files.forEach((name) => {
           const item: Model.IRef = { name, path };
-          this.providers.stat(this.getPath(item), (err, stats: Model.IStats) => {
+          const pathfile = this.getPath(item);
+          this.providers.stat(pathfile, (err, stats: Model.IStats) => {
             if (err) {
               item.error = err;
               list.push(item);
@@ -57,7 +59,7 @@ export class TreeView {
               if (stats.isFile()) {
                 task = this.addFile(item as Model.IFile, stats);
                 list.push(item as Model.IFile);
-              } else if (stats.isDirectory()) {
+              } else if (stats.isDirectory() && !this.opts.exclude.includes(pathfile)) {
                 task = this.addDir(item as Model.IDir, depth);
                 list.push(item as Model.IDir);
               }

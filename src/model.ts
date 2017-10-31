@@ -23,11 +23,13 @@ export interface IOpts {
   encoding: string;
   content: boolean | number;
   depth: boolean | number;
+  exclude: string[];
 }
-
 export interface IOptsParam {
+  encoding?: string;
   content?: boolean | number;
   depth?: boolean | number;
+  exclude?: string[];
 }
 
 // Like require('fs').Stats

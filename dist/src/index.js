@@ -4,9 +4,10 @@ const fs_1 = require("fs");
 const path_1 = require("path");
 class TreeView {
     constructor(opts) {
-        this.opts = { encoding: 'utf8', content: true, depth: false };
-        Object.assign(this.opts, opts || {});
+        this.opts = { encoding: 'utf8', content: true, depth: false, exclude: [] };
         this.inject();
+        Object.assign(this.opts, opts || {});
+        this.opts.exclude.map(path => this.providers.normalize(path));
     }
     static addTime(item, stats) {
         item.created = stats.birthtime;
@@ -40,7 +41,8 @@ class TreeView {
                 const tasks = [];
                 files.forEach((name) => {
                     const item = { name, path };
-                    this.providers.stat(this.getPath(item), (err, stats) => {
+                    const pathfile = this.getPath(item);
+                    this.providers.stat(pathfile, (err, stats) => {
                         if (err) {
                             item.error = err;
                             list.push(item);
@@ -52,7 +54,7 @@ class TreeView {
                                 task = this.addFile(item, stats);
                                 list.push(item);
                             }
-                            else if (stats.isDirectory()) {
+                            else if (stats.isDirectory() && !this.opts.exclude.includes(pathfile)) {
                                 task = this.addDir(item, depth);
                                 list.push(item);
                             }

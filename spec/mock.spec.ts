@@ -191,4 +191,39 @@ describe('TreeView options', () => {
       })
     ]).then(done);
   });
+
+  it('should exclude directories', (done) => {
+    Promise.all([
+      // Remove sub-folder
+      new TreeViewMock({ exclude: ['deep-dirs/folder'] }).process('deep-dirs').then((result) => {
+        expect(result.length).toEqual(1);
+        expect(result).toContainItem({ type: 'file', name: 'a' });
+        expect(result).not.toContainItem({ type: 'dir', name: 'folder' });
+      }),
+
+      // Remove deep-folder
+      new TreeViewMock({ exclude: ['deep-dirs/folder/folder'] }).process('deep-dirs').then((result) => {
+        expect(result.length).toEqual(2);
+        expect(result).toContainItem({ type: 'file', name: 'a' });
+        expect(result).toContainItem({ type: 'dir', name: 'folder' });
+
+        const subDir = result.filter(r => r.name === 'folder')[0] as Model.IDir;
+        expect(subDir.content.length).toEqual(1);
+        expect(subDir.content).toContainItem({ type: 'file', name: 'b' });
+        expect(subDir.content).not.toContainItem({ type: 'dir', name: 'folder' });
+      }),
+
+      // Check original
+      new TreeViewMock({ exclude: [] }).process('deep-dirs').then((result) => {
+        expect(result.length).toEqual(2);
+        expect(result).toContainItem({ type: 'file', name: 'a' });
+        expect(result).toContainItem({ type: 'dir', name: 'folder' });
+
+        const subDir = result.filter(r => r.name === 'folder')[0] as Model.IDir;
+        expect(subDir.content.length).toEqual(1);
+        expect(subDir.content).toContainItem({ type: 'file', name: 'b' });
+        expect(subDir.content).toContainItem({ type: 'dir', name: 'folder' });
+      })
+    ]).then(done);
+  });
 });
