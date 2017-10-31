@@ -9,6 +9,9 @@
     "test": "istanbul cover ./node_modules/jasmine/bin/jasmine.js",
     "lint": "tslint -p ./tsconfig.json"
   },
+  "bin" : {
+    "node-treeview" : "./src/cli.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/avine/node-treeview.git"
@@ -17,7 +20,8 @@
     "treeview",
     "filesystem",
     "browser",
-    "node"
+    "node",
+    "json"
   ],
   "author": "Stéphane Francel <contact@avine.io>",
   "license": "MIT",
@@ -35,7 +39,9 @@
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
     "tslint-eslint-rules": "^4.1.1",
-    "typescript": "^2.5.3",
+    "typescript": "^2.5.3"
+  },
+  "dependencies": {
     "yargs": "^10.0.3"
   }
 }
