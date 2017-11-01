@@ -89,16 +89,17 @@ export interface IOpts {
 ```txt
 node-treeview
 
-Usage: node-treeview <path> [options]
+Usage: cli.js <path> [options]
 
 Options:
-  --version      Show version number                                   [boolean]
-  --content, -c  Add files content to output. Use a boolean or a number in
-                 bytes.                                          [default: true]
-  --depth, -d    Maximum depth of directories. Use a boolean or a number.
+  --version       Show version number                                  [boolean]
+  --content, -c   Add files content to output. Use a boolean or a number in
+                  bytes.                                         [default: true]
+  --depth, -d     Maximum depth of directories. Use a boolean or a number.
                                                                 [default: false]
-  --exclude, -e  List of directory paths to exclude from output.
+  --relative, -r  Use relative path.                  [boolean] [default: false]
+  --exclude, -e   List of directory paths to exclude from output.
                                                            [array] [default: []]
-  --encoding     Set files encoding.                  [string] [default: "utf8"]
-  --help, -h     Show help                                             [boolean]
+  --encoding      Set files encoding.                 [string] [default: "utf8"]
+  --help, -h      Show help                                            [boolean]
 ```

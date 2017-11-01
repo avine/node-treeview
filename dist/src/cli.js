@@ -30,6 +30,11 @@ yargs
     describe: 'Maximum depth of directories. Use a boolean or a number.',
     coerce: booleanOrNumber,
     default: false
+}).option('relative', {
+    alias: 'r',
+    describe: 'Use relative path.',
+    type: 'boolean',
+    default: false
 }).option('exclude', {
     alias: 'e',
     describe: 'List of directory paths to exclude from output.',
@@ -44,9 +49,9 @@ yargs
     .alias('help', 'h');
 // log(yargs.argv); // For debugging
 const path = yargs.argv._[0];
-const { content, depth, encoding, exclude } = yargs.argv;
+const { content, depth, relative, encoding, exclude } = yargs.argv;
 if (path) {
-    new index_1.TreeView({ content, depth, encoding, exclude })
+    new index_1.TreeView({ content, depth, relative, encoding, exclude })
         .process(path)
         .then(result => log(result))
         .catch((error) => {

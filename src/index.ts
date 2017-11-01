@@ -1,5 +1,5 @@
 import { readdir, readFile, stat } from 'fs';
-import { resolve } from 'path';
+import { resolve, relative } from 'path';
 
 import * as Model from './model';
 
@@ -13,8 +13,9 @@ export class TreeView {
     return files.filter(file => file[0] !== '.');
   }
 
-  opts: Model.IOpts = { encoding: 'utf8', content: true, depth: false, exclude: [] };
+  opts: Model.IOpts = { encoding: 'utf8', content: true, depth: false, exclude: [], relative: false };
   providers: Model.IProviders;
+  rootPath: string;
 
   constructor(opts?: Model.IOptsParam) {
     this.inject();
@@ -23,13 +24,14 @@ export class TreeView {
   }
 
   inject() {
-    this.providers = { resolve, readFile, readdir, stat };
+    this.providers = { resolve, relative, readFile, readdir, stat };
   }
 
   process(path: string, cb?: Model.Cb) {
-    const p = this.walk(this.providers.resolve(path));
-    if (cb) p.then(result => cb(null, result), error => cb(error));
-    return p;
+    this.rootPath = this.providers.resolve(path);
+    const promise = this.walk(this.rootPath);
+    if (cb) promise.then(result => cb(null, result), error => cb(error));
+    return promise;
   }
 
   private walk(path: string, list: Model.TreeNode[] = [], depth = 0) {
@@ -47,7 +49,8 @@ export class TreeView {
         }
         const tasks: Promise<any>[] = [];
         files.forEach((name) => {
-          const item: Model.IRef = { name, path };
+          const itemPath = this.opts.relative ? this.providers.relative(this.rootPath, path) : path;
+          const item: Model.IRef = { name, path: itemPath };
           const pathfile = this.getPath(item);
           this.providers.stat(pathfile, (err, stats: Model.IStats) => {
             if (err) {
@@ -74,7 +77,7 @@ export class TreeView {
   }
 
   private getPath(item: Model.IRef) {
-    return this.providers.resolve(item.path, item.name);
+    return this.providers.resolve(this.opts.relative ? this.rootPath : '', item.path, item.name);
   }
 
   private addFile(item: Model.IFile, stats: Model.IStats) {

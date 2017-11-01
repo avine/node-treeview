@@ -20,20 +20,23 @@ export interface IDir extends IRef {
 }
 
 export interface IOpts {
-  // Set file encoding (ie: 'utf8')
+  // Set file encoding
   encoding: string;
-  // Add files content to output
+  // Add files content to output (number in bytes)
   content: boolean | number;
   // Maximum depth of directories
   depth: boolean | number;
-  // List of directory paths to exclude from output
+  // List of directory paths to exclude from output.
   exclude: string[];
+  // Use relative path
+  relative: boolean;
 }
 export interface IOptsParam {
   encoding?: string;
   content?: boolean | number;
   depth?: boolean | number;
   exclude?: string[];
+  relative?: boolean;
 }
 
 // Like require('fs').Stats
@@ -48,6 +51,7 @@ export interface IStats {
 export interface IProviders {
   // Like require('path')
   resolve(...pathSegments: any[]): string;
+  relative(from: string, to: string): string;
 
   // Like require('fs')
   readFile(

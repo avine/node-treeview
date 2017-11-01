@@ -2,8 +2,24 @@ import * as Model from '../../src/model';
 import endpoints from './mock-endpoints';
 
 export const providers: Model.IProviders = {
+  /**
+   * Join non empty parts of the path.
+   * Remove duplicate `/` from the return.
+   *
+   * @example resolve('', 'a/', '', '/b', 'c', '') === 'a/b/c'
+   */
   resolve(...path: any[]) {
-    return path.join('/');
+    return path.filter(p => p).join('/').replace(/\/+/g, '/');
+  },
+
+  /**
+   * Remove `from` at the beginning of `to`.
+   * Also remove `/` at the beginning of the return.
+   *
+   * @example relative('/a/b', '/a/b/c/d') === 'c/d'
+   */
+  relative(from: string, to: string) {
+    return to.replace(new RegExp('^' + from), '').replace(/^\//, '');
   },
 
   readFile(path, options, cb) {

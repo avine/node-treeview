@@ -39,19 +39,19 @@ describe('TreeView', () => {
     Promise.all([
       // Using promise interface
       new TreeViewMock().process('empty-dir').then((result) => {
-        expect(result.length).toEqual(0);
+        expect(result.length).toBe(0);
       }),
 
       // Using callback interface
       new TreeViewMock().process('empty-dir', (error, result) => {
-        expect(result.length).toEqual(0);
+        expect(result.length).toBe(0);
       })
     ]).then(done);
   });
 
   it('should find files', (done) => {
     new TreeViewMock().process('files').then((result) => {
-      expect(result.length).toEqual(2);
+      expect(result.length).toBe(2);
 
       expect(result).toContainItem({
         path: 'files', type: 'file', name: 'a', content: 'aaa', size: 3, created: DATE.CREATED, modified: DATE.MODIFIED
@@ -65,7 +65,7 @@ describe('TreeView', () => {
 
   it('should skip hidden files', (done) => {
     new TreeViewMock().process('skip-hidden').then((result) => {
-      expect(result.length).toEqual(1);
+      expect(result.length).toBe(1);
 
       expect(result).not.toContainItem({ type: 'file', name: '.hidden' });
       expect(result).toContainItem({ type: 'file', name: 'visible' });
@@ -75,7 +75,7 @@ describe('TreeView', () => {
 
   it('should find directories', (done) => {
     new TreeViewMock().process('dirs').then((result) => {
-      expect(result.length).toEqual(2);
+      expect(result.length).toBe(2);
 
       expect(result).toContainItem({
         path: 'dirs', type: 'dir', name: 'a', content: [], created: DATE.CREATED, modified: DATE.MODIFIED
@@ -103,7 +103,7 @@ describe('TreeView', () => {
 
   it('should handle sub-directory not-found', (done) => {
     new TreeViewMock().process('sub-dir-not-found').then((result) => {
-      expect(result.length).toEqual(1);
+      expect(result.length).toBe(1);
       expect(result).toContainItem({ path: 'sub-dir-not-found', name: 'oups' });
       expect(result[0].error instanceof Error).toBeTruthy();
       done();
@@ -118,7 +118,7 @@ describe('TreeView', () => {
   });
 });
 
-describe('TreeView (with spy)', () => {
+describe('TreeView spies', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   beforeEach(() => {
@@ -128,7 +128,7 @@ describe('TreeView (with spy)', () => {
 
   it('should handle not-readable file or directory', (done) => {
     new TreeViewMock().process('not-readable-lazily').then((result) => {
-      expect(result.length).toEqual(2);
+      expect(result.length).toBe(2);
 
       result.forEach(r => expect(r.error instanceof Error).toBeTruthy());
 
@@ -148,13 +148,13 @@ describe('TreeView options', () => {
   it('should skip files content', (done) => {
     Promise.all([
       new TreeViewMock(/*{ content: true }*/).process('skip-content').then((result) => {
-        expect(result.length).toEqual(2);
+        expect(result.length).toBe(2);
 
         expect(result).toContainItem({ type: 'file', name: 'a', content: 'aaa', size: 3 });
         expect(result).toContainItem({ type: 'file', name: 'b', content: 'bbbb', size: 4 });
       }),
       new TreeViewMock({ content: false }).process('skip-content').then((result) => {
-        expect(result.length).toEqual(2);
+        expect(result.length).toBe(2);
 
         // When `content` option is set to `false`, the `size` property is still available...
         expect(result).toContainItem({ type: 'file', name: 'a', size: 3 });
@@ -196,34 +196,51 @@ describe('TreeView options', () => {
     Promise.all([
       // Remove sub-folder
       new TreeViewMock({ exclude: ['deep-dirs/folder'] }).process('deep-dirs').then((result) => {
-        expect(result.length).toEqual(1);
+        expect(result.length).toBe(1);
         expect(result).toContainItem({ type: 'file', name: 'a' });
         expect(result).not.toContainItem({ type: 'dir', name: 'folder' });
       }),
 
       // Remove deep-folder
       new TreeViewMock({ exclude: ['deep-dirs/folder/folder'] }).process('deep-dirs').then((result) => {
-        expect(result.length).toEqual(2);
+        expect(result.length).toBe(2);
         expect(result).toContainItem({ type: 'file', name: 'a' });
         expect(result).toContainItem({ type: 'dir', name: 'folder' });
 
         const subDir = result.filter(r => r.name === 'folder')[0] as Model.IDir;
-        expect(subDir.content.length).toEqual(1);
+        expect(subDir.content.length).toBe(1);
         expect(subDir.content).toContainItem({ type: 'file', name: 'b' });
         expect(subDir.content).not.toContainItem({ type: 'dir', name: 'folder' });
       }),
 
       // Check original
       new TreeViewMock({ exclude: [] }).process('deep-dirs').then((result) => {
-        expect(result.length).toEqual(2);
+        expect(result.length).toBe(2);
         expect(result).toContainItem({ type: 'file', name: 'a' });
         expect(result).toContainItem({ type: 'dir', name: 'folder' });
 
         const subDir = result.filter(r => r.name === 'folder')[0] as Model.IDir;
-        expect(subDir.content.length).toEqual(1);
+        expect(subDir.content.length).toBe(2);
         expect(subDir.content).toContainItem({ type: 'file', name: 'b' });
         expect(subDir.content).toContainItem({ type: 'dir', name: 'folder' });
       })
     ]).then(done);
+  });
+
+  it('should use relative path', (done) => {
+    new TreeViewMock({ relative: true }).process('deep-dirs').then((result) => {
+      expect(result).toContainItem({ type: 'file', path: '', name: 'a' });
+      expect(result).toContainItem({ type: 'dir', path: '', name: 'folder' });
+
+      const subDir = result.filter(r => r.name === 'folder')[0] as Model.IDir;
+      expect(subDir.content).toContainItem({ type: 'file', path: 'folder', name: 'b' });
+      expect(subDir.content).toContainItem({ type: 'dir', path: 'folder', name: 'folder' });
+
+      const deepDir = subDir.content.filter(r => r.name === 'folder')[0] as Model.IDir;
+      expect(deepDir.content).toContainItem({ type: 'file', path: 'folder/folder', name: 'c' });
+      expect(deepDir.content).toContainItem({ type: 'file', path: 'folder/folder', name: 'd' });
+
+      done();
+    });
   });
 });

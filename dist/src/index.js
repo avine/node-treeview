@@ -4,7 +4,7 @@ const fs_1 = require("fs");
 const path_1 = require("path");
 class TreeView {
     constructor(opts) {
-        this.opts = { encoding: 'utf8', content: true, depth: false, exclude: [] };
+        this.opts = { encoding: 'utf8', content: true, depth: false, exclude: [], relative: false };
         this.inject();
         Object.assign(this.opts, opts || {});
         this.opts.exclude.map(path => this.providers.resolve(path));
@@ -17,13 +17,14 @@ class TreeView {
         return files.filter(file => file[0] !== '.');
     }
     inject() {
-        this.providers = { resolve: path_1.resolve, readFile: fs_1.readFile, readdir: fs_1.readdir, stat: fs_1.stat };
+        this.providers = { resolve: path_1.resolve, relative: path_1.relative, readFile: fs_1.readFile, readdir: fs_1.readdir, stat: fs_1.stat };
     }
     process(path, cb) {
-        const p = this.walk(this.providers.resolve(path));
+        this.rootPath = this.providers.resolve(path);
+        const promise = this.walk(this.rootPath);
         if (cb)
-            p.then(result => cb(null, result), error => cb(error));
-        return p;
+            promise.then(result => cb(null, result), error => cb(error));
+        return promise;
     }
     walk(path, list = [], depth = 0) {
         return new Promise((success, reject) => {
@@ -40,7 +41,8 @@ class TreeView {
                 }
                 const tasks = [];
                 files.forEach((name) => {
-                    const item = { name, path };
+                    const itemPath = this.opts.relative ? this.providers.relative(this.rootPath, path) : path;
+                    const item = { name, path: itemPath };
                     const pathfile = this.getPath(item);
                     this.providers.stat(pathfile, (err, stats) => {
                         if (err) {
@@ -70,7 +72,7 @@ class TreeView {
         });
     }
     getPath(item) {
-        return this.providers.resolve(item.path, item.name);
+        return this.providers.resolve(this.opts.relative ? this.rootPath : '', item.path, item.name);
     }
     addFile(item, stats) {
         item.type = 'file';

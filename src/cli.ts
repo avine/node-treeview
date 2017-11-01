@@ -34,6 +34,12 @@ yargs
     coerce: booleanOrNumber,
     default: false
 
+  }).option('relative', {
+    alias: 'r',
+    describe: 'Use relative path.',
+    type: 'boolean',
+    default: false
+
   }).option('exclude', {
     alias: 'e',
     describe: 'List of directory paths to exclude from output.',
@@ -52,9 +58,9 @@ yargs
 // log(yargs.argv); // For debugging
 
 const path = yargs.argv._[0];
-const { content, depth, encoding, exclude } = yargs.argv;
+const { content, depth, relative, encoding, exclude } = yargs.argv;
 if (path) {
-  new TreeView({ content, depth, encoding, exclude })
+  new TreeView({ content, depth, relative, encoding, exclude })
     .process(path)
     .then(result => log(result))
     .catch((error: Error) => {
