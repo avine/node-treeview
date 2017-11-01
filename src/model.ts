@@ -20,9 +20,13 @@ export interface IDir extends IRef {
 }
 
 export interface IOpts {
+  // Set file encoding (ie: 'utf8')
   encoding: string;
+  // Add files content to output
   content: boolean | number;
+  // Maximum depth of directories
   depth: boolean | number;
+  // List of directory paths to exclude from output
   exclude: string[];
 }
 export interface IOptsParam {
