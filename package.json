@@ -1,6 +1,6 @@
 {
   "name": "node-treeview",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "A filesystem tree view for node",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "build": "tsc",
     "test": "istanbul cover ./node_modules/jasmine/bin/jasmine.js",
     "lint": "tslint -p ./tsconfig.json",
-    "all": "npm run clean && npm run build && npm run test"
+    "all": "npm run clean && npm run build && npm test"
   },
   "bin": {
     "node-treeview": "./dist/src/cli.js"

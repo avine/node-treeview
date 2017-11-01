@@ -1,5 +1,5 @@
 import { readdir, readFile, stat } from 'fs';
-import { normalize, sep } from 'path';
+import { resolve } from 'path';
 
 import * as Model from './model';
 
@@ -19,21 +19,21 @@ export class TreeView {
   constructor(opts?: Model.IOptsParam) {
     this.inject();
     Object.assign(this.opts, opts || {});
-    this.opts.exclude.map(path => this.providers.normalize(path));
+    this.opts.exclude.map(path => this.providers.resolve(path));
   }
 
   inject() {
-    this.providers = { normalize, readFile, readdir, sep, stat };
+    this.providers = { resolve, readFile, readdir, stat };
   }
 
   process(path: string, cb?: Model.Cb) {
-    const p = this.walk(this.providers.normalize(path));
+    const p = this.walk(this.providers.resolve(path));
     if (cb) p.then(result => cb(null, result), error => cb(error));
     return p;
   }
 
   private walk(path: string, list: Model.TreeNode[] = [], depth = 0) {
-    return new Promise<Model.TreeNode[]>((resolve, reject) => {
+    return new Promise<Model.TreeNode[]>((success, reject) => {
       this.providers.readdir(path, (error, files) => {
         if (error) {
           reject(error);
@@ -42,7 +42,7 @@ export class TreeView {
         files = TreeView.skipHidden(files);
         let pending = files.length;
         if (!pending) {
-          resolve(list);
+          success(list);
           return;
         }
         const tasks: Promise<any>[] = [];
@@ -66,7 +66,7 @@ export class TreeView {
               if (task) tasks.push(task);
             }
             pending -= 1;
-            if (!pending) Promise.all(tasks).then(() => resolve(list));
+            if (!pending) Promise.all(tasks).then(() => success(list));
           });
         });
       });
@@ -74,7 +74,7 @@ export class TreeView {
   }
 
   private getPath(item: Model.IRef) {
-    return item.path + this.providers.sep + item.name;
+    return this.providers.resolve(item.path, item.name);
   }
 
   private addFile(item: Model.IFile, stats: Model.IStats) {
@@ -87,7 +87,7 @@ export class TreeView {
   }
 
   private addContent(item: Model.IFile) {
-    return new Promise<void>(resolve =>
+    return new Promise<void>(success =>
       this.providers.readFile(this.getPath(item), {
         encoding: this.opts.encoding
       }, (error, data) => {
@@ -98,7 +98,7 @@ export class TreeView {
           // only retrieve this number of octets...
           item.content = data.toString();
         }
-        resolve();
+        success();
       }));
   }
 

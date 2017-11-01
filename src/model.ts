@@ -47,8 +47,7 @@ export interface IStats {
 
 export interface IProviders {
   // Like require('path')
-  sep: string;
-  normalize(p: string): string;
+  resolve(...pathSegments: any[]): string;
 
   // Like require('fs')
   readFile(

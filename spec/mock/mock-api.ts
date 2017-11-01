@@ -2,10 +2,8 @@ import * as Model from '../../src/model';
 import endpoints from './mock-endpoints';
 
 export const providers: Model.IProviders = {
-  sep: '/',
-
-  normalize(path) {
-    return path;
+  resolve(...path: any[]) {
+    return path.join('/');
   },
 
   readFile(path, options, cb) {

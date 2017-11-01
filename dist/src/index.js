@@ -7,7 +7,7 @@ class TreeView {
         this.opts = { encoding: 'utf8', content: true, depth: false, exclude: [] };
         this.inject();
         Object.assign(this.opts, opts || {});
-        this.opts.exclude.map(path => this.providers.normalize(path));
+        this.opts.exclude.map(path => this.providers.resolve(path));
     }
     static addTime(item, stats) {
         item.created = stats.birthtime;
@@ -17,16 +17,16 @@ class TreeView {
         return files.filter(file => file[0] !== '.');
     }
     inject() {
-        this.providers = { normalize: path_1.normalize, readFile: fs_1.readFile, readdir: fs_1.readdir, sep: path_1.sep, stat: fs_1.stat };
+        this.providers = { resolve: path_1.resolve, readFile: fs_1.readFile, readdir: fs_1.readdir, stat: fs_1.stat };
     }
     process(path, cb) {
-        const p = this.walk(this.providers.normalize(path));
+        const p = this.walk(this.providers.resolve(path));
         if (cb)
             p.then(result => cb(null, result), error => cb(error));
         return p;
     }
     walk(path, list = [], depth = 0) {
-        return new Promise((resolve, reject) => {
+        return new Promise((success, reject) => {
             this.providers.readdir(path, (error, files) => {
                 if (error) {
                     reject(error);
@@ -35,7 +35,7 @@ class TreeView {
                 files = TreeView.skipHidden(files);
                 let pending = files.length;
                 if (!pending) {
-                    resolve(list);
+                    success(list);
                     return;
                 }
                 const tasks = [];
@@ -63,14 +63,14 @@ class TreeView {
                         }
                         pending -= 1;
                         if (!pending)
-                            Promise.all(tasks).then(() => resolve(list));
+                            Promise.all(tasks).then(() => success(list));
                     });
                 });
             });
         });
     }
     getPath(item) {
-        return item.path + this.providers.sep + item.name;
+        return this.providers.resolve(item.path, item.name);
     }
     addFile(item, stats) {
         item.type = 'file';
@@ -81,7 +81,7 @@ class TreeView {
         return null;
     }
     addContent(item) {
-        return new Promise(resolve => this.providers.readFile(this.getPath(item), {
+        return new Promise(success => this.providers.readFile(this.getPath(item), {
             encoding: this.opts.encoding
         }, (error, data) => {
             if (error) {
@@ -92,7 +92,7 @@ class TreeView {
                 // only retrieve this number of octets...
                 item.content = data.toString();
             }
-            resolve();
+            success();
         }));
     }
     addDir(item, depth) {
