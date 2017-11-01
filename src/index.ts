@@ -94,6 +94,8 @@ export class TreeView {
         if (error) {
           item.error = error;
         } else {
+          // TODO: if `this.opts.content` is a number then
+          // only retrieve this number of octets...
           item.content = data.toString();
         }
         resolve();

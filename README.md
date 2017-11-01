@@ -87,14 +87,18 @@ export interface IOpts {
 ## Cli
 
 ```txt
-node-treeview <DIR_PATH> {OPTIONS}
+node-treeview
+
+Usage: node-treeview <path> [options]
 
 Options:
-  --version         Show version number                                [boolean]
-  --content, -c     Add files content to output        [boolean] [default: true]
-  --depth, -d       Maximum depth of directories       [number] [default: false]
-  --exclude, --ex   List of directory paths to exclude from output
+  --version      Show version number                                   [boolean]
+  --content, -c  Add files content to output. Use a boolean or a number in
+                 bytes.                                          [default: true]
+  --depth, -d    Maximum depth of directories. Use a boolean or a number.
+                                                                [default: false]
+  --exclude, -e  List of directory paths to exclude from output.
                                                            [array] [default: []]
-  --encoding, --en  Set files encoding                [string] [default: "utf8"]
-  --help            Show help                                          [boolean]
+  --encoding     Set files encoding.                  [string] [default: "utf8"]
+  --help, -h     Show help                                             [boolean]
 ```
