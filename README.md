@@ -1,6 +1,9 @@
 # node-treeview
 A filesystem tree view for node.
 
+- written in TypeScript
+- 100% test coverage using Jasmine
+
 ![Build Status](https://travis-ci.org/avine/node-treeview.svg?branch=master)
 
 ## Usage
