@@ -21,8 +21,8 @@ export interface IDir extends IRef {
 }
 
 export interface IOpts {
-  // Add files content to output (number in bytes)
-  content: boolean | number;
+  // Add files content to output
+  content: boolean;
   // Maximum depth of directories
   depth: boolean | number;
   // List of directory paths to exclude from output.
@@ -31,7 +31,7 @@ export interface IOpts {
   relative: boolean;
 }
 export interface IOptsParam {
-  content?: boolean | number;
+  content?: boolean;
   depth?: boolean | number;
   exclude?: string[];
   relative?: boolean;

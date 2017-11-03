@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const yargs = require("yargs");
 const index_1 = require("./index");
 const log = (data) => process.stdout.write(JSON.stringify(data, undefined, 2) + '\n');
-// `content` and `depth` arguments validation
+// `depth` arguments validation
 const booleanOrNumber = (arg) => {
     const strArg = arg.toString();
     switch (strArg) {
@@ -22,8 +22,8 @@ yargs
     .demandCommand(1, 'Error: argument <path> is missing!')
     .option('content', {
     alias: 'c',
-    describe: 'Add files content to output. Use a boolean or a number in bytes.',
-    coerce: booleanOrNumber,
+    describe: 'Add files content to output.',
+    type: 'boolean',
     default: true
 }).option('depth', {
     alias: 'd',

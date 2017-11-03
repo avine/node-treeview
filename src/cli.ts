@@ -6,7 +6,7 @@ import * as Model from './model';
 
 const log = (data: any) => process.stdout.write(JSON.stringify(data, undefined, 2) + '\n');
 
-// `content` and `depth` arguments validation
+// `depth` arguments validation
 const booleanOrNumber = (arg: boolean | string) => {
   const strArg = arg.toString();
   switch (strArg) {
@@ -24,8 +24,8 @@ yargs
   .demandCommand(1, 'Error: argument <path> is missing!')
   .option('content', {
     alias: 'c',
-    describe: 'Add files content to output. Use a boolean or a number in bytes.',
-    coerce: booleanOrNumber,
+    describe: 'Add files content to output.',
+    type: 'boolean',
     default: true
 
   }).option('depth', {
