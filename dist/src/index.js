@@ -5,7 +5,7 @@ const path_1 = require("path");
 const binary_1 = require("./binary");
 class TreeView {
     constructor(opts) {
-        this.opts = { encoding: 'utf8', content: true, depth: false, exclude: [], relative: false };
+        this.opts = { content: true, depth: false, exclude: [], relative: false };
         this.inject();
         Object.assign(this.opts, opts || {});
         this.opts.exclude.map(path => this.providers.resolve(path));
@@ -78,6 +78,7 @@ class TreeView {
     addFile(item, stats) {
         item.type = 'file';
         item.size = stats.size;
+        item.binary = binary_1.isBinaryPath(item.name);
         if (this.opts.content) {
             return this.addContent(item);
         }
@@ -85,7 +86,7 @@ class TreeView {
     }
     addContent(item) {
         return new Promise(success => this.providers.readFile(this.getPath(item), {
-            encoding: this.opts.encoding || (binary_1.isBinaryPath(item.name) ? 'base64' : 'utf8')
+            encoding: item.binary ? 'base64' : 'utf8'
         }, (error, data) => {
             if (error) {
                 item.error = error;

@@ -41,6 +41,7 @@ The output will looks like the following `json`:
     "modified": "2017-10-23T18:29:28.000Z",
     "type": "file",
     "size": 13,
+    "binary": false,
     "content": "file1 content"
   }, {
     "name": "subdir",
@@ -55,15 +56,17 @@ The output will looks like the following `json`:
       "modified": "2017-10-23T18:29:29.000Z",
       "type": "file",
       "size": 13,
+      "binary": false,
       "content": "file3 content"
     }, {
-      "name": "file3.txt",
+      "name": "logo.png",
       "path": "path/to/dir/subdir",
       "created": "2017-10-23T18:29:29.000Z",
       "modified": "2017-10-23T18:29:29.000Z",
       "type": "file",
-      "size": 13,
-      "content": "file3 content"
+      "size": 325,
+      "binary": true,
+      "content": "iVBORw0KGgoAAAANSUh..." //-> base64
     }]
   }
 ]
@@ -73,14 +76,14 @@ The output will looks like the following `json`:
 
 ```ts
 export interface IOpts {
-   // Set file encoding (ie: 'utf8')
-  encoding: string;
-  // Add files content to output
+  // Add files content to output (number in bytes)
   content: boolean | number;
   // Maximum depth of directories
   depth: boolean | number;
-  // List of directory paths to exclude from output
+  // List of directory paths to exclude from output.
   exclude: string[];
+  // Use relative path
+  relative: boolean;
 }
 ```
 
@@ -89,17 +92,16 @@ export interface IOpts {
 ```txt
 node-treeview
 
-Usage: cli.js <path> [options]
+Usage: node-treeview <path> [options]
 
 Options:
-  --version       Show version number                                  [boolean]
+  --version       Show version number                                        [boolean]
   --content, -c   Add files content to output. Use a boolean or a number in
-                  bytes.                                         [default: true]
+                  bytes.                                               [default: true]
   --depth, -d     Maximum depth of directories. Use a boolean or a number.
-                                                                [default: false]
-  --relative, -r  Use relative path.                  [boolean] [default: false]
+                                                                      [default: false]
+  --relative, -r  Use relative path.                        [boolean] [default: false]
   --exclude, -e   List of directory paths to exclude from output.
-                                                           [array] [default: []]
-  --encoding      Set files encoding.                 [string] [default: "utf8"]
-  --help, -h      Show help                                            [boolean]
+                                                                 [array] [default: []]
+  --help, -h      Show help                                                  [boolean]
 ```

@@ -24,6 +24,13 @@ const entrepoints: { [index: string]: { [index: string]: any } } = {
   'skip-hidden/visible':
     { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'ok', size: 2 },
 
+  'binary':
+    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a.txt', 'b.png'] },
+  'binary/a.txt':
+    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: '', size: 0 },
+  'binary/b.png':
+    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: '', size: 0 },
+
   'dirs':
     { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'b'] },
   'dirs/a':

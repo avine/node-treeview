@@ -46,11 +46,6 @@ yargs
     type: 'array',
     default: []
 
-  }).option('encoding', {
-    describe: 'Force files encoding.',
-    type: 'string',
-    default: 'utf8'
-
   })
   .help('help')
   .alias('help', 'h');
@@ -58,9 +53,9 @@ yargs
 // log(yargs.argv); // For debugging
 
 const path = yargs.argv._[0];
-const { content, depth, relative, encoding, exclude } = yargs.argv;
+const { content, depth, relative, exclude } = yargs.argv;
 if (path) {
-  new TreeView({ content, depth, relative, encoding, exclude })
+  new TreeView({ content, depth, relative, exclude })
     .process(path)
     .then(result => log(result))
     .catch((error: Error) => {

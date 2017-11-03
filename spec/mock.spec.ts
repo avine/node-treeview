@@ -54,10 +54,12 @@ describe('TreeView', () => {
       expect(result.length).toBe(2);
 
       expect(result).toContainItem({
-        path: 'files', type: 'file', name: 'a', content: 'aaa', size: 3, created: DATE.CREATED, modified: DATE.MODIFIED
+        path: 'files', type: 'file', name: 'a', content: 'aaa', size: 3, binary: false,
+        created: DATE.CREATED, modified: DATE.MODIFIED
       });
       expect(result).toContainItem({
-        path: 'files', type: 'file', name: 'b', content: 'bbbb', size: 4, created: DATE.CREATED, modified: DATE.MODIFIED
+        path: 'files', type: 'file', name: 'b', content: 'bbbb', size: 4, binary: false,
+        created: DATE.CREATED, modified: DATE.MODIFIED
       });
       done();
     });
@@ -69,6 +71,14 @@ describe('TreeView', () => {
 
       expect(result).not.toContainItem({ type: 'file', name: '.hidden' });
       expect(result).toContainItem({ type: 'file', name: 'visible' });
+      done();
+    });
+  });
+
+  it('should check binary path', (done) => {
+    new TreeViewMock().process('binary').then((result) => {
+      expect(result).toContainItem({ type: 'file', name: 'a.txt', binary: false });
+      expect(result).toContainItem({ type: 'file', name: 'b.png', binary: true });
       done();
     });
   });

@@ -14,7 +14,7 @@ export class TreeView {
     return files.filter(file => file[0] !== '.');
   }
 
-  opts: Model.IOpts = { encoding: 'utf8', content: true, depth: false, exclude: [], relative: false };
+  opts: Model.IOpts = { content: true, depth: false, exclude: [], relative: false };
   providers: Model.IProviders;
   rootPath: string;
 
@@ -84,6 +84,7 @@ export class TreeView {
   private addFile(item: Model.IFile, stats: Model.IStats) {
     item.type = 'file';
     item.size = stats.size;
+    item.binary = isBinaryPath(item.name);
     if (this.opts.content) {
       return this.addContent(item);
     }
@@ -93,7 +94,7 @@ export class TreeView {
   private addContent(item: Model.IFile) {
     return new Promise<void>(success =>
       this.providers.readFile(this.getPath(item), {
-        encoding: this.opts.encoding || (isBinaryPath(item.name) ? 'base64' : 'utf8')
+        encoding: item.binary ? 'base64' : 'utf8'
       }, (error, data) => {
         if (error) {
           item.error = error;

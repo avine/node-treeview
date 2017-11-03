@@ -10,6 +10,7 @@ export interface IFile extends IRef {
   created: Date;
   modified: Date;
   size: number;
+  binary: boolean;
 }
 
 export interface IDir extends IRef {
@@ -20,8 +21,6 @@ export interface IDir extends IRef {
 }
 
 export interface IOpts {
-  // Force file encoding
-  encoding: string;
   // Add files content to output (number in bytes)
   content: boolean | number;
   // Maximum depth of directories
@@ -32,7 +31,6 @@ export interface IOpts {
   relative: boolean;
 }
 export interface IOptsParam {
-  encoding?: string;
   content?: boolean | number;
   depth?: boolean | number;
   exclude?: string[];
