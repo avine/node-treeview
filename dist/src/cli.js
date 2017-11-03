@@ -41,7 +41,7 @@ yargs
     type: 'array',
     default: []
 }).option('encoding', {
-    describe: 'Set files encoding.',
+    describe: 'Force files encoding.',
     type: 'string',
     default: 'utf8'
 })

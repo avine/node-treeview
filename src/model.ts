@@ -20,7 +20,7 @@ export interface IDir extends IRef {
 }
 
 export interface IOpts {
-  // Set file encoding
+  // Force file encoding
   encoding: string;
   // Add files content to output (number in bytes)
   content: boolean | number;

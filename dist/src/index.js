@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = require("fs");
 const path_1 = require("path");
+const binary_1 = require("./binary");
 class TreeView {
     constructor(opts) {
         this.opts = { encoding: 'utf8', content: true, depth: false, exclude: [], relative: false };
@@ -84,7 +85,7 @@ class TreeView {
     }
     addContent(item) {
         return new Promise(success => this.providers.readFile(this.getPath(item), {
-            encoding: this.opts.encoding
+            encoding: this.opts.encoding || (binary_1.isBinaryPath(item.name) ? 'base64' : 'utf8')
         }, (error, data) => {
             if (error) {
                 item.error = error;

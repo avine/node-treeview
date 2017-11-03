@@ -2,6 +2,7 @@ import { readdir, readFile, stat } from 'fs';
 import { resolve, relative } from 'path';
 
 import * as Model from './model';
+import { isBinaryPath } from './binary';
 
 export class TreeView {
   private static addTime(item: Model.Item, stats: Model.IStats) {
@@ -92,7 +93,7 @@ export class TreeView {
   private addContent(item: Model.IFile) {
     return new Promise<void>(success =>
       this.providers.readFile(this.getPath(item), {
-        encoding: this.opts.encoding
+        encoding: this.opts.encoding || (isBinaryPath(item.name) ? 'base64' : 'utf8')
       }, (error, data) => {
         if (error) {
           item.error = error;
