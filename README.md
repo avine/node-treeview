@@ -104,3 +104,7 @@ Options:
                                                                 [array] [default: []]
   --help, -h      Show help                                                 [boolean]
 ```
+
+## License
+
+MIT @ [Avine](https://avine.io)
