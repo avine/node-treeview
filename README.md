@@ -76,8 +76,8 @@ The output will looks like the following `json`:
 
 ```ts
 export interface IOpts {
-  // Add files content to output (number in bytes)
-  content: boolean | number;
+  // Add files content to output
+  content: boolean;
   // Maximum depth of directories
   depth: boolean | number;
   // List of directory paths to exclude from output.
