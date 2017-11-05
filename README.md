@@ -8,6 +8,8 @@ A filesystem tree view for node.
 
 ## Usage
 
+### Javascript
+
 ```js
 const TreeView = require('node-treeview');
 
@@ -21,6 +23,30 @@ new TreeView(options).process(path).then(json => {
   // do some stuff...
 }).catch(error => {
   // handle errors...
+});
+```
+
+### TypeScript
+
+Here's an example of how to use TypeScript features.
+
+```ts
+import { TreeView } from 'node-treeview';
+import * as Model from 'node-treeview/dist/src/model'
+
+const options: Model.IOptsParam = { content: false };
+const path = 'path/to/dir';
+
+new TreeView(options).process(path).then(json => {
+  json.forEach(item => {
+    if ((item as Model.IDir).type === 'dir') {
+      // do some stuff...
+    } else if ((item as Model.IFile).type === 'file') {
+      // do some stuff...
+    }  else if ((item as Model.IRef).error) {
+      // do some stuff...
+    }
+  });
 });
 ```
 
