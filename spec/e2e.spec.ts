@@ -11,7 +11,7 @@ import { customMatchers } from './matchers/matchers';
 // tslint:disable-next-line:no-console
 const log = (data: any) => console.log(JSON.stringify(data, undefined, 2));
 
-const basePath = resolve('e2e-sample');
+const basePath = resolve('spec', 'e2e-sample');
 const subPath = resolve(basePath, 'sub');
 const deepPath = resolve(subPath, 'deep');
 
@@ -19,7 +19,7 @@ describe('TreeView e2e', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   it('should works!', (done) => {
-    new TreeView({ relative: false }).process('./e2e-sample').then((result) => {
+    new TreeView().process(basePath).then((result) => {
       expect(result).toContainItem({
         type: 'file', path: basePath, name: 'a', content: 'aaa', size: 3, binary: false
       });
