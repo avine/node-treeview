@@ -4,7 +4,7 @@ A filesystem tree view for node.
 - written in TypeScript
 - 100% test coverage using Jasmine
 
-![Build Status](https://travis-ci.org/avine/node-treeview.svg?branch=master)
+[![Build Status](https://travis-ci.org/avine/node-treeview.svg?branch=master)](https://travis-ci.org/avine/node-treeview)
 
 ## Usage
 
@@ -80,7 +80,7 @@ export interface IOpts {
   content: boolean;
   // Maximum depth of directories
   depth: boolean | number;
-  // List of directory paths to exclude from output.
+  // List of directory paths to exclude from output
   exclude: string[];
   // Use relative path
   relative: boolean;
