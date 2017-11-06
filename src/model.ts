@@ -10,6 +10,7 @@ export interface IFile extends IRef {
   created: Date;
   modified: Date;
   size: number;
+  ext: string;
   binary: boolean;
 }
 

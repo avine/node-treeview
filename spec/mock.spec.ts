@@ -75,10 +75,10 @@ describe('TreeView', () => {
     });
   });
 
-  it('should check binary path', (done) => {
+  it('should check extension and binary path', (done) => {
     new TreeViewMock().process('binary').then((result) => {
-      expect(result).toContainItem({ type: 'file', name: 'a.txt', binary: false });
-      expect(result).toContainItem({ type: 'file', name: 'b.png', binary: true });
+      expect(result).toContainItem({ type: 'file', name: 'a.txt', ext: 'txt', binary: false });
+      expect(result).toContainItem({ type: 'file', name: 'b.png', ext: 'png', binary: true });
       done();
     });
   });

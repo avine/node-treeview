@@ -46,7 +46,7 @@ describe('TreeView helper', () => {
     });
   });
 
-  it('should check binary extentions', () => {
+  it('should check binary extensions', () => {
     expect(isBinaryPath('azerty')).toBeFalsy();
     expect(isBinaryPath('.azerty')).toBeFalsy();
     expect(isBinaryPath('azerty.txt')).toBeFalsy();

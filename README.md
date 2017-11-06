@@ -30,7 +30,7 @@ new TreeView(options).process(path).then(json => {
 
 ```js
 const TreeView = require('node-treeview');
-new TreeView({ depth: 2 }).process('path/to/dir').then(json => console.log(json));
+new TreeView({ content: true, depth: 2 }).process('path/to/dir').then(json => console.log(json));
 ```
 
 The output looks like the following `json`:
@@ -43,6 +43,7 @@ The output looks like the following `json`:
     "modified": "2017-10-23T18:29:28.000Z",
     "type": "file",
     "size": 13,
+    "ext": "txt",
     "binary": false,
     "content": "file1 content"
   }, {
@@ -58,6 +59,7 @@ The output looks like the following `json`:
       "modified": "2017-10-23T18:29:29.000Z",
       "type": "file",
       "size": 13,
+      "ext": "txt",
       "binary": false,
       "content": "file3 content"
     }, {
@@ -67,6 +69,7 @@ The output looks like the following `json`:
       "modified": "2017-10-23T18:29:29.000Z",
       "type": "file",
       "size": 325,
+      "ext": "png",
       "binary": true,
       "content": "iVBORw0KGgoAAAANSUh..." //-> base64
     }]
@@ -79,24 +82,25 @@ The output looks like the following `json`:
 ### Interface and type (basics)
 
 ```ts
-// When a problem occured (file stat error or unreadable content)
+// Unreadable file or directory
 export interface IRef {
   name: string;
   path: string;
   error?: any;
 }
 
-// File structure
+// File interface
 export interface IFile extends IRef {
   type: 'file';
   content: string;
   created: Date;
   modified: Date;
   size: number;
+  ext: string;
   binary: boolean;
 }
 
-// Directory structure
+// Directory interface
 export interface IDir extends IRef {
   type: 'dir';
   content: TreeNode[];

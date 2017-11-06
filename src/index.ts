@@ -1,5 +1,5 @@
 import { readdir, readFile, stat } from 'fs';
-import { resolve, relative } from 'path';
+import { resolve, relative, extname } from 'path';
 
 import * as Model from './model';
 import { isBinaryPath } from './helper/binary';
@@ -84,6 +84,7 @@ export class TreeView {
   private addFile(item: Model.IFile, stats: Model.IStats) {
     item.type = 'file';
     item.size = stats.size;
+    item.ext = extname(item.name).slice(1); // remove '.'
     item.binary = isBinaryPath(item.name);
     if (this.opts.content) {
       return this.addContent(item);
