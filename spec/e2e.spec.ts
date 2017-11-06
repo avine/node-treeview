@@ -9,7 +9,7 @@ import * as Model from '../src/model';
 import { customMatchers } from './matchers/matchers';
 
 // tslint:disable-next-line:no-console
-const log = (data: any) => console.log(JSON.stringify(data, undefined, 2));
+// const log = (data: any) => console.log(JSON.stringify(data, undefined, 2));
 
 const basePath = resolve('spec', 'e2e-sample');
 const subPath = resolve(basePath, 'sub');

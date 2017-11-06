@@ -69,16 +69,21 @@ const entrepoints: { [index: string]: { [index: string]: any } } = {
   'skip-content/b':
     { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'bbbb', size: 4 },
 
+   // In order to check the `flatten` helper (especially the `.sort()` part),
+   // some contents are unordered (*):
+   //     - ['folder', 'b'] instead of ['b', 'folder']
+   //     - ['d', 'c'] instead of ['c', 'd']
+   // (see `helper.spec.ts` for more details)
   'deep-dirs':
     { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'folder'] },
   'deep-dirs/a':
     { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'a', size: 1 },
   'deep-dirs/folder':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['b', 'folder'] },
+    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['folder', 'b'] }, // (*) unordered
   'deep-dirs/folder/b':
     { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'bb', size: 2 },
   'deep-dirs/folder/folder':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['c', 'd'] },
+    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['d', 'c'] }, // (*) unordered
   'deep-dirs/folder/folder/c':
     { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'ccc', size: 3 },
   'deep-dirs/folder/folder/d':

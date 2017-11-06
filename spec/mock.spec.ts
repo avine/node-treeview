@@ -16,7 +16,7 @@ class TreeViewMock extends TreeView {
 }
 
 // tslint:disable-next-line:no-console
-const log = (data: any) => console.log(JSON.stringify(data, undefined, 2));
+// const log = (data: any) => console.log(JSON.stringify(data, undefined, 2));
 
 describe('TreeView', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
