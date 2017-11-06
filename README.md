@@ -1,8 +1,8 @@
 # node-treeview
-A filesystem tree view for node.
+Asynchronous filesystem tree view for node.
 
-- written in TypeScript
-- 100% test coverage using Jasmine
+- 100% TypeScript
+- 100% Jasmine test coverage
 
 [![Build Status](https://travis-ci.org/avine/node-treeview.svg?branch=master)](https://travis-ci.org/avine/node-treeview)
 

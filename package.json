@@ -1,7 +1,7 @@
 {
   "name": "node-treeview",
   "version": "0.5.5",
-  "description": "A filesystem tree view for node",
+  "description": "Asynchronous filesystem tree view for node",
   "main": "./index.js",
   "types": "./index.d.ts",
   "scripts": {
@@ -23,9 +23,9 @@
   "keywords": [
     "treeview",
     "filesystem",
-    "browser",
-    "node",
-    "json"
+    "async",
+    "json",
+    "node"
   ],
   "author": "Stéphane Francel <contact@avine.io>",
   "license": "MIT",
