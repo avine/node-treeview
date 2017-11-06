@@ -3,6 +3,7 @@
 import * as yargs from 'yargs';
 import { TreeView } from '../index';
 import * as Model from '../model';
+import { flatten } from '../helper/flatten';
 
 const log = (data: any) => process.stdout.write(JSON.stringify(data, undefined, 2) + '\n');
 
@@ -46,6 +47,12 @@ yargs
     type: 'array',
     default: []
 
+  }).option('flatten', {
+    alias: 'f',
+    describe: 'Flatten the output.',
+    type: 'boolean',
+    default: false
+
   })
   .help('help')
   .alias('help', 'h');
@@ -57,7 +64,7 @@ const { content, depth, relative, exclude } = yargs.argv;
 if (path) {
   new TreeView({ content, depth, relative, exclude })
     .process(path)
-    .then(result => log(result))
+    .then(result => log(yargs.argv.flatten ? flatten(result) : result))
     .catch((error: Error) => {
       // tslint:disable-next-line:no-console
       console.log(error.toString());

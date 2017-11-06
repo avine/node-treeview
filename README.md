@@ -218,6 +218,7 @@ Options:
   --depth, -d     Maximum depth of directories.          [boolean | number] [default: false]
   --relative, -r  Use relative path.                              [boolean] [default: false]
   --exclude, -e   List of directory paths to exclude from output.      [array] [default: []]
+  --flatten, -f   Flatten the output.                             [boolean] [default: false]
   --help, -h      Show help                                                        [boolean]
 ```
 
