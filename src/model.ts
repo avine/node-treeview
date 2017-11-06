@@ -15,7 +15,7 @@ export interface IFile extends IRef {
 
 export interface IDir extends IRef {
   type: 'dir';
-  content: Item[];
+  content: TreeNode[];
   created: Date;
   modified: Date;
 }

@@ -6,9 +6,9 @@ A filesystem tree view for node.
 
 [![Build Status](https://travis-ci.org/avine/node-treeview.svg?branch=master)](https://travis-ci.org/avine/node-treeview)
 
-## Usage
+## Javascript
 
-### Javascript
+### Usage
 
 ```js
 const TreeView = require('node-treeview');
@@ -26,38 +26,14 @@ new TreeView(options).process(path).then(json => {
 });
 ```
 
-### TypeScript
-
-Here's an example of how to use TypeScript features.
-
-```ts
-import { TreeView } from 'node-treeview';
-import * as Model from 'node-treeview/dist/src/model'
-
-const options: Model.IOptsParam = { content: false };
-const path = 'path/to/dir';
-
-new TreeView(options).process(path).then(json => {
-  json.forEach(item => {
-    if ((item as Model.IDir).type === 'dir') {
-      // do some stuff...
-    } else if ((item as Model.IFile).type === 'file') {
-      // do some stuff...
-    }  else if ((item as Model.IRef).error) {
-      // do some stuff...
-    }
-  });
-});
-```
-
-## Example
+### Example
 
 ```js
 const TreeView = require('node-treeview');
 new TreeView({ depth: 2 }).process('path/to/dir').then(json => console.log(json));
 ```
 
-The output will looks like the following `json`:
+The output looks like the following `json`:
 
 ```json
 [{
@@ -98,19 +74,75 @@ The output will looks like the following `json`:
 ]
 ```
 
-## Options
+## TypeScript
+
+### Interface and type (basics)
 
 ```ts
-export interface IOpts {
-  // Add files content to output
-  content: boolean;
-  // Maximum depth of directories
-  depth: boolean | number;
-  // List of directory paths to exclude from output
-  exclude: string[];
-  // Use relative path
-  relative: boolean;
+// When a problem occured (file stat error or unreadable content)
+export interface IRef {
+  name: string;
+  path: string;
+  error?: any;
 }
+
+// File structure
+export interface IFile extends IRef {
+  type: 'file';
+  content: string;
+  created: Date;
+  modified: Date;
+  size: number;
+  binary: boolean;
+}
+
+// Directory structure
+export interface IDir extends IRef {
+  type: 'dir';
+  content: TreeNode[];
+  created: Date;
+  modified: Date;
+}
+
+// Finally, the `TreeView.process` method returns a `Promise<TreeNode[]>`
+export type TreeNode = IFile | IDir | IRef;
+```
+
+### Options
+
+```ts
+export interface IOptsParam {
+  // Add files content to output
+  content?: boolean;
+  // Maximum depth of directories
+  depth?: boolean | number;
+  // List of directory paths to exclude from output
+  exclude?: string[];
+  // Use relative path
+  relative?: boolean;
+}
+```
+
+### Example
+
+```ts
+import { TreeView } from 'node-treeview';
+import * as Model from 'node-treeview/dist/src/model'
+
+const options: Model.IOptsParam = { depth: 2 };
+const path = 'path/to/dir';
+
+new TreeView(options).process(path).then(json => {
+  json.forEach(item => {
+    if ((item as Model.IDir).type === 'dir') {
+      // do some stuff...
+    } else if ((item as Model.IFile).type === 'file') {
+      // do some stuff...
+    }  else if ((item as Model.IRef).error) {
+      // do some stuff...
+    }
+  });
+});
 ```
 
 ## Cli
@@ -121,14 +153,12 @@ node-treeview
 Usage: node-treeview <path> [options]
 
 Options:
-  --version       Show version number                                       [boolean]
-  --content, -c   Add files content to output.              [boolean] [default: true]
-  --depth, -d     Maximum depth of directories. Use a boolean or a number.
-                                                                     [default: false]
-  --relative, -r  Use relative path.                       [boolean] [default: false]
-  --exclude, -e   List of directory paths to exclude from output.
-                                                                [array] [default: []]
-  --help, -h      Show help                                                 [boolean]
+  --version       Show version number                                              [boolean]
+  --content, -c   Add files content to output.                     [boolean] [default: true]
+  --depth, -d     Maximum depth of directories.          [boolean | number] [default: false]
+  --relative, -r  Use relative path.                              [boolean] [default: false]
+  --exclude, -e   List of directory paths to exclude from output.      [array] [default: []]
+  --help, -h      Show help                                                        [boolean]
 ```
 
 ## License
