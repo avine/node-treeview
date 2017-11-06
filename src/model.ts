@@ -1,6 +1,7 @@
 export interface IRef {
   name: string;
   path: string;
+  pathname: string;
   error?: any;
 }
 

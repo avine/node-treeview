@@ -39,6 +39,7 @@ The output looks like the following `json`:
 [{
     "name": "file1.txt",
     "path": "path/to/dir",
+    "pathname": "path/to/dir/file1.txt",
     "created": "2017-10-23T18:29:28.000Z",
     "modified": "2017-10-23T18:29:28.000Z",
     "type": "file",
@@ -49,12 +50,14 @@ The output looks like the following `json`:
   }, {
     "name": "subdir",
     "path": "path/to/dir",
+    "pathname": "path/to/dir/subdir",
     "created": "2017-10-22T10:48:48.000Z",
     "modified": "2017-10-23T18:29:29.000Z",
     "type": "dir",
     "content": [{
       "name": "file2.txt",
       "path": "path/to/dir/subdir",
+      "pathname": "path/to/dir/subdir/file2.txt",
       "created": "2017-10-23T18:29:28.000Z",
       "modified": "2017-10-23T18:29:29.000Z",
       "type": "file",
@@ -65,6 +68,7 @@ The output looks like the following `json`:
     }, {
       "name": "logo.png",
       "path": "path/to/dir/subdir",
+      "pathname": "path/to/dir/subdir/logo.png",
       "created": "2017-10-23T18:29:29.000Z",
       "modified": "2017-10-23T18:29:29.000Z",
       "type": "file",
@@ -86,6 +90,7 @@ The output looks like the following `json`:
 export interface IRef {
   name: string;
   path: string;
+  pathname: string;
   error?: any;
 }
 

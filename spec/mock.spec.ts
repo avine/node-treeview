@@ -55,11 +55,11 @@ describe('TreeView', () => {
 
       expect(result).toContainItem({
         path: 'files', type: 'file', name: 'a', content: 'aaa', size: 3, binary: false,
-        created: DATE.CREATED, modified: DATE.MODIFIED
+        created: DATE.CREATED, modified: DATE.MODIFIED, pathname: 'files/a'
       });
       expect(result).toContainItem({
         path: 'files', type: 'file', name: 'b', content: 'bbbb', size: 4, binary: false,
-        created: DATE.CREATED, modified: DATE.MODIFIED
+        created: DATE.CREATED, modified: DATE.MODIFIED, pathname: 'files/b'
       });
       done();
     });
@@ -88,10 +88,12 @@ describe('TreeView', () => {
       expect(result.length).toBe(2);
 
       expect(result).toContainItem({
-        path: 'dirs', type: 'dir', name: 'a', content: [], created: DATE.CREATED, modified: DATE.MODIFIED
+        path: 'dirs', type: 'dir', name: 'a', content: [],
+        created: DATE.CREATED, modified: DATE.MODIFIED, pathname: 'dirs/a'
       });
       expect(result).toContainItem({
-        path: 'dirs', type: 'dir', name: 'b', content: [], created: DATE.CREATED, modified: DATE.MODIFIED
+        path: 'dirs', type: 'dir', name: 'b', content: [],
+        created: DATE.CREATED, modified: DATE.MODIFIED, pathname: 'dirs/b'
       });
       done();
     });
@@ -240,16 +242,18 @@ describe('TreeView options', () => {
 
   it('should use relative path', (done) => {
     new TreeViewMock({ relative: true }).process('deep-dirs').then((result) => {
-      expect(result).toContainItem({ type: 'file', path: '', name: 'a' });
-      expect(result).toContainItem({ type: 'dir', path: '', name: 'folder' });
+      expect(result).toContainItem({ type: 'file', path: '', name: 'a', pathname: 'a' });
+      expect(result).toContainItem({ type: 'dir', path: '', name: 'folder', pathname: 'folder' });
 
       const subDir = result.filter(r => r.name === 'folder')[0] as Model.IDir;
-      expect(subDir.content).toContainItem({ type: 'file', path: 'folder', name: 'b' });
-      expect(subDir.content).toContainItem({ type: 'dir', path: 'folder', name: 'folder' });
+      expect(subDir.content).toContainItem({ type: 'file', path: 'folder', name: 'b', pathname: 'folder/b' });
+      expect(subDir.content).toContainItem({ type: 'dir', path: 'folder', name: 'folder', pathname: 'folder/folder' });
 
       const deepDir = subDir.content.filter(r => r.name === 'folder')[0] as Model.IDir;
-      expect(deepDir.content).toContainItem({ type: 'file', path: 'folder/folder', name: 'c' });
-      expect(deepDir.content).toContainItem({ type: 'file', path: 'folder/folder', name: 'd' });
+      expect(deepDir.content).toContainItem({
+        type: 'file', path: 'folder/folder', name: 'c', pathname: 'folder/folder/c' });
+      expect(deepDir.content).toContainItem({
+        type: 'file', path: 'folder/folder', name: 'd', pathname: 'folder/folder/d' });
 
       done();
     });
