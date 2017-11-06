@@ -127,7 +127,7 @@ export interface IOptsParam {
 
 ```ts
 import { TreeView } from 'node-treeview';
-import * as Model from 'node-treeview/dist/src/model'
+import * as Model from 'node-treeview/model'
 
 const options: Model.IOptsParam = { depth: 2 };
 const path = 'path/to/dir';

@@ -1,8 +1,8 @@
 #! /usr/bin/env node
 
 import * as yargs from 'yargs';
-import { TreeView } from './index';
-import * as Model from './model';
+import { TreeView } from '../index';
+import * as Model from '../model';
 
 const log = (data: any) => process.stdout.write(JSON.stringify(data, undefined, 2) + '\n');
 

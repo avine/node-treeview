@@ -2,7 +2,7 @@ import { readdir, readFile, stat } from 'fs';
 import { resolve, relative } from 'path';
 
 import * as Model from './model';
-import { isBinaryPath } from './binary';
+import { isBinaryPath } from './helper/binary';
 
 export class TreeView {
   private static addTime(item: Model.Item, stats: Model.IStats) {

@@ -1,21 +1,19 @@
 {
   "name": "node-treeview",
-  "version": "0.4.5",
+  "version": "0.5.0",
   "description": "A filesystem tree view for node",
-  "main": "./dist/src/index.js",
-  "types": "./dist/src/index.d.ts",
+  "main": "./index.js",
+  "types": "./index.d.ts",
   "scripts": {
-    "clean": "rimraf ./dist ./coverage",
+    "clean": "shx rm -rf ./dist ./coverage",
     "build": "tsc",
     "test": "istanbul cover ./node_modules/jasmine/bin/jasmine.js",
     "lint": "tslint -p ./tsconfig.json",
-    "all": "npm run clean && npm run build && npm test"
+    "all": "npm run clean && npm run build && npm test",
+    "pack": "shx cp ./package.json ./LICENSE ./README.md ./dist/src && npm pack ./dist/src"
   },
-  "files": [
-    "dist/src"
-  ],
   "bin": {
-    "node-treeview": "./dist/src/cli.js"
+    "node-treeview": "./bin/cli.js"
   },
   "repository": {
     "type": "git",
@@ -41,7 +39,7 @@
     "istanbul": "^0.4.5",
     "jasmine": "^2.8.0",
     "jasmine-spec-reporter": "^4.2.1",
-    "rimraf": "^2.6.2",
+    "shx": "^0.2.2",
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
     "tslint-eslint-rules": "^4.1.1",
