@@ -161,6 +161,15 @@ Options:
   --help, -h      Show help                                                        [boolean]
 ```
 
+## Contribute
+
+```bash
+git clone https://github.com/avine/node-treeview.git
+cd ./node-treeview
+npm install
+npm run all # npm run clean && npm run build && npm test
+```
+
 ## License
 
 MIT @ [Avine](https://avine.io)
