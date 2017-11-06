@@ -37,48 +37,47 @@ The output looks like the following `json`:
 
 ```json
 [{
-    "name": "file1.txt",
-    "path": "path/to/dir",
-    "pathname": "path/to/dir/file1.txt",
+  "name": "file1.txt",
+  "path": "path/to/dir",
+  "pathname": "path/to/dir/file1.txt",
+  "created": "2017-10-23T18:29:28.000Z",
+  "modified": "2017-10-23T18:29:28.000Z",
+  "type": "file",
+  "size": 13,
+  "ext": "txt",
+  "binary": false,
+  "content": "file1 content"
+}, {
+  "name": "subdir",
+  "path": "path/to/dir",
+  "pathname": "path/to/dir/subdir",
+  "created": "2017-10-22T10:48:48.000Z",
+  "modified": "2017-10-23T18:29:29.000Z",
+  "type": "dir",
+  "content": [{
+    "name": "file2.txt",
+    "path": "path/to/dir/subdir",
+    "pathname": "path/to/dir/subdir/file2.txt",
     "created": "2017-10-23T18:29:28.000Z",
-    "modified": "2017-10-23T18:29:28.000Z",
+    "modified": "2017-10-23T18:29:29.000Z",
     "type": "file",
     "size": 13,
     "ext": "txt",
     "binary": false,
-    "content": "file1 content"
+    "content": "file3 content"
   }, {
-    "name": "subdir",
-    "path": "path/to/dir",
-    "pathname": "path/to/dir/subdir",
-    "created": "2017-10-22T10:48:48.000Z",
+    "name": "logo.png",
+    "path": "path/to/dir/subdir",
+    "pathname": "path/to/dir/subdir/logo.png",
+    "created": "2017-10-23T18:29:29.000Z",
     "modified": "2017-10-23T18:29:29.000Z",
-    "type": "dir",
-    "content": [{
-      "name": "file2.txt",
-      "path": "path/to/dir/subdir",
-      "pathname": "path/to/dir/subdir/file2.txt",
-      "created": "2017-10-23T18:29:28.000Z",
-      "modified": "2017-10-23T18:29:29.000Z",
-      "type": "file",
-      "size": 13,
-      "ext": "txt",
-      "binary": false,
-      "content": "file3 content"
-    }, {
-      "name": "logo.png",
-      "path": "path/to/dir/subdir",
-      "pathname": "path/to/dir/subdir/logo.png",
-      "created": "2017-10-23T18:29:29.000Z",
-      "modified": "2017-10-23T18:29:29.000Z",
-      "type": "file",
-      "size": 325,
-      "ext": "png",
-      "binary": true,
-      "content": "iVBORw0KGgoAAAANSUh..." //-> base64
-    }]
-  }
-]
+    "type": "file",
+    "size": 325,
+    "ext": "png",
+    "binary": true,
+    "content": "iVBORw0KGgoAAAANSUh..." //-> base64
+  }]
+}]
 ```
 
 ## TypeScript
@@ -152,6 +151,58 @@ new TreeView(options).process(path).then(json => {
     }
   });
 });
+```
+
+## Helper
+
+If you need a flat version of the tree, use the `flatten` helper.
+
+```ts
+import { TreeView } from 'node-treeview';
+import * as Model from 'node-treeview/model'
+
+import { flatten } from 'node-treeview/helper/flatten';
+
+new TreeView({ content: false }).process('path/to/dir').then(json => {
+  const flat = flatten(json);
+  console.log(flat);
+});
+```
+
+The output looks like the following `json`:
+
+```json
+[{
+  "name": "file1.txt",
+  "path": "path/to/dir",
+  "pathname": "path/to/dir/file1.txt",
+  "created": "2017-10-23T18:29:28.000Z",
+  "modified": "2017-10-23T18:29:28.000Z",
+  "type": "file",
+  "size": 13,
+  "ext": "txt",
+  "binary": false
+}, {
+  "name": "file2.txt",
+  "path": "path/to/dir/subdir",
+  "pathname": "path/to/dir/subdir/file2.txt",
+  "created": "2017-10-23T18:29:28.000Z",
+  "modified": "2017-10-23T18:29:29.000Z",
+  "type": "file",
+  "size": 13,
+  "ext": "txt",
+  "binary": false
+}, {
+  "name": "logo.png",
+  "path": "path/to/dir/subdir",
+  "pathname": "path/to/dir/subdir/logo.png",
+  "created": "2017-10-23T18:29:29.000Z",
+  "modified": "2017-10-23T18:29:29.000Z",
+  "type": "file",
+  "size": 325,
+  "ext": "png",
+  "binary": true
+}]
 ```
 
 ## Cli
