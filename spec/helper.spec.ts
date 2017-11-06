@@ -5,7 +5,6 @@ import { TreeView } from '../src/index';
 import * as Model from '../src/model';
 
 import { providers } from './mock/mock-api';
-import { DATE } from './mock/mock-endpoints';
 
 import { customMatchers } from './matchers/matchers';
 
@@ -29,18 +28,10 @@ describe('TreeView helper', () => {
       const flat = flatten(result);
 
       // Check that `flat` is flatten and ordered
-      expect([flat[0]]).toContainItem({
-        type: 'file', path: 'deep-dirs', name: 'a', content: 'a', size: 1
-      });
-      expect([flat[1]]).toContainItem({
-        type: 'file', path: 'deep-dirs/folder', name: 'b', content: 'bb', size: 2
-      });
-      expect([flat[2]]).toContainItem({
-        type: 'file', path: 'deep-dirs/folder/folder', name: 'c', content: 'ccc', size: 3
-      });
-      expect([flat[3]]).toContainItem({
-        type: 'file', path: 'deep-dirs/folder/folder', name: 'd', content: 'dddd', size: 4
-      });
+      expect([flat[0]]).toContainItem({ type: 'file', path: 'deep-dirs', name: 'a' });
+      expect([flat[1]]).toContainItem({ type: 'file', path: 'deep-dirs/folder', name: 'b' });
+      expect([flat[2]]).toContainItem({ type: 'file', path: 'deep-dirs/folder/folder', name: 'c' });
+      expect([flat[3]]).toContainItem({ type: 'file', path: 'deep-dirs/folder/folder', name: 'd' });
 
       done();
     });

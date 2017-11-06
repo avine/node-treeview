@@ -19,7 +19,7 @@ describe('TreeView e2e', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   it('should works!', (done) => {
-    new TreeView().process(basePath).then((result) => {
+    new TreeView({ content: true }).process(basePath).then((result) => {
       expect(result).toContainItem({
         type: 'file', path: basePath, name: 'a', content: 'aaa', size: 3, binary: false
       });

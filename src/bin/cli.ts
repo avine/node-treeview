@@ -26,7 +26,7 @@ yargs
     alias: 'c',
     describe: 'Add files content to output.',
     type: 'boolean',
-    default: true
+    default: false
 
   }).option('depth', {
     alias: 'd',

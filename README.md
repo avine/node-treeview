@@ -158,7 +158,7 @@ Usage: node-treeview <path> [options]
 
 Options:
   --version       Show version number                                              [boolean]
-  --content, -c   Add files content to output.                     [boolean] [default: true]
+  --content, -c   Add files content to output.                    [boolean] [default: false]
   --depth, -d     Maximum depth of directories.          [boolean | number] [default: false]
   --relative, -r  Use relative path.                              [boolean] [default: false]
   --exclude, -e   List of directory paths to exclude from output.      [array] [default: []]

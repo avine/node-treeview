@@ -50,7 +50,7 @@ describe('TreeView', () => {
   });
 
   it('should find files', (done) => {
-    new TreeViewMock().process('files').then((result) => {
+    new TreeViewMock({ content: true }).process('files').then((result) => {
       expect(result.length).toBe(2);
 
       expect(result).toContainItem({
@@ -98,7 +98,7 @@ describe('TreeView', () => {
   });
 
   it('should find sub-directory', (done) => {
-    new TreeViewMock().process('sub-dirs').then((result) => {
+    new TreeViewMock({ content: true }).process('sub-dirs').then((result) => {
       expect(result).toContainItem({ path: 'sub-dirs', type: 'file', name: 'a' });
       expect(result).toContainItem({ path: 'sub-dirs', type: 'dir', name: 'b' });
 
@@ -137,10 +137,11 @@ describe('TreeView spies', () => {
   });
 
   it('should handle not-readable file or directory', (done) => {
-    new TreeViewMock().process('not-readable-lazily').then((result) => {
+    new TreeViewMock({ content: true }).process('not-readable-lazily').then((result) => {
       expect(result.length).toBe(2);
 
       result.forEach(r => expect(r.error instanceof Error).toBeTruthy());
+      result.forEach(r => expect('content' in r).toBeFalsy());
 
       expect(result).toContainItem({ type: 'file', name: 'a', path: 'not-readable-lazily' });
       expect(result).toContainItem({ type: 'dir', name: 'b', path: 'not-readable-lazily' });
@@ -157,13 +158,13 @@ describe('TreeView options', () => {
 
   it('should skip files content', (done) => {
     Promise.all([
-      new TreeViewMock(/*{ content: true }*/).process('skip-content').then((result) => {
+      new TreeViewMock({ content: true }).process('skip-content').then((result) => {
         expect(result.length).toBe(2);
 
         expect(result).toContainItem({ type: 'file', name: 'a', content: 'aaa', size: 3 });
         expect(result).toContainItem({ type: 'file', name: 'b', content: 'bbbb', size: 4 });
       }),
-      new TreeViewMock({ content: false }).process('skip-content').then((result) => {
+      new TreeViewMock(/*{ content: false }*/).process('skip-content').then((result) => {
         expect(result.length).toBe(2);
 
         // When `content` option is set to `false`, the `size` property is still available...

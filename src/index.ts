@@ -14,7 +14,7 @@ export class TreeView {
     return files.filter(file => file[0] !== '.');
   }
 
-  opts: Model.IOpts = { content: true, depth: false, exclude: [], relative: false };
+  opts: Model.IOpts = { content: false, depth: false, exclude: [], relative: false };
   providers: Model.IProviders;
   rootPath: string;
 
