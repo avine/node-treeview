@@ -25,33 +25,33 @@ yargs
   .demandCommand(1, 'Error: argument <path> is missing!')
   .option('content', {
     alias: 'c',
+    default: false,
     describe: 'Add files content to output.',
-    type: 'boolean',
-    default: false
+    type: 'boolean'
 
   }).option('depth', {
     alias: 'd',
-    describe: 'Maximum depth of directories. Use a boolean or a number.',
     coerce: booleanOrNumber,
-    default: false
+    default: false,
+    describe: 'Maximum depth of directories. Use a boolean or a number.'
 
   }).option('relative', {
     alias: 'r',
+    default: false,
     describe: 'Use relative path.',
-    type: 'boolean',
-    default: false
+    type: 'boolean'
 
   }).option('exclude', {
     alias: 'e',
+    default: [],
     describe: 'List of directory paths to exclude from output.',
-    type: 'array',
-    default: []
+    type: 'array'
 
   }).option('flatten', {
     alias: 'f',
+    default: false,
     describe: 'Flatten the output.',
-    type: 'boolean',
-    default: false
+    type: 'boolean'
 
   })
   .help('help')

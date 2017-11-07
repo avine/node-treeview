@@ -21,14 +21,14 @@ describe('TreeView e2e', () => {
   it('should works!', (done) => {
     new TreeView({ content: true }).process(basePath).then((result) => {
       expect(result).toContainItem({
-        type: 'file', path: basePath, name: 'a', content: 'aaa', size: 3, binary: false
+        binary: false, content: 'aaa', name: 'a', path: basePath, size: 3, type: 'file'
       });
       expect(result).toContainItem({ type: 'dir', path: basePath, name: 'sub' });
 
       let filtered = result.filter(r => r.name === 'sub');
       const sub = filtered[0] as Model.IDir;
       expect(sub.content).toContainItem({
-        type: 'file', path: subPath, name: 'b.txt', content: 'bbb', size: 3, binary: false
+        binary: false, content: 'bbb', name: 'b.txt', path: subPath, size: 3, type: 'file'
       });
       expect(sub.content).toContainItem({ type: 'dir', path: subPath, name: 'deep' });
 
@@ -40,7 +40,7 @@ describe('TreeView e2e', () => {
       const pngSize = png.length;
 
       expect(deep.content).toContainItem({
-        type: 'file', path: deepPath, name: 'c.png', content: pngContent, size: pngSize, binary: true
+        binary: true, content: pngContent, name: 'c.png', path: deepPath, size: pngSize, type: 'file'
       });
 
       done();

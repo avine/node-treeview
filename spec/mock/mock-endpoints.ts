@@ -1,8 +1,8 @@
 // tslint:disable:object-literal-key-quotes
 
 export const DATE = {
-  MODIFIED: new Date(),
-  CREATED: new Date( new Date().getTime() - 1000 * 60 * 60)
+  CREATED: new Date( new Date().getTime() - 1000 * 60 * 60),
+  MODIFIED: new Date()
 };
 
 const entrepoints: { [index: string]: { [index: string]: any } } = {
