@@ -101,13 +101,13 @@ describe('TreeView', () => {
 
   it('should find sub-directory', (done) => {
     new TreeViewMock({ content: true }).process('sub-dirs').then((result) => {
-      expect(result).toContainItem({ path: 'sub-dirs', type: 'file', name: 'a' });
-      expect(result).toContainItem({ path: 'sub-dirs', type: 'dir', name: 'b' });
+      expect(result).toContainItem({ path: 'sub-dirs', name: 'a', type: 'file' });
+      expect(result).toContainItem({ path: 'sub-dirs', name: 'b', type: 'dir' });
 
       const filtered = result.filter(r => r.name === 'b');
       const subDir = filtered[0] as Model.IDir;
-      expect(subDir.content).toContainItem({ path: 'sub-dirs/b', type: 'file', name: 'c', content: 'ccc' });
-      expect(subDir.content).toContainItem({ path: 'sub-dirs/b', type: 'file', name: 'd', content: 'ddd' });
+      expect(subDir.content).toContainItem({ path: 'sub-dirs/b', name: 'c', type: 'file', content: 'ccc' });
+      expect(subDir.content).toContainItem({ path: 'sub-dirs/b', name: 'd', type: 'file', content: 'ddd' });
 
       done();
     });
@@ -145,8 +145,8 @@ describe('TreeView spies', () => {
       result.forEach(r => expect(r.error instanceof Error).toBeTruthy());
       result.forEach(r => expect('content' in r).toBeFalsy());
 
-      expect(result).toContainItem({ type: 'file', name: 'a', path: 'not-readable-lazily' });
-      expect(result).toContainItem({ type: 'dir', name: 'b', path: 'not-readable-lazily' });
+      expect(result).toContainItem({ path: 'not-readable-lazily', name: 'a', type: 'file' });
+      expect(result).toContainItem({ path: 'not-readable-lazily', name: 'b', type: 'dir' });
 
       expect(providers.readFile).toHaveBeenCalledTimes(1); // One for 'a'
       expect(providers.readdir).toHaveBeenCalledTimes(2); // One for 'not-readable-lazily' and another for 'b'
@@ -163,8 +163,8 @@ describe('TreeView options', () => {
       new TreeViewMock({ content: true }).process('skip-content').then((result) => {
         expect(result.length).toBe(2);
 
-        expect(result).toContainItem({ type: 'file', name: 'a', content: 'aaa', size: 3 });
-        expect(result).toContainItem({ type: 'file', name: 'b', content: 'bbbb', size: 4 });
+        expect(result).toContainItem({ type: 'file', name: 'a', size: 3, content: 'aaa' });
+        expect(result).toContainItem({ type: 'file', name: 'b', size: 4, content: 'bbbb' });
       }),
       new TreeViewMock(/*{ content: false }*/).process('skip-content').then((result) => {
         expect(result.length).toBe(2);

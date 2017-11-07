@@ -6,89 +6,61 @@ export const DATE = {
 };
 
 const entrepoints: { [index: string]: { [index: string]: any } } = {
+  'empty-dir': { type: 'dir', content: [] },
 
-  'empty-dir':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: [] },
+  'files': { type: 'dir', content: ['a', 'b'] },
+  'files/a': { type: 'file', content: 'aaa', size: 3 },
+  'files/b': { type: 'file', content: 'bbbb', size: 4 },
 
-  'files':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'b'] },
-  'files/a':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'aaa', size: 3 },
-  'files/b':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'bbbb', size: 4 },
+  'skip-hidden': { type: 'dir', content: ['.hidden', 'visible'] },
+  'skip-hidden/.hidden': { type: 'file', content: 'xxx', size: 3 },
+  'skip-hidden/visible': { type: 'file', content: 'ok', size: 2 },
 
-  'skip-hidden':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['.hidden', 'visible'] },
-  'skip-hidden/.hidden':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'xxx', size: 3 },
-  'skip-hidden/visible':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'ok', size: 2 },
+  'binary': { type: 'dir', content: ['a.txt', 'b.png'] },
+  'binary/a.txt': { type: 'file', content: '', size: 0 },
+  'binary/b.png': { type: 'file', content: '', size: 0 },
 
-  'binary':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a.txt', 'b.png'] },
-  'binary/a.txt':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: '', size: 0 },
-  'binary/b.png':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: '', size: 0 },
+  'dirs': { type: 'dir', content: ['a', 'b'] },
+  'dirs/a': { type: 'dir', content: [] },
+  'dirs/b': { type: 'dir', content: [] },
 
-  'dirs':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'b'] },
-  'dirs/a':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: [] },
-  'dirs/b':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: [] },
+  'sub-dirs': { type: 'dir', content: ['a', 'b'] },
+  'sub-dirs/a': { type: 'file', content: 'aaa', size: 3 },
+  'sub-dirs/b': { type: 'dir', content: ['c', 'd'] },
+  'sub-dirs/b/c': { type: 'file', content: 'ccc', size: 3 },
+  'sub-dirs/b/d': { type: 'file', content: 'ddd', size: 3 },
 
-  'sub-dirs':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'b'] },
-  'sub-dirs/a':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'aaa', size: 3 },
-  'sub-dirs/b':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['c', 'd'] },
-  'sub-dirs/b/c':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'ccc', size: 3 },
-  'sub-dirs/b/d':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'ddd', size: 3 },
+  'sub-dir-not-found': { type: 'dir', content: ['oups'] },
 
-  'sub-dir-not-found':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['oups'] },
+  'not-readable-eagerly': { type: 'dir', content: false },
 
-  'not-readable-eagerly':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: false },
+  'not-readable-lazily': { type: 'dir', content: ['a', 'b'] },
+  'not-readable-lazily/a': { type: 'file', content: false },
+  'not-readable-lazily/b': { type: 'dir', content: false },
 
-  'not-readable-lazily':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'b'] },
-  'not-readable-lazily/a':
-    { type: 'file', content: false },
-  'not-readable-lazily/b':
-    { type: 'dir', content: false },
-
-  'skip-content':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'b'] },
-  'skip-content/a':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'aaa', size: 3 },
-  'skip-content/b':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'bbbb', size: 4 },
+  'skip-content': { type: 'dir', content: ['a', 'b'] },
+  'skip-content/a': { type: 'file', content: 'aaa', size: 3 },
+  'skip-content/b': { type: 'file', content: 'bbbb', size: 4 },
 
    // In order to check the `flatten` helper (especially the `.sort()` part),
    // some contents are unordered (*):
    //     - ['folder', 'b'] instead of ['b', 'folder']
    //     - ['d', 'c'] instead of ['c', 'd']
    // (see `helper.spec.ts` for more details)
-  'deep-dirs':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['a', 'folder'] },
-  'deep-dirs/a':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'a', size: 1 },
-  'deep-dirs/folder':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['folder', 'b'] }, // (*) unordered
-  'deep-dirs/folder/b':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'bb', size: 2 },
-  'deep-dirs/folder/folder':
-    { type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, content: ['d', 'c'] }, // (*) unordered
-  'deep-dirs/folder/folder/c':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'ccc', size: 3 },
-  'deep-dirs/folder/folder/d':
-    { type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED, content: 'dddd', size: 4 },
+  'deep-dirs': { type: 'dir', content: ['a', 'folder'] },
+  'deep-dirs/a': { type: 'file', content: 'a', size: 1 },
+  'deep-dirs/folder': { type: 'dir', content: ['folder', 'b'] }, // (*) unordered
+  'deep-dirs/folder/b': { type: 'file', content: 'bb', size: 2 },
+  'deep-dirs/folder/folder': { type: 'dir', content: ['d', 'c'] }, // (*) unordered
+  'deep-dirs/folder/folder/c': { type: 'file', content: 'ccc', size: 3 },
+  'deep-dirs/folder/folder/d': { type: 'file', content: 'dddd', size: 4 },
+};
 
-  };
+for (const path in entrepoints) {
+  if (entrepoints.hasOwnProperty(path)) {
+    entrepoints[path].created = DATE.CREATED;
+    entrepoints[path].modified = DATE.MODIFIED;
+  }
+}
 
 export default entrepoints;
