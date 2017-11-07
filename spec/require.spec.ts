@@ -14,7 +14,7 @@ describe('TreeView require', () => {
     const TreeView = require(path2Index).TreeView;
     const flatten = require(path2Flatten).flatten;
 
-    // ...and used ;-)
+    // ...and used ;-) [notice: we arbitrary process the current `__dirname`]
     new TreeView().process(__dirname).then((result: any) => {
       const flat = flatten(result);
       // console.log(JSON.stringify(flat, undefined, 2));
