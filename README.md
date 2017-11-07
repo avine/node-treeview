@@ -11,7 +11,7 @@ Asynchronous filesystem tree view for node.
 ### Usage
 
 ```js
-const TreeView = require('node-treeview');
+const TreeView = require('node-treeview').TreeView;
 
 // Using callback interface
 new TreeView(options).process(path, (error, json) => {
@@ -29,7 +29,7 @@ new TreeView(options).process(path).then(json => {
 ### Example
 
 ```js
-const TreeView = require('node-treeview');
+const TreeView = require('node-treeview').TreeView;
 new TreeView({ content: true, depth: 2 }).process('path/to/dir').then(json => console.log(json));
 ```
 
