@@ -1,6 +1,6 @@
 // tslint:disable:no-var-requires
 
-const resolve = require('path').resolve;
+const { resolve } = require('path');
 
 // The folder published to NPM is: `[node-treeview]/dist/src`
 const npmPkgRoot = resolve(__dirname, '../src');

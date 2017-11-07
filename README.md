@@ -11,7 +11,7 @@ Asynchronous filesystem tree view for node.
 ### Usage
 
 ```js
-const TreeView = require('node-treeview').TreeView;
+const { TreeView } = require('node-treeview');
 
 // Using callback interface
 new TreeView(options).process(path, (error, json) => {
@@ -29,8 +29,10 @@ new TreeView(options).process(path).then(json => {
 ### Example
 
 ```js
-const TreeView = require('node-treeview').TreeView;
-new TreeView({ content: true, depth: 2 }).process('path/to/dir').then(json => console.log(json));
+const { TreeView } = require('node-treeview');
+
+new TreeView({ content: true, depth: 2 })
+  .process('path/to/dir').then(json => console.log(json));
 ```
 
 The output looks like the following `json`:
@@ -158,14 +160,19 @@ If you need a flat version of the tree, use the `flatten` helper.
 
 ```ts
 import { TreeView } from 'node-treeview';
-import * as Model from 'node-treeview/model'
-
 import { flatten } from 'node-treeview/helper/flatten';
 
 new TreeView({ content: false }).process('path/to/dir').then(json => {
   const flat = flatten(json);
   console.log(flat);
 });
+```
+
+Or for JavaScript style using `require`:
+```js
+const { TreeView } = require('node-treeview');
+const { flatten } = require('node-treeview/helper/flatten');
+// ...
 ```
 
 The output looks like the following `json`:
@@ -213,11 +220,11 @@ Usage: node-treeview <path> [options]
 
 Options:
   --version       Show version number                                              [boolean]
-  --content, -c   Add files content to output.                    [boolean] [default: false]
-  --relative, -r  Use relative path.                              [boolean] [default: false]
-  --depth, -d     Maximum depth of directories.           [boolean|number]  [default: false]
-  --flatten, -f   Flatten the output.                             [boolean] [default: false]
-  --exclude, -e   List of directory paths to exclude from output.      [array] [default: []]
+  --content, -c   Add files content to output                     [boolean] [default: false]
+  --relative, -r  Use relative path                               [boolean] [default: false]
+  --depth, -d     Maximum depth of directories            [boolean|number]  [default: false]
+  --flatten, -f   Flatten the output                              [boolean] [default: false]
+  --exclude, -e   List of directory paths to exclude from output       [array] [default: []]
   --help, -h      Show help                                                        [boolean]
 ```
 

@@ -27,31 +27,31 @@ yargs
   .option('content', {
     alias: 'c',
     default: false,
-    describe: 'Add files content to output.',
+    describe: 'Add files content to output',
     type: 'boolean'
 
   }).option('relative', {
     alias: 'r',
     default: false,
-    describe: 'Use relative path.',
+    describe: 'Use relative path',
     type: 'boolean'
 
   }).option('depth', {
     alias: 'd',
     coerce: booleanOrNumber,
     default: false,
-    describe: 'Maximum depth of directories. Use a boolean or a number.'
+    describe: 'Maximum depth of directories (use boolean or number)'
 
   }).option('flatten', {
     alias: 'f',
     default: false,
-    describe: 'Flatten the output.',
+    describe: 'Flatten the output',
     type: 'boolean'
 
   }).option('exclude', {
     alias: 'e',
     default: [],
-    describe: 'List of directory paths to exclude from output.',
+    describe: 'List of directory paths to exclude from output',
     type: 'array'
 
   })
