@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 
 import * as yargs from 'yargs';
+
 import { TreeView } from '../index';
 import * as Model from '../model';
 import { flatten } from '../helper/flatten';
@@ -29,16 +30,22 @@ yargs
     describe: 'Add files content to output.',
     type: 'boolean'
 
+  }).option('relative', {
+    alias: 'r',
+    default: false,
+    describe: 'Use relative path.',
+    type: 'boolean'
+
   }).option('depth', {
     alias: 'd',
     coerce: booleanOrNumber,
     default: false,
     describe: 'Maximum depth of directories. Use a boolean or a number.'
 
-  }).option('relative', {
-    alias: 'r',
+  }).option('flatten', {
+    alias: 'f',
     default: false,
-    describe: 'Use relative path.',
+    describe: 'Flatten the output.',
     type: 'boolean'
 
   }).option('exclude', {
@@ -46,12 +53,6 @@ yargs
     default: [],
     describe: 'List of directory paths to exclude from output.',
     type: 'array'
-
-  }).option('flatten', {
-    alias: 'f',
-    default: false,
-    describe: 'Flatten the output.',
-    type: 'boolean'
 
   })
   .help('help')

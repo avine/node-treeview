@@ -1,5 +1,5 @@
 import { readdir, readFile, stat } from 'fs';
-import { resolve, relative, extname } from 'path';
+import { extname, relative, resolve } from 'path';
 
 import * as Model from './model';
 import { isBinaryPath } from './helper/binary';
@@ -14,7 +14,7 @@ export class TreeView {
     return files.filter(file => file[0] !== '.');
   }
 
-  opts: Model.IOpts = { content: false, depth: false, exclude: [], relative: false };
+  opts: Model.IOpts = { content: false, relative: false, depth: false, exclude: [] };
   providers: Model.IProviders;
   rootPath: string;
 

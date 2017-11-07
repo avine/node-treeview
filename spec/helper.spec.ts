@@ -3,13 +3,12 @@
 
 import { TreeView } from '../src/index';
 import * as Model from '../src/model';
+import { flatten } from '../src/helper/flatten';
+import { isBinaryPath } from '../src/helper/binary';
 
 import { providers } from './mock/mock-api';
 
 import { customMatchers } from './matchers/matchers';
-
-import { flatten } from '../src/helper/flatten';
-import { isBinaryPath } from '../src/helper/binary';
 
 class TreeViewMock extends TreeView {
   inject() {
@@ -28,10 +27,10 @@ describe('TreeView helper', () => {
       const flat = flatten(result);
 
       // Check that `flat` is flatten and ordered
-      expect([flat[0]]).toContainItem({ type: 'file', path: 'deep-dirs', name: 'a' });
-      expect([flat[1]]).toContainItem({ type: 'file', path: 'deep-dirs/folder', name: 'b' });
-      expect([flat[2]]).toContainItem({ type: 'file', path: 'deep-dirs/folder/folder', name: 'c' });
-      expect([flat[3]]).toContainItem({ type: 'file', path: 'deep-dirs/folder/folder', name: 'd' });
+      expect([flat[0]]).toContainItem({ type: 'file', name: 'a', path: 'deep-dirs' });
+      expect([flat[1]]).toContainItem({ type: 'file', name: 'b', path: 'deep-dirs/folder' });
+      expect([flat[2]]).toContainItem({ type: 'file', name: 'c', path: 'deep-dirs/folder/folder' });
+      expect([flat[3]]).toContainItem({ type: 'file', name: 'd', path: 'deep-dirs/folder/folder' });
 
       done();
     });

@@ -85,7 +85,8 @@ The output looks like the following `json`:
 ### Interface and type (basics)
 
 ```ts
-// Unreadable file or directory
+// Basic interface of files and directories
+// Will be part of the outout when resource is unreadable
 export interface IRef {
   name: string;
   path: string;
@@ -93,7 +94,6 @@ export interface IRef {
   error?: any;
 }
 
-// File interface
 export interface IFile extends IRef {
   type: 'file';
   content: string;
@@ -104,7 +104,6 @@ export interface IFile extends IRef {
   binary: boolean;
 }
 
-// Directory interface
 export interface IDir extends IRef {
   type: 'dir';
   content: TreeNode[];
@@ -122,12 +121,12 @@ export type TreeNode = IFile | IDir | IRef;
 export interface IOptsParam {
   // Add files content to output
   content?: boolean;
+  // Use relative path
+  relative?: boolean;
   // Maximum depth of directories
   depth?: boolean | number;
   // List of directory paths to exclude from output
   exclude?: string[];
-  // Use relative path
-  relative?: boolean;
 }
 ```
 
@@ -215,10 +214,10 @@ Usage: node-treeview <path> [options]
 Options:
   --version       Show version number                                              [boolean]
   --content, -c   Add files content to output.                    [boolean] [default: false]
-  --depth, -d     Maximum depth of directories.          [boolean | number] [default: false]
   --relative, -r  Use relative path.                              [boolean] [default: false]
-  --exclude, -e   List of directory paths to exclude from output.      [array] [default: []]
+  --depth, -d     Maximum depth of directories.           [boolean|number]  [default: false]
   --flatten, -f   Flatten the output.                             [boolean] [default: false]
+  --exclude, -e   List of directory paths to exclude from output.      [array] [default: []]
   --help, -h      Show help                                                        [boolean]
 ```
 

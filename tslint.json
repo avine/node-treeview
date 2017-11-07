@@ -9,13 +9,14 @@
         "array-type": [true, "array"],
         "curly": [true, "ignore-same-line"],
         "member-access": [true, "no-public"],
-        "object-literal-sort-keys": [true, "match-declaration-order"],
-        "ordered-imports": false,
+        "object-literal-sort-keys": false,
+        "ordered-imports": [true, {"import-sources-order": "any", "named-imports-order": "lowercase-first"}],
         "quotemark": [true, "single"],
         "trailing-comma": [true, {"esSpecCompliant": true}],
 
-        "arrow-parens": false,
-        "ter-arrow-parens": [true, "as-needed", { "requireForBlockBody": true }]
+        /* replace `tslint` rule with `eslint` */
+        "arrow-parens": false, // tslint
+        "ter-arrow-parens": [true, "as-needed", {"requireForBlockBody": true}] // eslint
     },
     "rulesDirectory": []
 }

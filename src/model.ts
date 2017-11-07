@@ -1,3 +1,5 @@
+// Basic interface of files and directories
+// Will be part of the outout when resource is unreadable
 export interface IRef {
   name: string;
   path: string;
@@ -23,23 +25,25 @@ export interface IDir extends IRef {
 }
 
 export interface IOpts {
-  // Add files content to output
+  // Include files content in output
   content: boolean;
+  // Use relative path
+  relative: boolean;
   // Maximum depth of directories
   depth: boolean | number;
   // List of directory paths to exclude from output.
   exclude: string[];
-  // Use relative path
-  relative: boolean;
-}
-export interface IOptsParam {
-  content?: boolean;
-  depth?: boolean | number;
-  exclude?: string[];
-  relative?: boolean;
 }
 
-// Like require('fs').Stats
+// Like `IOpts` interface but with all properties optional
+export interface IOptsParam {
+  content?: boolean;
+  relative?: boolean;
+  depth?: boolean | number;
+  exclude?: string[];
+}
+
+// Like require('fs').Stats interface
 export interface IStats {
   size: number;
   birthtime: Date;
@@ -49,11 +53,11 @@ export interface IStats {
 }
 
 export interface IProviders {
-  // Like require('path')
+  // Like require('path') functions
   resolve(...pathSegments: any[]): string;
   relative(from: string, to: string): string;
 
-  // Like require('fs')
+  // Like require('fs') functions
   readFile(
     path: string, options: { encoding: string; flag?: string; },
     callback: (err: Err, data: string) => void
@@ -63,9 +67,7 @@ export interface IProviders {
 }
 
 export type Item = IFile | IDir;
-
 export type TreeNode = Item | IRef;
 
 export type Cb = (error: Err, result?: any) => any;
-
 export type Err = Error | null | undefined;
