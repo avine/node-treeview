@@ -67,8 +67,7 @@ if (path) {
     .process(path)
     .then(result => log(yargs.argv.flatten ? flatten(result) : result))
     .catch((error: Error) => {
-      // tslint:disable-next-line:no-console
-      console.log(error.toString());
+      process.stderr.write(error.toString() + '\n');
       process.exit(1);
     });
 }
