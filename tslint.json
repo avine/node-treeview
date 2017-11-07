@@ -9,7 +9,7 @@
         "array-type": [true, "array"],
         "curly": [true, "ignore-same-line"],
         "member-access": [true, "no-public"],
-        "object-literal-sort-keys": false,
+        "object-literal-sort-keys": [true, "match-declaration-order"],
         "ordered-imports": false,
         "quotemark": [true, "single"],
         "trailing-comma": [true, {"esSpecCompliant": true}],

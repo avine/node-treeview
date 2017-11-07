@@ -51,7 +51,7 @@ export class TreeView {
         const tasks: Promise<any>[] = [];
         files.forEach((name) => {
           const itemPath = this.opts.relative ? this.providers.relative(this.rootPath, path) : path;
-          const item: Model.IRef = { path: itemPath, name, pathname: this.providers.resolve(itemPath, name) };
+          const item: Model.IRef = { name, path: itemPath, pathname: this.providers.resolve(itemPath, name) };
           const pathfile = this.getPath(item);
           this.providers.stat(pathfile, (err, stats: Model.IStats) => {
             if (err) {

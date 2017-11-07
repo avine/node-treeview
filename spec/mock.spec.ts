@@ -54,12 +54,12 @@ describe('TreeView', () => {
       expect(result.length).toBe(2);
 
       expect(result).toContainItem({
-        path: 'files', type: 'file', name: 'a', content: 'aaa', size: 3, binary: false,
-        created: DATE.CREATED, modified: DATE.MODIFIED, pathname: 'files/a'
+        binary: false, content: 'aaa', created: DATE.CREATED, modified: DATE.MODIFIED,
+        name: 'a', path: 'files', pathname: 'files/a', size: 3, type: 'file'
       });
       expect(result).toContainItem({
-        path: 'files', type: 'file', name: 'b', content: 'bbbb', size: 4, binary: false,
-        created: DATE.CREATED, modified: DATE.MODIFIED, pathname: 'files/b'
+        binary: false, content: 'bbbb', created: DATE.CREATED, modified: DATE.MODIFIED,
+        name: 'b', path: 'files', pathname: 'files/b', size: 4, type: 'file'
       });
       done();
     });
@@ -88,12 +88,12 @@ describe('TreeView', () => {
       expect(result.length).toBe(2);
 
       expect(result).toContainItem({
-        path: 'dirs', type: 'dir', name: 'a', content: [],
-        created: DATE.CREATED, modified: DATE.MODIFIED, pathname: 'dirs/a'
+        content: [], created: DATE.CREATED, modified: DATE.MODIFIED,
+        name: 'a', path: 'dirs', pathname: 'dirs/a', type: 'dir'
       });
       expect(result).toContainItem({
-        path: 'dirs', type: 'dir', name: 'b', content: [],
-        created: DATE.CREATED, modified: DATE.MODIFIED, pathname: 'dirs/b'
+        content: [], created: DATE.CREATED, modified: DATE.MODIFIED,
+        name: 'b', path: 'dirs', pathname: 'dirs/b', type: 'dir'
       });
       done();
     });
@@ -251,9 +251,9 @@ describe('TreeView options', () => {
 
       const deepDir = subDir.content.filter(r => r.name === 'folder')[0] as Model.IDir;
       expect(deepDir.content).toContainItem({
-        type: 'file', path: 'folder/folder', name: 'c', pathname: 'folder/folder/c' });
+        name: 'c', path: 'folder/folder', pathname: 'folder/folder/c', type: 'file' });
       expect(deepDir.content).toContainItem({
-        type: 'file', path: 'folder/folder', name: 'd', pathname: 'folder/folder/d' });
+        name: 'd', path: 'folder/folder', pathname: 'folder/folder/d', type: 'file' });
 
       done();
     });
