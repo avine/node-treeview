@@ -219,14 +219,14 @@ node-treeview
 Usage: node-treeview <path> [options]
 
 Options:
-  --version       Show version number                                              [boolean]
+  --version, -v   Show version number                                              [boolean]
+  --help, -h      Show help                                                        [boolean]
   --content, -c   Add files content to output                     [boolean] [default: false]
   --relative, -r  Use relative path                               [boolean] [default: false]
   --depth, -d     Maximum depth of directories            [boolean|number]  [default: false]
   --flatten, -f   Flatten output                                  [boolean] [default: false]
   --exclude, -e   List of directory paths to exclude from output       [array] [default: []]
   --debug, -d     Add debugging information to output             [boolean] [default: false]
-  --help, -h      Show help                                                        [boolean]
 ```
 
 ## Contribute

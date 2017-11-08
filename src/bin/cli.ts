@@ -5,6 +5,9 @@ import * as yargs from 'yargs';
 import { TreeView } from '../index';
 import { flatten } from '../helper/flatten';
 
+// Don't forget to update cli version according to `package.json` version
+const CLI_VERSION = '0.6.1';
+
 const log = (data: any) => process.stdout.write(JSON.stringify(data, undefined, 2) + '\n');
 
 // `depth` arguments validation
@@ -21,6 +24,8 @@ const booleanOrNumber = (arg: boolean | string) => {
 
 yargs
   .locale('en')
+  .version(CLI_VERSION).alias('version', 'v')
+  .help('help').alias('help', 'h')
   .usage('Usage: $0 <path> [options]')
   .demandCommand(1, 'Error: argument <path> is missing!')
   .option('content', {
@@ -59,9 +64,7 @@ yargs
     describe: 'Add debugging information to output',
     type: 'boolean'
 
-  })
-  .help('help')
-  .alias('help', 'h');
+  });
 
 // log(yargs.argv); // For debugging
 
