@@ -11,7 +11,7 @@ import { customMatchers } from './matchers/matchers';
 // tslint:disable-next-line:no-console
 // const log = (data: any) => console.log(JSON.stringify(data, undefined, 2));
 
-const basePath = resolve('spec/e2e-sample');
+const basePath = resolve('spec/fixture');
 const subPath = resolve(basePath, 'sub');
 const deepPath = resolve(subPath, 'deep');
 

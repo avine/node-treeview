@@ -2,7 +2,6 @@
 /// <reference path='./matchers/matchers.d.ts' />
 
 import { TreeView } from '../src/index';
-import * as Model from '../src/model';
 import { flatten } from '../src/helper/flatten';
 import { isBinaryPath } from '../src/helper/binary';
 

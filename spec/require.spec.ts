@@ -5,20 +5,25 @@ const { resolve } = require('path');
 // Root of the package that is published to NPM
 const npmPkgRoot = resolve('dist/src');
 
-// Path to `main` entry point and the `flatten` helper
-const path2Index = resolve(npmPkgRoot/*, './index'*/);
-const path2Flatten = resolve(npmPkgRoot, './helper/flatten');
+// Path to the `main` entry point and the `flatten` helper
+const treeViewPath = resolve(npmPkgRoot/*, './index'*/);
+const flattenPath = resolve(npmPkgRoot, './helper/flatten');
+
+const basePath = resolve('spec/fixture');
+
+// tslint:disable-next-line:no-console
+// const log = (data: any) => console.log(JSON.stringify(data, undefined, 2));
 
 describe('TreeView require', () => {
   it('should require and use TreeView() and flatten()', (done) => {
     // Check that `TreeView` and `flatten` can be required...
-    const TreeView = require(path2Index).TreeView;
-    const flatten = require(path2Flatten).flatten;
+    const { TreeView } = require(treeViewPath);
+    const { flatten } = require(flattenPath);
 
-    // ...and used ;-) [notice: we arbitrary process the current `__dirname`]
-    new TreeView().process(__dirname).then((result: any) => {
+    // ...and used ;-)
+    new TreeView().process(basePath).then((result: any) => {
       const flat = flatten(result);
-      // console.log(JSON.stringify(flat, undefined, 2));
+      // log(flat);
       done();
     });
   });

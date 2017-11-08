@@ -3,7 +3,6 @@
 import * as yargs from 'yargs';
 
 import { TreeView } from '../index';
-import * as Model from '../model';
 import { flatten } from '../helper/flatten';
 
 const log = (data: any) => process.stdout.write(JSON.stringify(data, undefined, 2) + '\n');
@@ -45,7 +44,7 @@ yargs
   }).option('flatten', {
     alias: 'f',
     default: false,
-    describe: 'Flatten the output',
+    describe: 'Flatten output',
     type: 'boolean'
 
   }).option('exclude', {
@@ -54,6 +53,12 @@ yargs
     describe: 'List of directory paths to exclude from output',
     type: 'array'
 
+  }).option('debug', {
+    alias: 'd',
+    default: false,
+    describe: 'Add debugging information to output',
+    type: 'boolean'
+
   })
   .help('help')
   .alias('help', 'h');
@@ -61,11 +66,25 @@ yargs
 // log(yargs.argv); // For debugging
 
 const path = yargs.argv._[0];
-const { content, depth, relative, exclude } = yargs.argv;
+const { content, relative, depth, exclude } = yargs.argv;
 if (path) {
-  new TreeView({ content, depth, relative, exclude })
+  new TreeView({ content, relative, depth, exclude })
     .process(path)
-    .then(result => log(yargs.argv.flatten ? flatten(result) : result))
+    .then((result) => {
+      const output = yargs.argv.flatten ? flatten(result) : result;
+      if (yargs.argv.debug) {
+        log({
+          options: {
+            content, relative, depth, exclude,
+            flatten: yargs.argv.flatten
+          },
+          path,
+          output
+        });
+      } else {
+        log(output);
+      }
+    })
     .catch((error: Error) => {
       process.stderr.write(error.toString() + '\n');
       process.exit(1);
