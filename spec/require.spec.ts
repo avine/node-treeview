@@ -2,9 +2,10 @@
 
 const { resolve } = require('path');
 
-// The folder published to NPM is: `[node-treeview]/dist/src`
-const npmPkgRoot = resolve(__dirname, '../src');
+// Root of the package that is published to NPM
+const npmPkgRoot = resolve('dist/src');
 
+// Path to `main` entry point and the `flatten` helper
 const path2Index = resolve(npmPkgRoot/*, './index'*/);
 const path2Flatten = resolve(npmPkgRoot, './helper/flatten');
 
