@@ -226,7 +226,7 @@ Options:
   --depth, -d     Maximum depth of directories            [boolean|number]  [default: false]
   --flatten, -f   Flatten output                                  [boolean] [default: false]
   --exclude, -e   List of directory paths to exclude from output       [array] [default: []]
-  --debug, -d     Add debugging information to output             [boolean] [default: false]
+  --debug         Add debugging information to output             [boolean] [default: false]
 ```
 
 ## Contribute

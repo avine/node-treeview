@@ -1,12 +1,17 @@
 #! /usr/bin/env node
 
 import * as yargs from 'yargs';
+import { resolve } from 'path';
 
 import { TreeView } from '../index';
 import { flatten } from '../helper/flatten';
 
+import { IDebug } from './cli-model';
+
 // Don't forget to update cli version according to `package.json` version
-const CLI_VERSION = '0.6.1';
+
+// tslint:disable-next-line:no-var-requires
+const pkgVersion = require(resolve('package.json')).version;
 
 const log = (data: any) => process.stdout.write(JSON.stringify(data, undefined, 2) + '\n');
 
@@ -24,7 +29,7 @@ const booleanOrNumber = (arg: boolean | string) => {
 
 yargs
   .locale('en')
-  .version(CLI_VERSION).alias('version', 'v')
+  .version(pkgVersion).alias('version', 'v')
   .help('help').alias('help', 'h')
   .usage('Usage: $0 <path> [options]')
   .demandCommand(1, 'Error: argument <path> is missing!')
@@ -59,7 +64,6 @@ yargs
     type: 'array'
 
   }).option('debug', {
-    alias: 'd',
     default: false,
     describe: 'Add debugging information to output',
     type: 'boolean'
@@ -76,14 +80,13 @@ if (path) {
     .then((result) => {
       const output = yargs.argv.flatten ? flatten(result) : result;
       if (yargs.argv.debug) {
-        log({
-          options: {
-            content, relative, depth, exclude,
-            flatten: yargs.argv.flatten
-          },
+        const debug: IDebug = {
+          opts: { content, relative, depth, exclude },
           path,
+          flatten: yargs.argv.flatten,
           output
-        });
+        };
+        log(debug);
       } else {
         log(output);
       }

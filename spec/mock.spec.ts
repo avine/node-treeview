@@ -18,7 +18,7 @@ class TreeViewMock extends TreeView {
 // tslint:disable-next-line:no-console
 // const log = (data: any) => console.log(JSON.stringify(data, undefined, 2));
 
-describe('TreeView', () => {
+describe('TreeView mock', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   it('should handle bad path', (done) => {
@@ -130,7 +130,7 @@ describe('TreeView', () => {
   });
 });
 
-describe('TreeView spies', () => {
+describe('TreeView mock spies', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   beforeEach(() => {
@@ -155,7 +155,7 @@ describe('TreeView spies', () => {
   });
 });
 
-describe('TreeView options', () => {
+describe('TreeView mock options', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   it('should skip files content', (done) => {
