@@ -92,8 +92,8 @@ describe('TreeView cli', () => {
       '-r',
       '-d', '2',
       '-e', 'path/1', 'path/2',
-      '--f',
-      '--o', './tree.json'
+      '-f',
+      '-o', './tree.json'
     ], (error, result) => {
       result = result as IDebug;
       expect(error).toBeUndefined();
