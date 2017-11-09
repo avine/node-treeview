@@ -113,7 +113,7 @@ export interface IDir extends IRef {
 }
 
 // The final output is of type: `TreeNode[]`
-// (and the `TreeView.process` method returns a `Promise<TreeNode[]>`)
+// and the `TreeView.process` method returns a `Promise<TreeNode[]>`
 export type TreeNode = IFile | IDir | IRef;
 ```
 
@@ -141,7 +141,9 @@ import * as Model from 'node-treeview/model'
 const options: Model.IOptsParam = { depth: 2 };
 const path = 'path/to/dir';
 
-const promise: Promise<TreeNode[]> = new TreeView(options).process(path);
+const promise: Promise<TreeNode[]> =
+  new TreeView(options).process(path);
+
 promise.then(json => {
   json.forEach(item => {
     if ((item as Model.IDir).type === 'dir') {
