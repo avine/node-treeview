@@ -24,9 +24,10 @@
   "keywords": [
     "treeview",
     "filesystem",
-    "async",
     "json",
-    "node"
+    "typescript",
+    "node",
+    "asynchronous"
   ],
   "author": "Stéphane Francel <contact@avine.io>",
   "license": "MIT",
