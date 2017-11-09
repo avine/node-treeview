@@ -46,16 +46,16 @@ describe('TreeView cli', () => {
   });
 
   it('should use default options', (done) => {
-    cli([basePath, '--debug'], (error, result: IDebug) => {
+    cli([basePath, '--debug'], (error, result) => {
       expect(error).toBeUndefined();
-      expect(result.opts).toEqual({
+      expect((result as IDebug).opts).toEqual({
         content: false,
         relative: false,
         depth: false,
         exclude: []
       });
-      expect(result.flatten).toBeFalsy();
-      expect(result.path).toEqual(basePath);
+      expect((result as IDebug).flatten).toBeFalsy();
+      expect((result as IDebug).path).toEqual(basePath);
       done();
     });
   });
@@ -67,16 +67,16 @@ describe('TreeView cli', () => {
       '--depth', '2',
       '--exclude', 'path/1', 'path/2',
       '--flatten'
-    ], (error, result: IDebug) => {
+    ], (error, result) => {
       expect(error).toBeUndefined();
-      expect(result.opts).toEqual({
+      expect((result as IDebug).opts).toEqual({
         content: true,
         relative: true,
         depth: 2,
         exclude: ['path/1', 'path/2']
       });
-      expect(result.flatten).toBeTruthy();
-      expect(result.path).toEqual(basePath);
+      expect((result as IDebug).flatten).toBeTruthy();
+      expect((result as IDebug).path).toEqual(basePath);
       done();
     });
   });
@@ -88,16 +88,16 @@ describe('TreeView cli', () => {
       '-d', '2',
       '-e', 'path/1', 'path/2',
       '--f'
-    ], (error, result: IDebug) => {
+    ], (error, result) => {
       expect(error).toBeUndefined();
-      expect(result.opts).toEqual({
+      expect((result as IDebug).opts).toEqual({
         content: true,
         relative: true,
         depth: 2,
         exclude: ['path/1', 'path/2']
       });
-      expect(result.flatten).toBeTruthy();
-      expect(result.path).toEqual(basePath);
+      expect((result as IDebug).flatten).toBeTruthy();
+      expect((result as IDebug).path).toEqual(basePath);
       done();
     });
   });
