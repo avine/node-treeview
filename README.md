@@ -6,7 +6,7 @@ Asynchronous filesystem tree view for node.
 
 [![Build Status](https://travis-ci.org/avine/node-treeview.svg?branch=master)](https://travis-ci.org/avine/node-treeview)
 
-## Javascript
+## Javascript (quick start)
 
 ### Usage
 
@@ -84,11 +84,10 @@ The output looks like the following `json`:
 
 ## TypeScript
 
-### Interface and type (basics)
+### Interfaces basics
 
 ```ts
-// Basic interface of files and directories
-// Will be part of the outout when resource is unreadable
+// Basic interface of files and directories (used for unreadable resource)
 export interface IRef {
   name: string;
   path: string;
@@ -113,7 +112,8 @@ export interface IDir extends IRef {
   modified: Date;
 }
 
-// Finally, the `TreeView.process` method returns a `Promise<TreeNode[]>`
+// The final output is of type: `TreeNode[]`
+// (and the `TreeView.process` method returns a `Promise<TreeNode[]>`)
 export type TreeNode = IFile | IDir | IRef;
 ```
 
@@ -141,7 +141,8 @@ import * as Model from 'node-treeview/model'
 const options: Model.IOptsParam = { depth: 2 };
 const path = 'path/to/dir';
 
-new TreeView(options).process(path).then(json => {
+const promise: Promise<TreeNode[]> = new TreeView(options).process(path);
+promise.then(json => {
   json.forEach(item => {
     if ((item as Model.IDir).type === 'dir') {
       // do some stuff...
@@ -226,6 +227,7 @@ Options:
   --depth, -d     Maximum depth of directories            [boolean|number]  [default: false]
   --flatten, -f   Flatten output                                  [boolean] [default: false]
   --exclude, -e   List of directory paths to exclude from output       [array] [default: []]
+  --output, -o    Output file path                                                  [string]
   --debug         Add debugging information to output             [boolean] [default: false]
 ```
 

@@ -5,4 +5,5 @@ export interface IDebug {
   path: string;
   flatten: boolean;
   output: Model.TreeNode[];
+  outputPath?: string;
 }

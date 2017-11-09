@@ -1,7 +1,9 @@
 #! /usr/bin/env node
 
 import * as yargs from 'yargs';
+
 import { resolve } from 'path';
+import { writeFile } from 'fs';
 
 import { TreeView } from '../index';
 import { flatten } from '../helper/flatten';
@@ -13,7 +15,8 @@ import { IDebug } from './cli-model';
 // tslint:disable-next-line:no-var-requires
 const pkgVersion = require(resolve('package.json')).version;
 
-const log = (data: any) => process.stdout.write(JSON.stringify(data, undefined, 2) + '\n');
+const stringify = (data: any) => JSON.stringify(data, undefined, 2) + '\n';
+const log = (data: any) => process.stdout.write(stringify(data));
 
 // `depth` arguments validation
 const booleanOrNumber = (arg: boolean | string) => {
@@ -63,6 +66,11 @@ yargs
     describe: 'List of directory paths to exclude from output',
     type: 'array'
 
+  }).option('output', {
+    alias: 'o',
+    describe: 'Output file path',
+    type: 'string'
+
   }).option('debug', {
     default: false,
     describe: 'Add debugging information to output',
@@ -79,16 +87,24 @@ if (path) {
     .process(path)
     .then((result) => {
       const output = yargs.argv.flatten ? flatten(result) : result;
+      const outputPath = yargs.argv.output;
       if (yargs.argv.debug) {
         const debug: IDebug = {
           opts: { content, relative, depth, exclude },
           path,
           flatten: yargs.argv.flatten,
-          output
+          output,
+          outputPath
         };
         log(debug);
       } else {
-        log(output);
+        if (outputPath) {
+          writeFile(resolve(outputPath), stringify(output), (error) => {
+            if (error) throw error;
+          });
+        } else {
+          log(output);
+        }
       }
     })
     .catch((error: Error) => {

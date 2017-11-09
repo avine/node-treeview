@@ -47,15 +47,17 @@ describe('TreeView cli', () => {
 
   it('should use default options', (done) => {
     cli([basePath, '--debug'], (error, result) => {
+      result = result as IDebug;
       expect(error).toBeUndefined();
-      expect((result as IDebug).opts).toEqual({
+      expect(result.opts).toEqual({
         content: false,
         relative: false,
         depth: false,
         exclude: []
       });
-      expect((result as IDebug).flatten).toBeFalsy();
-      expect((result as IDebug).path).toEqual(basePath);
+      expect(result.flatten).toBeFalsy();
+      expect(result.outputPath).toBeUndefined();
+      expect(result.path).toEqual(basePath);
       done();
     });
   });
@@ -66,17 +68,20 @@ describe('TreeView cli', () => {
       '--relative',
       '--depth', '2',
       '--exclude', 'path/1', 'path/2',
-      '--flatten'
+      '--flatten',
+      '--output', './tree.json'
     ], (error, result) => {
+      result = result as IDebug;
       expect(error).toBeUndefined();
-      expect((result as IDebug).opts).toEqual({
+      expect(result.opts).toEqual({
         content: true,
         relative: true,
         depth: 2,
         exclude: ['path/1', 'path/2']
       });
-      expect((result as IDebug).flatten).toBeTruthy();
-      expect((result as IDebug).path).toEqual(basePath);
+      expect(result.flatten).toBeTruthy();
+      expect(result.outputPath).toEqual('./tree.json');
+      expect(result.path).toEqual(basePath);
       done();
     });
   });
@@ -87,17 +92,20 @@ describe('TreeView cli', () => {
       '-r',
       '-d', '2',
       '-e', 'path/1', 'path/2',
-      '--f'
+      '--f',
+      '--o', './tree.json'
     ], (error, result) => {
+      result = result as IDebug;
       expect(error).toBeUndefined();
-      expect((result as IDebug).opts).toEqual({
+      expect(result.opts).toEqual({
         content: true,
         relative: true,
         depth: 2,
         exclude: ['path/1', 'path/2']
       });
-      expect((result as IDebug).flatten).toBeTruthy();
-      expect((result as IDebug).path).toEqual(basePath);
+      expect(result.flatten).toBeTruthy();
+      expect(result.outputPath).toEqual('./tree.json');
+      expect(result.path).toEqual(basePath);
       done();
     });
   });
