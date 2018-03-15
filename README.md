@@ -13,17 +13,33 @@ Asynchronous filesystem tree view for node.
 ```js
 const { TreeView } = require('node-treeview');
 
-// Using callback interface
+// Using callback
 new TreeView(options).process(path, (error, json) => {
-  // do some stuff...
+  if (error) {
+    // handle errors...
+  } else {
+    // do some stuff...
+  }
 });
 
-// or Using Promise interface
+// Using Promise
 new TreeView(options).process(path).then(json => {
   // do some stuff...
 }).catch(error => {
   // handle errors...
 });
+
+// Using async/await
+async function getJson() {
+  let json;
+  try {
+    json = await new TreeView(options).process(path);
+  } catch (error) {
+    // handle errors...
+  }
+  // do some stuff...
+}
+getJson();
 ```
 
 ### Example
