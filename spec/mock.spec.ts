@@ -22,17 +22,19 @@ describe('TreeView mock', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   it('should handle bad path', (done) => {
-    Promise.all([
-      // Using promise interface
-      new TreeViewMock().process('oups').catch((error) => {
-        expect(error instanceof Error).toBeTruthy();
-      }),
+    let count = 0;
 
-      // Using callback interface
-      new TreeViewMock().process('oups', (error, result) => {
-        expect(error instanceof Error).toBeTruthy();
-      })
-    ]).catch(done);
+    // Using promise interface
+    new TreeViewMock().process('oups').catch((error) => {
+      expect(error instanceof Error).toBeTruthy();
+      if (++count === 2) done();
+    });
+
+    // Using callback interface
+    new TreeViewMock().process('oups', (error, result) => {
+      expect(error instanceof Error).toBeTruthy();
+      if (++count === 2) done();
+    });
   });
 
   it('should handle empty directory', (done) => {
