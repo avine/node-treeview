@@ -7,6 +7,7 @@ import { writeFile } from 'fs';
 
 import { TreeView } from '../index';
 import { flatten } from '../helper/flatten';
+import { clean } from '../helper/clean';
 
 import { IDebug } from './cli-model';
 
@@ -60,6 +61,12 @@ yargs
     describe: 'Flatten output',
     type: 'boolean'
 
+  }).option('clean', {
+    alias: 'n', // notice: it's "n" (and not "c" which is already used for "content")
+    default: false,
+    describe: 'Clean empty directories from output',
+    type: 'boolean'
+
   }).option('exclude', {
     alias: 'e',
     default: [],
@@ -92,13 +99,19 @@ if (path) {
   new TreeView({ content, relative, depth, exclude, pattern })
     .process(path)
     .then((result) => {
-      const output = yargs.argv.flatten ? flatten(result) : result;
+      // Note that if the output is flattened there's no need to clean it!
+      // Because the flatten version only contains the files (and not the directories).
+      const output =
+        yargs.argv.flatten ? flatten(result) :
+        yargs.argv.clean ? clean(result) :
+        result;
       const outputPath = yargs.argv.output;
       if (yargs.argv.debug) {
         const debug: IDebug = {
           opts: { content, relative, depth, exclude, pattern },
           path,
           flatten: yargs.argv.flatten,
+          clean: yargs.argv.clean,
           output,
           outputPath
         };

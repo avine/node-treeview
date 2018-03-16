@@ -178,13 +178,15 @@ promise.then(json => {
 
 ## Helper
 
+### flatten
+
 If you need a flat version of the tree, use the `flatten` helper.
 
 ```ts
 import { TreeView } from 'node-treeview';
 import { flatten } from 'node-treeview/helper/flatten';
 
-new TreeView({ content: false }).process('path/to/dir').then(json => {
+new TreeView().process('path/to/dir').then(json => {
   const flat = flatten(json);
   console.log(flat);
 });
@@ -234,6 +236,28 @@ The output looks like the following `json`:
 }]
 ```
 
+### clean
+
+If you need to clean empty directories from the tree, use the `clean` helper.
+
+```ts
+import { TreeView } from 'node-treeview';
+import { clean } from 'node-treeview/helper/clean';
+
+new TreeView().process('path/to/dir').then(json => {
+  const cleaned = clean(json);
+  console.log(cleaned);
+});
+```
+
+Or for JavaScript style using `require`:
+
+```js
+const { TreeView } = require('node-treeview');
+const { clean } = require('node-treeview/helper/clean');
+// ...
+```
+
 ## Cli
 
 ```txt
@@ -248,6 +272,7 @@ Options:
   --relative, -r  Use relative path                               [boolean] [default: false]
   --depth, -d     Maximum depth of directories            [boolean|number]  [default: false]
   --flatten, -f   Flatten output                                  [boolean] [default: false]
+  --clean, -n     Clean empty directories from output             [boolean] [default: false]
   --exclude, -e   List of directory paths to exclude from output       [array] [default: []]
   --pattern, -p   Match files based on glob pattern                   [string] [default: ""]
   --output, -o    Output file path                                                  [string]

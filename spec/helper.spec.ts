@@ -1,8 +1,10 @@
 // tslint:disable-next-line:no-reference
 /// <reference path='./matchers/matchers.d.ts' />
 
+import * as Model from '../src/model';
 import { TreeView } from '../src/index';
 import { flatten } from '../src/helper/flatten';
+import { clean } from '../src/helper/clean';
 import { isBinaryPath } from '../src/helper/binary';
 
 import { providers } from './mock/mock-api';
@@ -33,6 +35,32 @@ describe('TreeView helper', () => {
 
       done();
     });
+  });
+
+  it('should clean result', (done) => {
+    Promise.all([
+      new TreeViewMock().process('clean').then((result) => {
+        expect(result).toContainItem({ type: 'file', path: 'clean', name: 'a', pathname: 'clean/a' });
+        expect(result).toContainItem({ type: 'dir', path: 'clean', name: 'b', pathname: 'clean/b' });
+        expect(result).toContainItem({ type: 'dir', path: 'clean', name: 'c', pathname: 'clean/c' });
+        expect(result).toContainItem({ type: 'dir', path: 'clean', name: 'd', pathname: 'clean/d' });
+
+        const subDir = result.filter(r => r.name === 'd')[0] as Model.IDir;
+        expect(subDir.content).toContainItem({ type: 'file', path: 'clean/d', name: 'f', pathname: 'clean/d/f' });
+      }),
+
+      new TreeViewMock().process('clean').then((result) => {
+        const cleaned = clean(result);
+
+        expect(cleaned).toContainItem({ type: 'file', path: 'clean', name: 'a', pathname: 'clean/a' });
+        expect(cleaned).not.toContainItem({ type: 'dir', path: 'clean', name: 'b', pathname: 'clean/b' });
+        expect(cleaned).not.toContainItem({ type: 'dir', path: 'clean', name: 'c', pathname: 'clean/c' });
+        expect(cleaned).toContainItem({ type: 'dir', path: 'clean', name: 'd', pathname: 'clean/d' });
+
+        const subDir = cleaned.filter(r => r.name === 'd')[0] as Model.IDir;
+        expect(subDir.content).toContainItem({ type: 'file', path: 'clean/d', name: 'f', pathname: 'clean/d/f' });
+      })
+    ]).then(done);
   });
 
   it('should check binary extensions', () => {

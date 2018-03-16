@@ -57,6 +57,7 @@ describe('TreeView cli', () => {
         pattern: ''
       });
       expect(result.flatten).toBeFalsy();
+      expect(result.clean).toBeFalsy();
       expect(result.outputPath).toBeUndefined();
       expect(result.path).toEqual(basePath);
       done();
@@ -71,6 +72,7 @@ describe('TreeView cli', () => {
       '--exclude', 'path/1', 'path/2',
       '--pattern', '**/*',
       '--flatten',
+      '--clean',
       '--output', './tree.json'
     ], (error, result) => {
       result = result as IDebug;
@@ -83,6 +85,7 @@ describe('TreeView cli', () => {
         pattern: '**/*'
       });
       expect(result.flatten).toBeTruthy();
+      expect(result.clean).toBeTruthy();
       expect(result.outputPath).toEqual('./tree.json');
       expect(result.path).toEqual(basePath);
       done();
@@ -97,6 +100,7 @@ describe('TreeView cli', () => {
       '-e', 'path/1', 'path/2',
       '-p', '**/*',
       '-f',
+      '-n', // notice: it's "n" (and not "c" which is already used for "content")
       '-o', './tree.json'
     ], (error, result) => {
       result = result as IDebug;
@@ -109,6 +113,7 @@ describe('TreeView cli', () => {
         pattern: '**/*'
       });
       expect(result.flatten).toBeTruthy();
+      expect(result.clean).toBeTruthy();
       expect(result.outputPath).toEqual('./tree.json');
       expect(result.path).toEqual(basePath);
       done();
