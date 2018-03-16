@@ -66,6 +66,12 @@ yargs
     describe: 'List of directory paths to exclude from output',
     type: 'array'
 
+  }).option('pattern', {
+    alias: 'p',
+    default: '',
+    describe: 'Match files based on glob pattern',
+    type: 'string'
+
   }).option('output', {
     alias: 'o',
     describe: 'Output file path',
@@ -81,16 +87,16 @@ yargs
 // log(yargs.argv); // For debugging
 
 const path = yargs.argv._[0];
-const { content, relative, depth, exclude } = yargs.argv;
+const { content, relative, depth, exclude, pattern } = yargs.argv;
 if (path) {
-  new TreeView({ content, relative, depth, exclude })
+  new TreeView({ content, relative, depth, exclude, pattern })
     .process(path)
     .then((result) => {
       const output = yargs.argv.flatten ? flatten(result) : result;
       const outputPath = yargs.argv.output;
       if (yargs.argv.debug) {
         const debug: IDebug = {
-          opts: { content, relative, depth, exclude },
+          opts: { content, relative, depth, exclude, pattern },
           path,
           flatten: yargs.argv.flatten,
           output,

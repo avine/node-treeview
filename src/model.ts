@@ -31,8 +31,10 @@ export interface IOpts {
   relative: boolean;
   // Maximum depth of directories
   depth: boolean | number;
-  // List of directory paths to exclude from output.
+  // List of directory paths to exclude from output
   exclude: string[];
+  // Match files based on glob pattern
+  pattern: string;
 }
 
 // Like `IOpts` interface but with all properties optional
@@ -41,6 +43,7 @@ export interface IOptsParam {
   relative?: boolean;
   depth?: boolean | number;
   exclude?: string[];
+  pattern?: string;
 }
 
 // Like require('fs').Stats interface

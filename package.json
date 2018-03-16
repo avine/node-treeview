@@ -7,7 +7,7 @@
   "scripts": {
     "lint": "tslint -p ./tsconfig.json",
     "clean": "shx rm -rf ./dist ./coverage",
-    "build": "tsc --strictPropertyInitialization false",
+    "build": "tsc",
     "test": "istanbul cover ./node_modules/jasmine/bin/jasmine.js",
     "all": "npm run clean && npm run build && npm test",
     "dist:prepare": "shx cp ./package.json ./LICENSE ./README.md ./dist/src",
@@ -37,6 +37,7 @@
   "homepage": "https://github.com/avine/node-treeview#readme",
   "devDependencies": {
     "@types/jasmine": "^2.8.6",
+    "@types/minimatch": "^3.0.3",
     "@types/node": "^9.4.7",
     "@types/yargs": "^11.0.0",
     "istanbul": "^0.4.5",
@@ -49,6 +50,7 @@
     "typescript": "^2.7.2"
   },
   "dependencies": {
+    "minimatch": "^3.0.4",
     "yargs": "^11.0.0"
   }
 }

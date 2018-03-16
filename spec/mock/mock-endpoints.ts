@@ -54,6 +54,12 @@ const entrepoints: { [index: string]: { [index: string]: any } } = {
   'deep-dirs/folder/folder': { type: 'dir', content: ['d', 'c'] }, // (*) unordered
   'deep-dirs/folder/folder/c': { type: 'file', content: 'ccc', size: 3 },
   'deep-dirs/folder/folder/d': { type: 'file', content: 'dddd', size: 4 },
+
+  'pattern': { type: 'dir', content: ['a.html', 'b'] },
+  'pattern/a.html': { type: 'file', content: 'aaa', size: 3 },
+  'pattern/b': { type: 'dir', content: ['c.css', 'd.html'] },
+  'pattern/b/c.css': { type: 'file', content: 'ccc', size: 3 },
+  'pattern/b/d.html': { type: 'file', content: 'ddd', size: 3 },
 };
 
 for (const path in entrepoints) {

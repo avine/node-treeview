@@ -1,5 +1,6 @@
 import { readdir, readFile, stat } from 'fs';
-import { extname, relative, resolve } from 'path';
+import { extname, join, relative, resolve } from 'path';
+import * as minimatch from 'minimatch';
 
 import * as Model from './model';
 import { isBinaryPath } from './helper/binary';
@@ -14,9 +15,9 @@ export class TreeView {
     return files.filter(file => file[0] !== '.');
   }
 
-  opts: Model.IOpts = { content: false, relative: false, depth: false, exclude: [] };
-  providers: Model.IProviders;
-  rootPath: string;
+  opts: Model.IOpts = { content: false, relative: false, depth: false, exclude: [], pattern: '' };
+  providers!: Model.IProviders;
+  rootPath!: string;
 
   constructor(opts?: Model.IOptsParam) {
     this.inject();
@@ -60,7 +61,7 @@ export class TreeView {
             } else {
               TreeView.addTime(item as Model.Item, stats);
               let task;
-              if (stats.isFile()) {
+              if (stats.isFile() && this.matchPattern(item)) {
                 task = this.addFile(item as Model.IFile, stats);
                 list.push(item as Model.IFile);
               } else if (stats.isDirectory() && !this.opts.exclude.includes(pathfile)) {
@@ -79,6 +80,14 @@ export class TreeView {
 
   private getPath(item: Model.IRef) {
     return this.providers.resolve(this.opts.relative ? this.rootPath : '', item.path, item.name);
+  }
+
+  private matchPattern(item: Model.IRef) {
+    if (this.opts.pattern) {
+      return minimatch(join(item.path, item.name), this.opts.pattern);
+    } else {
+      return true;
+    }
   }
 
   private addFile(item: Model.IFile, stats: Model.IStats) {

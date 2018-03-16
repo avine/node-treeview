@@ -1,4 +1,5 @@
 # node-treeview
+
 Asynchronous filesystem tree view for node.
 
 - 100% TypeScript
@@ -145,10 +146,12 @@ export interface IOptsParam {
   depth?: boolean | number;
   // List of directory paths to exclude from output
   exclude?: string[];
+  // Match files based on glob pattern
+  pattern?: string;
 }
 ```
 
-### Example
+### Example with options
 
 ```ts
 import { TreeView } from 'node-treeview';
@@ -188,6 +191,7 @@ new TreeView({ content: false }).process('path/to/dir').then(json => {
 ```
 
 Or for JavaScript style using `require`:
+
 ```js
 const { TreeView } = require('node-treeview');
 const { flatten } = require('node-treeview/helper/flatten');
@@ -245,6 +249,7 @@ Options:
   --depth, -d     Maximum depth of directories            [boolean|number]  [default: false]
   --flatten, -f   Flatten output                                  [boolean] [default: false]
   --exclude, -e   List of directory paths to exclude from output       [array] [default: []]
+  --pattern, -p   Match files based on glob pattern                   [string] [default: ""]
   --output, -o    Output file path                                                  [string]
   --debug         Add debugging information to output             [boolean] [default: false]
 ```

@@ -53,7 +53,8 @@ describe('TreeView cli', () => {
         content: false,
         relative: false,
         depth: false,
-        exclude: []
+        exclude: [],
+        pattern: ''
       });
       expect(result.flatten).toBeFalsy();
       expect(result.outputPath).toBeUndefined();
@@ -68,6 +69,7 @@ describe('TreeView cli', () => {
       '--relative',
       '--depth', '2',
       '--exclude', 'path/1', 'path/2',
+      '--pattern', '**/*',
       '--flatten',
       '--output', './tree.json'
     ], (error, result) => {
@@ -77,7 +79,8 @@ describe('TreeView cli', () => {
         content: true,
         relative: true,
         depth: 2,
-        exclude: ['path/1', 'path/2']
+        exclude: ['path/1', 'path/2'],
+        pattern: '**/*'
       });
       expect(result.flatten).toBeTruthy();
       expect(result.outputPath).toEqual('./tree.json');
@@ -92,6 +95,7 @@ describe('TreeView cli', () => {
       '-r',
       '-d', '2',
       '-e', 'path/1', 'path/2',
+      '-p', '**/*',
       '-f',
       '-o', './tree.json'
     ], (error, result) => {
@@ -101,7 +105,8 @@ describe('TreeView cli', () => {
         content: true,
         relative: true,
         depth: 2,
-        exclude: ['path/1', 'path/2']
+        exclude: ['path/1', 'path/2'],
+        pattern: '**/*'
       });
       expect(result.flatten).toBeTruthy();
       expect(result.outputPath).toEqual('./tree.json');
