@@ -57,6 +57,7 @@ export interface IStats {
 
 export interface IProviders {
   // Like require('path') functions
+  join(...paths: string[]): string;
   resolve(...pathSegments: any[]): string;
   relative(from: string, to: string): string;
 

@@ -26,7 +26,7 @@ export class TreeView {
   }
 
   inject() {
-    this.providers = { resolve, relative, readFile, readdir, stat };
+    this.providers = { join, resolve, relative, readFile, readdir, stat };
   }
 
   process(path: string, cb?: Model.Cb) {
@@ -52,7 +52,7 @@ export class TreeView {
         const tasks: Promise<any>[] = [];
         files.forEach((name) => {
           const itemPath = this.opts.relative ? this.providers.relative(this.rootPath, path) : path;
-          const item: Model.IRef = { name, path: itemPath, pathname: this.providers.resolve(itemPath, name) };
+          const item: Model.IRef = { name, path: itemPath, pathname: this.providers.join(itemPath, name) };
           const pathfile = this.getPath(item);
           this.providers.stat(pathfile, (err, stats: Model.IStats) => {
             if (err) {
@@ -84,7 +84,7 @@ export class TreeView {
 
   private matchPattern(item: Model.IRef) {
     if (this.opts.pattern) {
-      return minimatch(join(item.path, item.name), this.opts.pattern);
+      return minimatch(item.pathname, this.opts.pattern);
     } else {
       return true;
     }

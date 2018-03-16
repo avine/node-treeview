@@ -8,8 +8,12 @@ export const providers: Model.IProviders = {
    *
    * @example resolve('', 'a/', '', '/b', 'c', '') === 'a/b/c'
    */
-  resolve(...path: any[]) {
+  join(...path: any[]) {
     return path.filter(p => p).join('/').replace(/\/+/g, '/');
+  },
+
+  resolve(...path: any[]) {
+    return this.join(...path);
   },
 
   /**
