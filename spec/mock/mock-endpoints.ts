@@ -1,11 +1,15 @@
 // tslint:disable:object-literal-key-quotes
 
 export const DATE = {
-  CREATED: new Date( new Date().getTime() - 1000 * 60 * 60),
+  CREATED: new Date(new Date().getTime() - 1000 * 60 * 60),
   MODIFIED: new Date()
 };
 
-const entrepoints: { [index: string]: { [index: string]: any } } = {
+export interface IEndpoints {
+  [index: string]: { [index: string]: any };
+}
+
+const endpoints: IEndpoints = {
   'empty-dir': { type: 'dir', content: [] },
 
   'files': { type: 'dir', content: ['a', 'b'] },
@@ -70,11 +74,11 @@ const entrepoints: { [index: string]: { [index: string]: any } } = {
   'pattern/b/d.html': { type: 'file', content: 'ddd', size: 3 },
 };
 
-for (const path in entrepoints) {
-  if (entrepoints.hasOwnProperty(path)) {
-    entrepoints[path].created = DATE.CREATED;
-    entrepoints[path].modified = DATE.MODIFIED;
+for (const path in endpoints) {
+  if (endpoints.hasOwnProperty(path)) {
+    endpoints[path].created = DATE.CREATED;
+    endpoints[path].modified = DATE.MODIFIED;
   }
 }
 
-export default entrepoints;
+export default endpoints;

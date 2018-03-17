@@ -168,6 +168,7 @@ describe('TreeView mock options', () => {
         expect(result).toContainItem({ type: 'file', name: 'a', size: 3, content: 'aaa' });
         expect(result).toContainItem({ type: 'file', name: 'b', size: 4, content: 'bbbb' });
       }),
+
       new TreeViewMock(/*{ content: false }*/).process('skip-content').then((result) => {
         expect(result.length).toBe(2);
 

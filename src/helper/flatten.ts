@@ -9,5 +9,5 @@ export function flatten(list: Model.TreeNode[]) {
     }
     return acc;
   }, [])
-  .sort((a, b) => a.pathname > b.pathname ? 1 : -1);
+  .sort((a, b) => a.path > b.path ? 1 : (a.path < b.path ? -1 : (a.name > b.name ? 1 : -1)));
 }
