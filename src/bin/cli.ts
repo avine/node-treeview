@@ -75,9 +75,9 @@ yargs
 
   }).option('pattern', {
     alias: 'p',
-    default: '',
+    default: [],
     describe: 'Match files based on glob pattern',
-    type: 'string'
+    type: 'array'
 
   }).option('output', {
     alias: 'o',

@@ -24,10 +24,10 @@ new TreeView(options).process(path, (error, json) => {
 });
 
 // Using Promise
-new TreeView(options).process(path).then(json => {
-  // do some stuff...
-}).catch(error => {
+new TreeView(options).process(path).catch(error => {
   // handle errors...
+}).then(json => {
+  // do some stuff...
 });
 
 // Using async/await
@@ -147,7 +147,7 @@ export interface IOptsParam {
   // List of directory paths to exclude from output
   exclude?: string[];
   // Match files based on glob pattern
-  pattern?: string;
+  pattern?: string[];
 }
 ```
 
@@ -274,7 +274,7 @@ Options:
   --flatten, -f   Flatten output                                  [boolean] [default: false]
   --clean, -n     Clean empty directories from output             [boolean] [default: false]
   --exclude, -e   List of directory paths to exclude from output       [array] [default: []]
-  --pattern, -p   Match files based on glob pattern                   [string] [default: ""]
+  --pattern, -p   Match files based on glob pattern                    [array] [default: []]
   --output, -o    Output file path                                                  [string]
   --debug         Add debugging information to output             [boolean] [default: false]
 ```

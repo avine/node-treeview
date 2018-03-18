@@ -54,7 +54,7 @@ describe('TreeView cli', () => {
         relative: false,
         depth: false,
         exclude: [],
-        pattern: ''
+        pattern: []
       });
       expect(result.flatten).toBeFalsy();
       expect(result.clean).toBeFalsy();
@@ -70,7 +70,7 @@ describe('TreeView cli', () => {
       '--relative',
       '--depth', '2',
       '--exclude', 'path/1', 'path/2',
-      '--pattern', '**/*',
+      '--pattern', '*.*', '**/*',
       '--flatten',
       '--clean',
       '--output', './tree.json'
@@ -82,7 +82,7 @@ describe('TreeView cli', () => {
         relative: true,
         depth: 2,
         exclude: ['path/1', 'path/2'],
-        pattern: '**/*'
+        pattern: ['*.*', '**/*']
       });
       expect(result.flatten).toBeTruthy();
       expect(result.clean).toBeTruthy();
@@ -98,7 +98,7 @@ describe('TreeView cli', () => {
       '-r',
       '-d', '2',
       '-e', 'path/1', 'path/2',
-      '-p', '**/*',
+      '-p', '*.*', '**/*',
       '-f',
       '-n', // notice: it's "n" (and not "c" which is already used for "content")
       '-o', './tree.json'
@@ -110,7 +110,7 @@ describe('TreeView cli', () => {
         relative: true,
         depth: 2,
         exclude: ['path/1', 'path/2'],
-        pattern: '**/*'
+        pattern: ['*.*', '**/*']
       });
       expect(result.flatten).toBeTruthy();
       expect(result.clean).toBeTruthy();

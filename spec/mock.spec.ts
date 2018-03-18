@@ -273,7 +273,7 @@ describe('TreeView mock options', () => {
         expect(subDir.content).toContainItem({ type: 'file', path: 'pattern/b', name: 'd.html' });
       }),
 
-      new TreeViewMock({ pattern: '**/*.html' }).process('pattern').then((result) => {
+      new TreeViewMock({ pattern: ['**/*.html'] }).process('pattern').then((result) => {
         expect(result).toContainItem({ type: 'file', path: 'pattern', name: 'a.html' });
 
         const subDir = result.filter(r => r.name === 'b')[0] as Model.IDir;
@@ -281,7 +281,7 @@ describe('TreeView mock options', () => {
         expect(subDir.content).toContainItem({ type: 'file', path: 'pattern/b', name: 'd.html' });
       }),
 
-      new TreeViewMock({ pattern: '**/*.css' }).process('pattern').then((result) => {
+      new TreeViewMock({ pattern: ['**/*.css'] }).process('pattern').then((result) => {
         expect(result).not.toContainItem({ type: 'file', path: 'pattern', name: 'a.html' });
 
         const subDir = result.filter(r => r.name === 'b')[0] as Model.IDir;
@@ -289,7 +289,7 @@ describe('TreeView mock options', () => {
         expect(subDir.content).not.toContainItem({ type: 'file', path: 'pattern/b', name: 'd.html' });
       }),
 
-      new TreeViewMock({ pattern: '**/*.js' }).process('pattern').then((result) => {
+      new TreeViewMock({ pattern: ['**/*.js'] }).process('pattern').then((result) => {
         expect(result).not.toContainItem({ type: 'file', path: 'pattern', name: 'a.html' });
 
         const subDir = result.filter(r => r.name === 'b')[0] as Model.IDir;

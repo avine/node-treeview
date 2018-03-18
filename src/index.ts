@@ -20,7 +20,7 @@ export class TreeView {
     relative: false,
     depth: false,
     exclude: [],
-    pattern: ''
+    pattern: []
   };
   providers!: Model.IProviders;
   rootPath!: string;
@@ -89,11 +89,10 @@ export class TreeView {
   }
 
   private matchPattern(item: Model.IRef) {
-    if (this.opts.pattern) {
-      return minimatch(item.pathname, this.opts.pattern);
-    } else {
-      return true;
-    }
+    return this.opts.pattern.reduce(
+      (match: boolean, pattern: string) => match || minimatch(item.pathname, pattern),
+      !this.opts.pattern.length
+    );
   }
 
   private addFile(item: Model.IFile, stats: Model.IStats) {
