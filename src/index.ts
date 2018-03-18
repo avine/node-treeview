@@ -68,7 +68,7 @@ export class TreeView {
             } else {
               TreeView.addTime(item as Model.Item, stats);
               let task;
-              if (stats.isFile() && this.checkFile(item) && (depth !== 0 || this.checkDirectory(item.path))) {
+              if (stats.isFile() && this.checkFile(item.pathname) && (depth !== 0 || this.checkDirectory(item.path))) {
                 task = this.addFile(item as Model.IFile, stats);
                 tree.push(item as Model.IFile);
               } else if (stats.isDirectory() && this.checkDirectory(item.pathname)) {
@@ -89,18 +89,18 @@ export class TreeView {
     return this.providers.resolve(this.opts.relative ? this.rootPath : '', item.path, item.name);
   }
 
-  private checkDirectory(testPath: string) {
+  private checkDirectory(directory: string) {
     const included = this.opts.include.reduce(
-      (match: boolean, incPath: string) => match || testPath.startsWith(incPath),
+      (match: boolean, prefix: string) => match || directory.startsWith(prefix),
       !this.opts.include.length
     );
-    const excluded = this.opts.exclude.includes(testPath);
+    const excluded = this.opts.exclude.includes(directory);
     return included && !excluded;
   }
 
-  private checkFile(item: Model.IRef) {
+  private checkFile(file: string) {
     return this.opts.pattern.reduce(
-      (match: boolean, pattern: string) => match || minimatch(item.pathname, pattern),
+      (match: boolean, pattern: string) => match || minimatch(file, pattern),
       !this.opts.pattern.length
     );
   }
