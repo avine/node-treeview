@@ -23,9 +23,9 @@ describe('TreeView require from ./dist', () => {
     const { clean } = require(cleanPath);
 
     // ...and used ;-)
-    new TreeView().process(basePath).then((result: any) => {
-      const flat = flatten(result);
-      const cleaned = clean(result);
+    new TreeView().process(basePath).then((tree: any) => {
+      const flat = flatten(tree);
+      const cleaned = clean(tree);
       // log(flat);
       // log(cleaned);
       done();

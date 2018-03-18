@@ -42,7 +42,7 @@ export class TreeView {
     return promise;
   }
 
-  private walk(path: string, list: Model.TreeNode[] = [], depth = 0) {
+  private walk(path: string, tree: Model.TreeNode[] = [], depth = 0) {
     return new Promise<Model.TreeNode[]>((success, reject) => {
       this.providers.readdir(path, (error, files) => {
         if (error) {
@@ -52,7 +52,7 @@ export class TreeView {
         files = TreeView.skipHidden(files);
         let pending = files.length;
         if (!pending) {
-          success(list);
+          success(tree);
           return;
         }
         const tasks: Promise<any>[] = [];
@@ -63,21 +63,21 @@ export class TreeView {
           this.providers.stat(pathfile, (err, stats: Model.IStats) => {
             if (err) {
               item.error = err;
-              list.push(item);
+              tree.push(item);
             } else {
               TreeView.addTime(item as Model.Item, stats);
               let task;
               if (stats.isFile() && this.matchPattern(item)) {
                 task = this.addFile(item as Model.IFile, stats);
-                list.push(item as Model.IFile);
+                tree.push(item as Model.IFile);
               } else if (stats.isDirectory() && !this.opts.exclude.includes(item.pathname)) {
                 task = this.addDir(item as Model.IDir, depth);
-                list.push(item as Model.IDir);
+                tree.push(item as Model.IDir);
               }
               if (task) tasks.push(task);
             }
             pending -= 1;
-            if (!pending) Promise.all(tasks).then(() => success(list));
+            if (!pending) Promise.all(tasks).then(() => success(tree));
           });
         });
       });

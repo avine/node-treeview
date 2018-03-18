@@ -15,7 +15,7 @@ Asynchronous filesystem tree view for node.
 const { TreeView } = require('node-treeview');
 
 // Using callback
-new TreeView(options).process(path, (error, json) => {
+new TreeView(options).process(path, (error, tree) => {
   if (error) {
     // handle errors...
   } else {
@@ -26,15 +26,15 @@ new TreeView(options).process(path, (error, json) => {
 // Using Promise
 new TreeView(options).process(path).catch(error => {
   // handle errors...
-}).then(json => {
+}).then(tree => {
   // do some stuff...
 });
 
 // Using async/await
 async function getJson() {
-  let json;
+  let tree;
   try {
-    json = await new TreeView(options).process(path);
+    tree = await new TreeView(options).process(path);
   } catch (error) {
     // handle errors...
   }
@@ -49,7 +49,7 @@ getJson();
 const { TreeView } = require('node-treeview');
 
 new TreeView({ content: true, depth: 2 })
-  .process('path/to/dir').then(json => console.log(json));
+  .process('path/to/dir').then(tree => console.log(tree));
 ```
 
 The output looks like the following `json`:
@@ -163,8 +163,8 @@ const path = 'path/to/dir';
 const promise: Promise<TreeNode[]> =
   new TreeView(options).process(path);
 
-promise.then(json => {
-  json.forEach(item => {
+promise.then(tree => {
+  tree.forEach(item => {
     if ((item as Model.IDir).type === 'dir') {
       // do some stuff...
     } else if ((item as Model.IFile).type === 'file') {
@@ -186,8 +186,8 @@ If you need a flat version of the tree, use the `flatten` helper.
 import { TreeView } from 'node-treeview';
 import { flatten } from 'node-treeview/helper/flatten';
 
-new TreeView().process('path/to/dir').then(json => {
-  const flat = flatten(json);
+new TreeView().process('path/to/dir').then(tree => {
+  const flat = flatten(tree);
   console.log(flat);
 });
 ```
@@ -244,8 +244,8 @@ If you need to clean empty directories from the tree, use the `clean` helper.
 import { TreeView } from 'node-treeview';
 import { clean } from 'node-treeview/helper/clean';
 
-new TreeView().process('path/to/dir').then(json => {
-  const cleaned = clean(json);
+new TreeView().process('path/to/dir').then(tree => {
+  const cleaned = clean(tree);
   console.log(cleaned);
 });
 ```

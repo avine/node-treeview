@@ -19,15 +19,15 @@ describe('TreeView e2e', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   it('should works!', (done) => {
-    new TreeView({ content: true }).process(basePath).then((result) => {
-      expect(result).toContainItem({
+    new TreeView({ content: true }).process(basePath).then((tree) => {
+      expect(tree).toContainItem({
         type: 'file', path: basePath, name: 'a', content: 'aaa', size: 3, binary: false
       });
-      expect(result).toContainItem({
+      expect(tree).toContainItem({
         type: 'dir', path: basePath, name: 'sub'
       });
 
-      let filtered = result.filter(r => r.name === 'sub');
+      let filtered = tree.filter(r => r.name === 'sub');
       const sub = filtered[0] as Model.IDir;
       expect(sub.content).toContainItem({
         type: 'file', path: subPath, name: 'b.txt', content: 'bbb', size: 3, binary: false
