@@ -70,7 +70,7 @@ export class TreeView {
               if (stats.isFile() && this.matchPattern(item)) {
                 task = this.addFile(item as Model.IFile, stats);
                 list.push(item as Model.IFile);
-              } else if (stats.isDirectory() && !this.opts.exclude.includes(pathfile)) {
+              } else if (stats.isDirectory() && !this.opts.exclude.includes(item.pathname)) {
                 task = this.addDir(item as Model.IDir, depth);
                 list.push(item as Model.IDir);
               }
