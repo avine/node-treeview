@@ -67,6 +67,12 @@ yargs
     describe: 'Clean empty directories from output',
     type: 'boolean'
 
+  }).option('include', {
+    alias: 'i',
+    default: [],
+    describe: 'List of directory paths to include in output',
+    type: 'array'
+
   }).option('exclude', {
     alias: 'e',
     default: [],
@@ -94,9 +100,9 @@ yargs
 // log(yargs.argv); // For debugging
 
 const path = yargs.argv._[0];
-const { content, relative, depth, exclude, pattern } = yargs.argv;
+const { content, relative, depth, include, exclude, pattern } = yargs.argv;
 if (path) {
-  new TreeView({ content, relative, depth, exclude, pattern })
+  new TreeView({ content, relative, depth, include, exclude, pattern })
     .process(path)
     .then((result) => {
       // Note that if the output is flattened there's no need to clean it!
@@ -108,7 +114,7 @@ if (path) {
       const outputPath = yargs.argv.output;
       if (yargs.argv.debug) {
         const debug: IDebug = {
-          opts: { content, relative, depth, exclude, pattern },
+          opts: { content, relative, depth, include, exclude, pattern },
           path,
           flatten: yargs.argv.flatten,
           clean: yargs.argv.clean,

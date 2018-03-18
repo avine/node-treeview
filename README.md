@@ -144,6 +144,8 @@ export interface IOptsParam {
   relative?: boolean;
   // Maximum depth of directories
   depth?: boolean | number;
+  // List of directory paths to include in output
+  include?: string[];
   // List of directory paths to exclude from output
   exclude?: string[];
   // Match files based on glob pattern
@@ -273,6 +275,7 @@ Options:
   --depth, -d     Maximum depth of directories            [boolean|number]  [default: false]
   --flatten, -f   Flatten output                                  [boolean] [default: false]
   --clean, -n     Clean empty directories from output             [boolean] [default: false]
+  --include, -i   List of directory paths to include in output         [array] [default: []]
   --exclude, -e   List of directory paths to exclude from output       [array] [default: []]
   --pattern, -p   Match files based on glob pattern                    [array] [default: []]
   --output, -o    Output file path                                                  [string]

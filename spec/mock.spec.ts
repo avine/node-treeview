@@ -208,6 +208,30 @@ describe('TreeView mock options', () => {
     ]).then(done);
   });
 
+  it('should use relative path', (done) => {
+    new TreeViewMock({ relative: true }).process('deep-dirs').then((tree) => {
+      expect(tree).toContainItem({ type: 'file', path: '', name: 'a', pathname: 'a' });
+      expect(tree).toContainItem({ type: 'dir', path: '', name: 'folder', pathname: 'folder' });
+
+      const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
+      expect(subDir.content).toContainItem({ type: 'file', path: 'folder', name: 'b', pathname: 'folder/b' });
+      expect(subDir.content).toContainItem({ type: 'dir', path: 'folder', name: 'folder', pathname: 'folder/folder' });
+
+      const deepDir = subDir.content.filter(r => r.name === 'folder')[0] as Model.IDir;
+      expect(deepDir.content).toContainItem({
+        name: 'c', path: 'folder/folder', pathname: 'folder/folder/c', type: 'file' });
+      expect(deepDir.content).toContainItem({
+        name: 'd', path: 'folder/folder', pathname: 'folder/folder/d', type: 'file' });
+
+      done();
+    });
+  });
+
+  /*it('should include directories', (done) => {
+    // TODO...
+    done();
+  });*/
+
   it('should exclude directories', (done) => {
     Promise.all([
       // Remove sub-folder
@@ -243,26 +267,7 @@ describe('TreeView mock options', () => {
     ]).then(done);
   });
 
-  it('should use relative path', (done) => {
-    new TreeViewMock({ relative: true }).process('deep-dirs').then((tree) => {
-      expect(tree).toContainItem({ type: 'file', path: '', name: 'a', pathname: 'a' });
-      expect(tree).toContainItem({ type: 'dir', path: '', name: 'folder', pathname: 'folder' });
-
-      const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
-      expect(subDir.content).toContainItem({ type: 'file', path: 'folder', name: 'b', pathname: 'folder/b' });
-      expect(subDir.content).toContainItem({ type: 'dir', path: 'folder', name: 'folder', pathname: 'folder/folder' });
-
-      const deepDir = subDir.content.filter(r => r.name === 'folder')[0] as Model.IDir;
-      expect(deepDir.content).toContainItem({
-        name: 'c', path: 'folder/folder', pathname: 'folder/folder/c', type: 'file' });
-      expect(deepDir.content).toContainItem({
-        name: 'd', path: 'folder/folder', pathname: 'folder/folder/d', type: 'file' });
-
-      done();
-    });
-  });
-
-  it('should match glob', (done) => {
+  it('should match glob pattern', (done) => {
     Promise.all([
       // Check without pattern
       new TreeViewMock().process('pattern').then((tree) => {

@@ -31,6 +31,8 @@ export interface IOpts {
   relative: boolean;
   // Maximum depth of directories
   depth: boolean | number;
+  // List of directory paths to include in output
+  include: string[];
   // List of directory paths to exclude from output
   exclude: string[];
   // Match files based on glob pattern
@@ -42,6 +44,7 @@ export interface IOptsParam {
   content?: boolean;
   relative?: boolean;
   depth?: boolean | number;
+  include?: string[];
   exclude?: string[];
   pattern?: string[];
 }

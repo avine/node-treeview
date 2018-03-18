@@ -19,6 +19,7 @@ export class TreeView {
     content: false,
     relative: false,
     depth: false,
+    include: [],
     exclude: [],
     pattern: []
   };
@@ -67,10 +68,10 @@ export class TreeView {
             } else {
               TreeView.addTime(item as Model.Item, stats);
               let task;
-              if (stats.isFile() && this.matchPattern(item)) {
+              if (stats.isFile() && this.checkFile(item) && (depth !== 0 || this.checkDirectory(item.path))) {
                 task = this.addFile(item as Model.IFile, stats);
                 tree.push(item as Model.IFile);
-              } else if (stats.isDirectory() && !this.opts.exclude.includes(item.pathname)) {
+              } else if (stats.isDirectory() && this.checkDirectory(item.pathname)) {
                 task = this.addDir(item as Model.IDir, depth);
                 tree.push(item as Model.IDir);
               }
@@ -88,7 +89,16 @@ export class TreeView {
     return this.providers.resolve(this.opts.relative ? this.rootPath : '', item.path, item.name);
   }
 
-  private matchPattern(item: Model.IRef) {
+  private checkDirectory(testPath: string) {
+    const included = this.opts.include.reduce(
+      (match: boolean, incPath: string) => match || testPath.startsWith(incPath),
+      !this.opts.include.length
+    );
+    const excluded = this.opts.exclude.includes(testPath);
+    return included && !excluded;
+  }
+
+  private checkFile(item: Model.IRef) {
     return this.opts.pattern.reduce(
       (match: boolean, pattern: string) => match || minimatch(item.pathname, pattern),
       !this.opts.pattern.length
