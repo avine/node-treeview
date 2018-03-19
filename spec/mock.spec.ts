@@ -233,10 +233,43 @@ describe('TreeView mock options', () => {
     });
   });
 
-  /*it('should include directories', (done) => {
-    // TODO...
-    done();
-  });*/
+  it('should include directories', (done) => {
+    Promise.all([
+      // Include deep-folder
+      new TreeViewMock({ include: ['./deep-dirs/folder/folder'] }).process('./deep-dirs').then((tree) => {
+        expect(tree.length).toBe(1);
+        expect(tree).not.toContainItem({ type: 'file', name: 'a' });
+        expect(tree).toContainItem({ type: 'dir', name: 'folder' });
+
+        const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
+        expect(subDir.content.length).toBe(1);
+        expect(subDir.content).not.toContainItem({ type: 'file', name: 'b' });
+        expect(subDir.content).toContainItem({ type: 'dir', name: 'folder' });
+
+        const deepDir = subDir.content.filter(r => r.name === 'folder')[0] as Model.IDir;
+        expect(deepDir.content.length).toBe(2);
+        expect(deepDir.content).toContainItem({ type: 'file', name: 'c' });
+        expect(deepDir.content).toContainItem({ type: 'file', name: 'd' });
+      }),
+
+      // Check original
+      new TreeViewMock({ include: [] }).process('./deep-dirs').then((tree) => {
+        expect(tree.length).toBe(2);
+        expect(tree).toContainItem({ type: 'file', name: 'a' });
+        expect(tree).toContainItem({ type: 'dir', name: 'folder' });
+
+        const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
+        expect(subDir.content.length).toBe(2);
+        expect(subDir.content).toContainItem({ type: 'file', name: 'b' });
+        expect(subDir.content).toContainItem({ type: 'dir', name: 'folder' });
+
+        const deepDir = subDir.content.filter(r => r.name === 'folder')[0] as Model.IDir;
+        expect(deepDir.content.length).toBe(2);
+        expect(deepDir.content).toContainItem({ type: 'file', name: 'c' });
+        expect(deepDir.content).toContainItem({ type: 'file', name: 'd' });
+      })
+    ]).then(done);
+  });
 
   it('should exclude directories', (done) => {
     Promise.all([
@@ -269,6 +302,11 @@ describe('TreeView mock options', () => {
         expect(subDir.content.length).toBe(2);
         expect(subDir.content).toContainItem({ type: 'file', name: 'b' });
         expect(subDir.content).toContainItem({ type: 'dir', name: 'folder' });
+
+        const deepDir = subDir.content.filter(r => r.name === 'folder')[0] as Model.IDir;
+        expect(deepDir.content.length).toBe(2);
+        expect(deepDir.content).toContainItem({ type: 'file', name: 'c' });
+        expect(deepDir.content).toContainItem({ type: 'file', name: 'd' });
       })
     ]).then(done);
   });

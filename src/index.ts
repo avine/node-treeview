@@ -74,7 +74,7 @@ export class TreeView {
             } else {
               TreeView.addTime(item as Model.Item, stats);
               let task;
-              if (stats.isFile() && this.checkFile(item.pathname) && (depth !== 0 || this.checkDirectory(item.path))) {
+              if (stats.isFile() && this.checkFile(item.pathname) && this.checkDirectory(item.path, true)) {
                 task = this.addFile(item as Model.IFile, stats);
                 tree.push(item as Model.IFile);
               } else if (stats.isDirectory() && this.checkDirectory(item.pathname)) {
@@ -102,9 +102,9 @@ export class TreeView {
     );
   }
 
-  private checkDirectory(directory: string) {
+  private checkDirectory(directory: string, strict = false) {
     const included = this.opts.include.reduce(
-      (match: boolean, prefix: string) => match || directory.startsWith(prefix),
+      (match: boolean, path: string) => match || (strict ? directory.startsWith(path) : path.startsWith(directory)),
       !this.opts.include.length
     );
     const excluded = this.opts.exclude.includes(directory);
