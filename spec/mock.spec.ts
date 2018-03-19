@@ -160,7 +160,7 @@ describe('TreeView mock spies', () => {
 describe('TreeView mock options', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
-  it('should skip files content', (done) => {
+  it('should add files content', (done) => {
     Promise.all([
       new TreeViewMock({ content: true }).process('./skip-content').then((tree) => {
         expect(tree.length).toBe(2);
@@ -234,44 +234,50 @@ describe('TreeView mock options', () => {
   });
 
   it('should include directories', (done) => {
+    const callback = (tree: Model.TreeNode[]) => {
+      // Skip file `./deep-dirs/a`
+      expect(tree.length).toBe(1);
+      expect(tree).not.toContainItem({ type: 'file', name: 'a' });
+      expect(tree).toContainItem({ type: 'dir', name: 'folder' });
+
+      // Skip file `./deep-dirs/folder/b`
+      const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
+      expect(subDir.content.length).toBe(1);
+      expect(subDir.content).not.toContainItem({ type: 'file', name: 'b' });
+      expect(subDir.content).toContainItem({ type: 'dir', name: 'folder' });
+
+      // Keep files `./deep-dirs/folder/folder/c` and  `./deep-dirs/folder/folder/d`
+      const deepDir = subDir.content.filter(r => r.name === 'folder')[0] as Model.IDir;
+      expect(deepDir.content.length).toBe(2);
+      expect(deepDir.content).toContainItem({ type: 'file', name: 'c' });
+      expect(deepDir.content).toContainItem({ type: 'file', name: 'd' });
+    };
+
     Promise.all([
-      // Include deep-folder
-      new TreeViewMock({ include: ['./deep-dirs/folder/folder'] }).process('./deep-dirs').then((tree) => {
-        expect(tree.length).toBe(1);
-        expect(tree).not.toContainItem({ type: 'file', name: 'a' });
-        expect(tree).toContainItem({ type: 'dir', name: 'folder' });
+      // Use relative path to define the option `include` but process the tree with absolute paths.
+      new TreeViewMock({
+        include: ['./deep-dirs/folder/folder']/*, relative: false*/
+      }).process('./deep-dirs').then(callback),
 
-        const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
-        expect(subDir.content.length).toBe(1);
-        expect(subDir.content).not.toContainItem({ type: 'file', name: 'b' });
-        expect(subDir.content).toContainItem({ type: 'dir', name: 'folder' });
-
-        const deepDir = subDir.content.filter(r => r.name === 'folder')[0] as Model.IDir;
-        expect(deepDir.content.length).toBe(2);
-        expect(deepDir.content).toContainItem({ type: 'file', name: 'c' });
-        expect(deepDir.content).toContainItem({ type: 'file', name: 'd' });
-      }),
-
-      // Check original
-      new TreeViewMock({ include: [] }).process('./deep-dirs').then((tree) => {
-        expect(tree.length).toBe(2);
-        expect(tree).toContainItem({ type: 'file', name: 'a' });
-        expect(tree).toContainItem({ type: 'dir', name: 'folder' });
-
-        const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
-        expect(subDir.content.length).toBe(2);
-        expect(subDir.content).toContainItem({ type: 'file', name: 'b' });
-        expect(subDir.content).toContainItem({ type: 'dir', name: 'folder' });
-
-        const deepDir = subDir.content.filter(r => r.name === 'folder')[0] as Model.IDir;
-        expect(deepDir.content.length).toBe(2);
-        expect(deepDir.content).toContainItem({ type: 'file', name: 'c' });
-        expect(deepDir.content).toContainItem({ type: 'file', name: 'd' });
-      })
+      // Use absolute path to define the option `include` but process the tree with relative paths.
+      new TreeViewMock({
+        include: ['/root/deep-dirs/folder/folder'], relative: true
+      }).process('./deep-dirs').then(callback),
     ]).then(done);
   });
 
   it('should exclude directories', (done) => {
+    const callback = (tree: Model.TreeNode[]) => {
+      expect(tree.length).toBe(2);
+      expect(tree).toContainItem({ type: 'file', name: 'a' });
+      expect(tree).toContainItem({ type: 'dir', name: 'folder' });
+
+      const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
+      expect(subDir.content.length).toBe(1);
+      expect(subDir.content).toContainItem({ type: 'file', name: 'b' });
+      expect(subDir.content).not.toContainItem({ type: 'dir', name: 'folder' });
+    };
+
     Promise.all([
       // Remove sub-folder
       new TreeViewMock({ exclude: ['./deep-dirs/folder'] }).process('./deep-dirs').then((tree) => {
@@ -281,19 +287,17 @@ describe('TreeView mock options', () => {
       }),
 
       // Remove deep-folder
-      new TreeViewMock({ exclude: ['./deep-dirs/folder/folder'] }).process('./deep-dirs').then((tree) => {
-        expect(tree.length).toBe(2);
-        expect(tree).toContainItem({ type: 'file', name: 'a' });
-        expect(tree).toContainItem({ type: 'dir', name: 'folder' });
+      // Use relative path to define the option `exclude` but process the tree with absolute paths.
+      new TreeViewMock({
+        exclude: ['./deep-dirs/folder/folder']/*, relative: false*/
+      }).process('./deep-dirs').then(callback),
+      // Use absolute path to define the option `exclude` but process the tree with relative paths.
+      new TreeViewMock({
+        exclude: ['/root/deep-dirs/folder/folder'], relative: true
+      }).process('./deep-dirs').then(callback),
 
-        const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
-        expect(subDir.content.length).toBe(1);
-        expect(subDir.content).toContainItem({ type: 'file', name: 'b' });
-        expect(subDir.content).not.toContainItem({ type: 'dir', name: 'folder' });
-      }),
-
-      // Check original
-      new TreeViewMock({ exclude: [] }).process('./deep-dirs').then((tree) => {
+      // Check original without any `include` or `exclude` options
+      new TreeViewMock({ include: [], exclude: [] }).process('./deep-dirs').then((tree) => {
         expect(tree.length).toBe(2);
         expect(tree).toContainItem({ type: 'file', name: 'a' });
         expect(tree).toContainItem({ type: 'dir', name: 'folder' });

@@ -64,8 +64,14 @@ export class TreeView {
         }
         const tasks: Promise<any>[] = [];
         files.forEach((name) => {
+          // `path` and `pathname` are always absolute
+          const pathname = this.providers.resolve(path, name);
+
+          // while `itemPath` and `itemPathname` are relative when the option `relative` is `true`.
           const itemPath = this.opts.relative ? this.providers.relative(this.rootPath, path) : path;
-          const item: Model.IRef = { name, path: itemPath, pathname: this.providers.join(itemPath, name) };
+          const itemPathname = this.opts.relative ? this.providers.join(itemPath, name) : pathname;
+
+          const item: Model.IRef = { name, path: itemPath, pathname: itemPathname };
           const pathfile = this.getPath(item);
           this.providers.stat(pathfile, (err, stats: Model.IStats) => {
             if (err) {
@@ -74,10 +80,15 @@ export class TreeView {
             } else {
               TreeView.addTime(item as Model.Item, stats);
               let task;
-              if (stats.isFile() && this.checkFile(item.pathname) && this.checkDirectory(item.path, true)) {
+
+              // The glob pattern should match "absolute path" when the
+              // option `relative` is `false` and "relative path" otherwise.
+              // Accordingly, we check the file against `item.pathname` (and not `pathname`).
+              // On the other hand, we check the directory against `path` or `pathname` which are always absolute.
+              if (stats.isFile() && this.checkFile(item.pathname) && this.checkDirectory(path, true)) {
                 task = this.addFile(item as Model.IFile, stats);
                 tree.push(item as Model.IFile);
-              } else if (stats.isDirectory() && this.checkDirectory(item.pathname)) {
+              } else if (stats.isDirectory() && this.checkDirectory(pathname)) {
                 task = this.addDir(item as Model.IDir, depth);
                 tree.push(item as Model.IDir);
               }
