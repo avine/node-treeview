@@ -4,21 +4,30 @@ import endpoints from './mock-endpoints';
 export const providers: Model.IProviders = {
   /**
    * Join non empty parts of the path.
-   * Remove duplicate `/` from the return.
    *
-   * @example resolve('', 'a/', '', '/b', 'c', '') === 'a/b/c'
+   * @example join('', './a/', './', '', 'b', './c', '') === 'a/b/c'
    */
   join(...path: any[]) {
-    return path.filter(p => p).join('/').replace(/\/+/g, '/');
+    return path
+      .map(p => p.replace(/^\.\//, ''))
+      .filter(p => p)
+      .join('/')
+      .replace(/\/+/g, '/');
   },
 
+  /**
+   * Resolve path by adding `/root` at the begining
+   *
+   * @example resolve('', './a/', './', '', 'b', './c', '') === '/root/a/b/c'
+   */
   resolve(...path: any[]) {
-    return this.join(...path);
+    const joined = this.join(...path);
+    return joined.startsWith('/') ? joined : this.join('/root', joined);
   },
 
   /**
    * Remove `from` at the beginning of `to`.
-   * Also remove `/` at the beginning of the return.
+   * Also remove `/` at the beginning.
    *
    * @example relative('/a/b', '/a/b/c/d') === 'c/d'
    */

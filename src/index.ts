@@ -29,7 +29,7 @@ export class TreeView {
   constructor(opts?: Model.IOptsParam) {
     this.inject();
     Object.assign(this.opts, opts || {});
-    this.opts.exclude.map(path => this.providers.resolve(path));
+    this.formatOpts();
   }
 
   inject() {
@@ -41,6 +41,12 @@ export class TreeView {
     const promise = this.walk(this.rootPath);
     if (cb) promise.then(result => cb(null, result), error => cb(error));
     return promise;
+  }
+
+  private formatOpts() {
+    [this.opts.include, this.opts.exclude].forEach(paths =>
+      paths.forEach((path, n: number) => paths[n] = this.providers.resolve(path))
+    );
   }
 
   private walk(path: string, tree: Model.TreeNode[] = [], depth = 0) {
@@ -89,6 +95,13 @@ export class TreeView {
     return this.providers.resolve(this.opts.relative ? this.rootPath : '', item.path, item.name);
   }
 
+  private checkFile(file: string) {
+    return this.opts.pattern.reduce(
+      (match: boolean, pattern: string) => match || minimatch(file, pattern),
+      !this.opts.pattern.length
+    );
+  }
+
   private checkDirectory(directory: string) {
     const included = this.opts.include.reduce(
       (match: boolean, prefix: string) => match || directory.startsWith(prefix),
@@ -96,13 +109,6 @@ export class TreeView {
     );
     const excluded = this.opts.exclude.includes(directory);
     return included && !excluded;
-  }
-
-  private checkFile(file: string) {
-    return this.opts.pattern.reduce(
-      (match: boolean, pattern: string) => match || minimatch(file, pattern),
-      !this.opts.pattern.length
-    );
   }
 
   private addFile(item: Model.IFile, stats: Model.IStats) {

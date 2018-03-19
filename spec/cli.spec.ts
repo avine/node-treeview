@@ -83,8 +83,8 @@ describe('TreeView cli', () => {
         content: true,
         relative: true,
         depth: 2,
-        include: ['path/1', 'path/2'],
-        exclude: ['path/3', 'path/4'],
+        include: [resolve('path/1'), resolve('path/2')],
+        exclude: [resolve('path/3'), resolve('path/4')],
         pattern: ['*.*', '**/*']
       });
       expect(result.flatten).toBeTruthy();
@@ -113,8 +113,8 @@ describe('TreeView cli', () => {
         content: true,
         relative: true,
         depth: 2,
-        include: ['path/1', 'path/2'],
-        exclude: ['path/3', 'path/4'],
+        include: [resolve('path/1'), resolve('path/2')],
+        exclude: [resolve('path/3'), resolve('path/4')],
         pattern: ['*.*', '**/*']
       });
       expect(result.flatten).toBeTruthy();

@@ -24,14 +24,14 @@ describe('TreeView helper', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   it('should flatten tree', (done) => {
-    new TreeViewMock().process('deep-dirs').then((tree) => {
+    new TreeViewMock().process('./deep-dirs').then((tree) => {
       const flat = flatten(tree);
 
       // Check that `flat` is flatten and ordered
-      expect([flat[0]]).toContainItem({ type: 'file', name: 'a', path: 'deep-dirs' });
-      expect([flat[1]]).toContainItem({ type: 'file', name: 'b', path: 'deep-dirs/folder' });
-      expect([flat[2]]).toContainItem({ type: 'file', name: 'c', path: 'deep-dirs/folder/folder' });
-      expect([flat[3]]).toContainItem({ type: 'file', name: 'd', path: 'deep-dirs/folder/folder' });
+      expect([flat[0]]).toContainItem({ type: 'file', name: 'a', path: '/root/deep-dirs' });
+      expect([flat[1]]).toContainItem({ type: 'file', name: 'b', path: '/root/deep-dirs/folder' });
+      expect([flat[2]]).toContainItem({ type: 'file', name: 'c', path: '/root/deep-dirs/folder/folder' });
+      expect([flat[3]]).toContainItem({ type: 'file', name: 'd', path: '/root/deep-dirs/folder/folder' });
 
       done();
     });
@@ -39,26 +39,30 @@ describe('TreeView helper', () => {
 
   it('should clean tree', (done) => {
     Promise.all([
-      new TreeViewMock().process('clean').then((tree) => {
-        expect(tree).toContainItem({ type: 'file', path: 'clean', name: 'a', pathname: 'clean/a' });
-        expect(tree).toContainItem({ type: 'dir', path: 'clean', name: 'b', pathname: 'clean/b' });
-        expect(tree).toContainItem({ type: 'dir', path: 'clean', name: 'c', pathname: 'clean/c' });
-        expect(tree).toContainItem({ type: 'dir', path: 'clean', name: 'd', pathname: 'clean/d' });
+      new TreeViewMock().process('./clean').then((tree) => {
+        expect(tree).toContainItem({ type: 'file', path: '/root/clean', name: 'a', pathname: '/root/clean/a' });
+        expect(tree).toContainItem({ type: 'dir', path: '/root/clean', name: 'b', pathname: '/root/clean/b' });
+        expect(tree).toContainItem({ type: 'dir', path: '/root/clean', name: 'c', pathname: '/root/clean/c' });
+        expect(tree).toContainItem({ type: 'dir', path: '/root/clean', name: 'd', pathname: '/root/clean/d' });
 
         const subDir = tree.filter(r => r.name === 'd')[0] as Model.IDir;
-        expect(subDir.content).toContainItem({ type: 'file', path: 'clean/d', name: 'f', pathname: 'clean/d/f' });
+        expect(subDir.content).toContainItem({
+          type: 'file', path: '/root/clean/d', name: 'f', pathname: '/root/clean/d/f'
+        });
       }),
 
-      new TreeViewMock().process('clean').then((tree) => {
+      new TreeViewMock().process('./clean').then((tree) => {
         const cleaned = clean(tree);
 
-        expect(cleaned).toContainItem({ type: 'file', path: 'clean', name: 'a', pathname: 'clean/a' });
-        expect(cleaned).not.toContainItem({ type: 'dir', path: 'clean', name: 'b', pathname: 'clean/b' });
-        expect(cleaned).not.toContainItem({ type: 'dir', path: 'clean', name: 'c', pathname: 'clean/c' });
-        expect(cleaned).toContainItem({ type: 'dir', path: 'clean', name: 'd', pathname: 'clean/d' });
+        expect(cleaned).toContainItem({ type: 'file', path: '/root/clean', name: 'a', pathname: '/root/clean/a' });
+        expect(cleaned).not.toContainItem({ type: 'dir', path: '/root/clean', name: 'b', pathname: '/root/clean/b' });
+        expect(cleaned).not.toContainItem({ type: 'dir', path: '/root/clean', name: 'c', pathname: '/root/clean/c' });
+        expect(cleaned).toContainItem({ type: 'dir', path: '/root/clean', name: 'd', pathname: '/root/clean/d' });
 
         const subDir = cleaned.filter(r => r.name === 'd')[0] as Model.IDir;
-        expect(subDir.content).toContainItem({ type: 'file', path: 'clean/d', name: 'f', pathname: 'clean/d/f' });
+        expect(subDir.content).toContainItem({
+          type: 'file', path: '/root/clean/d', name: 'f', pathname: '/root/clean/d/f'
+        });
       })
     ]).then(done);
   });
