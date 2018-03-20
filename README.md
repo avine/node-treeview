@@ -99,9 +99,29 @@ The output looks like the following `json`:
 }]
 ```
 
+It is also possible to listen to events.
+
+```js
+const { TreeView } = require('node-treeview');
+
+new TreeView().listen((data, opts) => {
+  console.log(`${data.type}: ${data.pathname}`);
+}).process('path/to/dir').then(() => console.log('done!'));
+```
+
+Output:
+
+```txt
+file: path/to/dir/file1.txt
+dir: path/to/dir/subdir
+file: path/to/dir/subdir/file2.txt
+file: path/to/dir/subdir/logo.png
+done!
+```
+
 ## TypeScript
 
-### Interfaces basics
+### Interface overview
 
 ```ts
 // Basic interface of files and directories (used for unreadable resource)
@@ -153,7 +173,7 @@ export interface IOptsParam {
 }
 ```
 
-### Example with options
+### Using type
 
 ```ts
 import { TreeView } from 'node-treeview';
