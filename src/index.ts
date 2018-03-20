@@ -24,19 +24,14 @@ export class TreeView {
     exclude: [],
     pattern: []
   };
+  events = new EventEmitter();
   providers!: Model.IProviders;
   rootPath!: string;
-
-  events = new EventEmitter();
 
   constructor(opts?: Model.IOptsParam) {
     this.inject();
     Object.assign(this.opts, opts || {});
     this.formatOpts();
-  }
-
-  inject() {
-    this.providers = { join, resolve, relative, readFile, readdir, stat };
   }
 
   listen(listener: Model.Listener) {
@@ -54,6 +49,10 @@ export class TreeView {
     const promise = this.walk(this.rootPath);
     if (cb) promise.then(result => cb(null, result), error => cb(error));
     return promise;
+  }
+
+  protected inject() {
+    this.providers = { join, resolve, relative, readFile, readdir, stat };
   }
 
   private formatOpts() {
