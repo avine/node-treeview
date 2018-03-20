@@ -46,7 +46,9 @@ describe('TreeView mock', () => {
 
       // Using callback interface
       new TreeViewMock().process('./empty-dir', (error, tree) => {
-        expect(tree.length).toBe(0);
+        if (tree) {
+          expect(tree.length).toBe(0);
+        }
       })
     ]).then(done);
   });

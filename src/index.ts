@@ -47,7 +47,7 @@ export class TreeView {
   process(path: string, cb?: Model.Cb) {
     this.rootPath = this.providers.resolve(path);
     const promise = this.walk(this.rootPath);
-    if (cb) promise.then(result => cb(null, result), error => cb(error));
+    if (cb) promise.then(tree => cb(null, tree), error => cb(error));
     return promise;
   }
 
@@ -88,6 +88,7 @@ export class TreeView {
           this.providers.stat(pathfile, (err, stats: Model.IStats) => {
             if (err) {
               item.error = err;
+              this.emit(item);
               tree.push(item);
             } else {
               TreeView.addTime(item as Model.Item, stats);
@@ -177,11 +178,14 @@ export class TreeView {
 
   /**
    * Emit an event each time a file or a directory is discovered.
-   *
-   * Note: the `content` property of the emitted `item` is always an empty array!
    */
-  private emit(item: Model.IFile | Model.IDir) {
-    // Note: we should match the signature of `Model.Listener`
-    this.events.emit('item', { ...item, content: [] }, this.opts);
+  private emit(item: Model.TreeNode) {
+    const data = { ...item };
+    if (!item.error) {
+      // When available, the `content` property of the emitted `item` is always an empty array!
+      (data as Model.Item).content = [];
+    }
+    // We should match the signature of `Model.Listener`
+    this.events.emit('item', data, this.opts);
   }
 }

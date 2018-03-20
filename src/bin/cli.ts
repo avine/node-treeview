@@ -104,13 +104,13 @@ const { content, relative, depth, include, exclude, pattern } = yargs.argv;
 if (path) {
   new TreeView({ content, relative, depth, include, exclude, pattern })
     .process(path)
-    .then((result) => {
+    .then((tree) => {
       // Note that if the output is flattened there's no need to clean it!
       // Because the flatten version only contains the files (and not the directories).
       const output =
-        yargs.argv.flatten ? flatten(result) :
-        yargs.argv.clean ? clean(result) :
-        result;
+        yargs.argv.flatten ? flatten(tree) :
+        yargs.argv.clean ? clean(tree) :
+        tree;
       const outputPath = yargs.argv.output;
       if (yargs.argv.debug) {
         const debug: IDebug = {

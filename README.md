@@ -16,18 +16,18 @@ const { TreeView } = require('node-treeview');
 
 // Using callback
 new TreeView(options).process(path, (error, tree) => {
-  if (error) {
-    // handle errors...
-  } else {
+  if (tree) {
     // do some stuff...
+  } else {
+    // handle errors...
   }
 });
 
 // Using Promise
-new TreeView(options).process(path).catch(error => {
-  // handle errors...
-}).then(tree => {
+new TreeView(options).process(path).then(tree => {
   // do some stuff...
+}).catch(error => {
+  // handle errors...
 });
 
 // Using async/await
