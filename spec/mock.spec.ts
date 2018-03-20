@@ -354,7 +354,7 @@ describe('TreeView mock options', () => {
     ]).then(done);
   });
 
-  it('should listen to events', (done) => {
+  it('should add listener', (done) => {
     let list: string[] = [];
     new TreeViewMock().listen((data) => {
       list.push(data.pathname);
@@ -368,6 +368,22 @@ describe('TreeView mock options', () => {
         '/root/deep-dirs/folder/folder/c',
         '/root/deep-dirs/folder/folder/d'
       ]);
+      done();
+    });
+  });
+
+  it('should remove listener', (done) => {
+    let count = 0;
+    const treeView = new TreeViewMock();
+    treeView.listen((data) => {
+      if (count === 2) {
+        treeView.removeListeners();
+      }
+      count++;
+    });
+    treeView.process('./deep-dirs').then(() => {
+      // We should get only 3 data instead of 6!
+      expect(count).toBe(3);
       done();
     });
   });
