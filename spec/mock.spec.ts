@@ -353,4 +353,22 @@ describe('TreeView mock options', () => {
       })
     ]).then(done);
   });
+
+  it('should listen to events', (done) => {
+    let list: string[] = [];
+    new TreeViewMock().listen((data) => {
+      list.push(data.pathname);
+    }).process('./deep-dirs').then(() => {
+      list = list.sort((a, b) => a > b ? 1 : a < b ? -1 : 0);
+      expect(list).toEqual([
+        '/root/deep-dirs/a',
+        '/root/deep-dirs/folder',
+        '/root/deep-dirs/folder/b',
+        '/root/deep-dirs/folder/folder',
+        '/root/deep-dirs/folder/folder/c',
+        '/root/deep-dirs/folder/folder/d'
+      ]);
+      done();
+    });
+  });
 });
