@@ -78,3 +78,5 @@ export type TreeNode = Item | IRef;
 
 export type Cb = (error: Err, result?: any) => any;
 export type Err = Error | null | undefined;
+
+export type Listener = (item: IFile | IDir, opts: IOpts) => void;

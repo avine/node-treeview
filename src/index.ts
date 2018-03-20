@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 import { readdir, readFile, stat } from 'fs';
 import { extname, join, relative, resolve } from 'path';
 import * as minimatch from 'minimatch';
@@ -26,6 +27,8 @@ export class TreeView {
   providers!: Model.IProviders;
   rootPath!: string;
 
+  events = new EventEmitter();
+
   constructor(opts?: Model.IOptsParam) {
     this.inject();
     Object.assign(this.opts, opts || {});
@@ -34,6 +37,16 @@ export class TreeView {
 
   inject() {
     this.providers = { join, resolve, relative, readFile, readdir, stat };
+  }
+
+  listen(listener: Model.Listener) {
+    this.events.addListener('item', listener);
+    return this;
+  }
+
+  removeListeners() {
+    this.events.removeAllListeners('item');
+    return this;
   }
 
   process(path: string, cb?: Model.Cb) {
@@ -127,6 +140,7 @@ export class TreeView {
     item.size = stats.size;
     item.ext = extname(item.name).slice(1); // remove '.'
     item.binary = isBinaryPath(item.name);
+    this.emit(item);
     if (this.opts.content) {
       return this.addContent(item);
     }
@@ -149,6 +163,7 @@ export class TreeView {
 
   private addDir(item: Model.IDir, depth: number) {
     item.type = 'dir';
+    this.emit(item);
     if (this.opts.depth === false || depth < this.opts.depth) {
       item.content = [];
       return this.walk(this.getPath(item), item.content, depth + 1)
@@ -159,5 +174,15 @@ export class TreeView {
         });
     }
     return null;
+  }
+
+  /**
+   * Emit an event each time a file or a directory is discovered.
+   *
+   * Note: the `content` property of the emitted `item` is always an empty array!
+   */
+  private emit(item: Model.IFile | Model.IDir) {
+    // Note: we should match the signature of `Model.Listener`
+    this.events.emit('item', { ...item, content: [] }, this.opts);
   }
 }
