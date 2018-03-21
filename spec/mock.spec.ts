@@ -70,7 +70,7 @@ describe('TreeView mock', () => {
   });
 
   it('should exclude hidden files by default', (done) => {
-    new TreeViewMock(/*{ hidden: false }*/).process('./hidden').then((tree) => {
+    new TreeViewMock(/*{ all: false }*/).process('./hidden').then((tree) => {
       expect(tree.length).toBe(1);
 
       expect(tree).not.toContainItem({ type: 'dir', name: '.git' });
@@ -81,7 +81,7 @@ describe('TreeView mock', () => {
   });
 
   it('should include hidden files on demand', (done) => {
-    new TreeViewMock({ hidden: true }).process('./hidden').then((tree) => {
+    new TreeViewMock({ all: true }).process('./hidden').then((tree) => {
       expect(tree.length).toBe(3);
 
       expect(tree).toContainItem({ type: 'dir', name: '.git' });

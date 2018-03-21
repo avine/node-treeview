@@ -160,14 +160,14 @@ export type TreeNode = IFile | IDir | IRef;
 
 ```ts
 export interface IOptsParam {
+  // Include hidden files in output
+  all?: boolean;
   // Add files content to output
   content?: boolean;
   // Use relative path
   relative?: boolean;
   // Maximum depth of directories
   depth?: boolean | number;
-  // Include hidden files in output
-  hidden?: boolean;
   // List of directory paths to include in output
   include?: string[];
   // List of directory paths to exclude from output
@@ -293,11 +293,11 @@ Usage: node-treeview <path> [options]
 
 Options:
   --version, -v   Show version number                                              [boolean]
-  --help,         Show help                                                        [boolean]
+  --help, -h      Show help                                                        [boolean]
+  --all, -a       Include hidden files in output                  [boolean] [default: false]
   --content, -c   Add files content to output                     [boolean] [default: false]
   --relative, -r  Use relative path                               [boolean] [default: false]
   --depth, -d     Maximum depth of directories            [boolean|number]  [default: false]
-  --hidden, -h    Include hidden files in output                  [boolean] [default: false]
   --flatten, -f   Flatten output                                  [boolean] [default: false]
   --clean, -n     Clean empty directories from output             [boolean] [default: false]
   --include, -i   List of directory paths to include in output         [array] [default: []]

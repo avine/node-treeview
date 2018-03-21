@@ -17,10 +17,10 @@ export class TreeView {
   }
 
   opts: Model.IOpts = {
+    all: false,
     content: false,
     relative: false,
     depth: false,
-    hidden: false,
     include: [],
     exclude: [],
     pattern: []
@@ -69,7 +69,7 @@ export class TreeView {
           reject(error);
           return;
         }
-        if (!this.opts.hidden) {
+        if (!this.opts.all) {
           files = TreeView.removeHidden(files);
         }
         let pending = files.length;

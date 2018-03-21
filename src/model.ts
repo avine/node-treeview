@@ -25,14 +25,14 @@ export interface IDir extends IRef {
 }
 
 export interface IOpts {
+  // Include hidden files in output
+  all: boolean;
   // Include files content in output
   content: boolean;
   // Use relative path
   relative: boolean;
   // Maximum depth of directories
   depth: boolean | number;
-  // Include hidden files in output
-  hidden: boolean;
   // List of directory paths to include in output
   include: string[];
   // List of directory paths to exclude from output
@@ -43,10 +43,10 @@ export interface IOpts {
 
 // Like `IOpts` interface but with all properties optional
 export interface IOptsParam {
+  all?: boolean;
   content?: boolean;
   relative?: boolean;
   depth?: boolean | number;
-  hidden?: boolean;
   include?: string[];
   exclude?: string[];
   pattern?: string[];

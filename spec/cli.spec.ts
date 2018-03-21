@@ -50,10 +50,10 @@ describe('TreeView cli', () => {
       result = result as IDebug;
       expect(error).toBeUndefined();
       expect(result.opts).toEqual({
+        all: false,
         content: false,
         relative: false,
         depth: false,
-        hidden: false,
         include: [],
         exclude: [],
         pattern: []
@@ -68,10 +68,10 @@ describe('TreeView cli', () => {
 
   it('should use requested options', (done) => {
     cli([basePath, '--debug',
+      '--all',
       '--content',
       '--relative',
       '--depth', '2',
-      '--hidden',
       '--include', 'path/1', 'path/2',
       '--exclude', 'path/3', 'path/4',
       '--pattern', '*.*', '**/*',
@@ -82,10 +82,10 @@ describe('TreeView cli', () => {
       result = result as IDebug;
       expect(error).toBeUndefined();
       expect(result.opts).toEqual({
+        all: true,
         content: true,
         relative: true,
         depth: 2,
-        hidden: true,
         include: [resolve('path/1'), resolve('path/2')],
         exclude: [resolve('path/3'), resolve('path/4')],
         pattern: ['*.*', '**/*']
@@ -100,10 +100,10 @@ describe('TreeView cli', () => {
 
   it('should have options alias', (done) => {
     cli([basePath, '--debug',
+      '-a',
       '-c',
       '-r',
       '-d', '2',
-      '-h',
       '-i', 'path/1', 'path/2',
       '-e', 'path/3', 'path/4',
       '-p', '*.*', '**/*',
@@ -114,10 +114,10 @@ describe('TreeView cli', () => {
       result = result as IDebug;
       expect(error).toBeUndefined();
       expect(result.opts).toEqual({
+        all: true,
         content: true,
         relative: true,
         depth: 2,
-        hidden: true,
         include: [resolve('path/1'), resolve('path/2')],
         exclude: [resolve('path/3'), resolve('path/4')],
         pattern: ['*.*', '**/*']
