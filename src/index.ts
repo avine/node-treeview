@@ -12,7 +12,7 @@ export class TreeView {
     item.modified = stats.mtime;
   }
 
-  private static skipHidden(files: string[]) {
+  private static removeHidden(files: string[]) {
     return files.filter(file => file[0] !== '.');
   }
 
@@ -20,6 +20,7 @@ export class TreeView {
     content: false,
     relative: false,
     depth: false,
+    hidden: false,
     include: [],
     exclude: [],
     pattern: []
@@ -68,7 +69,9 @@ export class TreeView {
           reject(error);
           return;
         }
-        files = TreeView.skipHidden(files);
+        if (!this.opts.hidden) {
+          files = TreeView.removeHidden(files);
+        }
         let pending = files.length;
         if (!pending) {
           success(tree);

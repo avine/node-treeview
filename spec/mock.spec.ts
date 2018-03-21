@@ -69,12 +69,24 @@ describe('TreeView mock', () => {
     });
   });
 
-  it('should skip hidden files', (done) => {
-    new TreeViewMock().process('./skip-hidden').then((tree) => {
+  it('should exclude hidden files by default', (done) => {
+    new TreeViewMock(/*{ hidden: false }*/).process('./hidden').then((tree) => {
       expect(tree.length).toBe(1);
 
-      expect(tree).not.toContainItem({ type: 'file', name: '.hidden' });
-      expect(tree).toContainItem({ type: 'file', name: 'visible' });
+      expect(tree).not.toContainItem({ type: 'dir', name: '.git' });
+      expect(tree).not.toContainItem({ type: 'file', name: '.gitignore' });
+      expect(tree).toContainItem({ type: 'file', name: 'README.md' });
+      done();
+    });
+  });
+
+  it('should include hidden files on demand', (done) => {
+    new TreeViewMock({ hidden: true }).process('./hidden').then((tree) => {
+      expect(tree.length).toBe(3);
+
+      expect(tree).toContainItem({ type: 'dir', name: '.git' });
+      expect(tree).toContainItem({ type: 'file', name: '.gitignore' });
+      expect(tree).toContainItem({ type: 'file', name: 'README.md' });
       done();
     });
   });
@@ -361,6 +373,7 @@ describe('TreeView mock options', () => {
     }).process('./deep-dirs').then(() => {
       list = list.sort((a, b) => a > b ? 1 : a < b ? -1 : 0);
       expect(list).toEqual([
+        // We should get 6 data!
         '/root/deep-dirs/a',
         '/root/deep-dirs/folder',
         '/root/deep-dirs/folder/b',
@@ -376,10 +389,9 @@ describe('TreeView mock options', () => {
     let count = 0;
     const treeView = new TreeViewMock();
     treeView.listen((data) => {
-      if (count === 2) {
+      if (++count === 3) {
         treeView.removeListeners();
       }
-      count++;
     });
     treeView.process('./deep-dirs').then(() => {
       // We should get only 3 data instead of 6!

@@ -34,7 +34,7 @@ const booleanOrNumber = (arg: boolean | string) => {
 yargs
   .locale('en')
   .version(pkgVersion).alias('version', 'v')
-  .help('help').alias('help', 'h')
+  .help('help')/*.alias('help', 'h')*/ // Don't use `-h` for help alias, which is already used for option `--hidden`
   .usage('Usage: $0 <path> [options]')
   .demandCommand(1, 'Error: argument <path> is missing!')
   .option('content', {
@@ -54,6 +54,12 @@ yargs
     coerce: booleanOrNumber,
     default: false,
     describe: 'Maximum depth of directories (use boolean or number)'
+
+  }).option('hidden', {
+    alias: 'h',
+    default: false,
+    describe: 'Include hidden files in output',
+    type: 'boolean'
 
   }).option('flatten', {
     alias: 'f',
@@ -100,9 +106,9 @@ yargs
 // log(yargs.argv); // For debugging
 
 const path = yargs.argv._[0];
-const { content, relative, depth, include, exclude, pattern } = yargs.argv;
+const { content, relative, depth, hidden, include, exclude, pattern } = yargs.argv;
 if (path) {
-  new TreeView({ content, relative, depth, include, exclude, pattern })
+  new TreeView({ content, relative, depth, hidden, include, exclude, pattern })
     .process(path)
     .then((tree) => {
       // Note that if the output is flattened there's no need to clean it!
@@ -114,7 +120,7 @@ if (path) {
       const outputPath = yargs.argv.output;
       if (yargs.argv.debug) {
         const debug: IDebug = {
-          opts: { content, relative, depth, include, exclude, pattern },
+          opts: { content, relative, depth, hidden, include, exclude, pattern },
           path,
           flatten: yargs.argv.flatten,
           clean: yargs.argv.clean,

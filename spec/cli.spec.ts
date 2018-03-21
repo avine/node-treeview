@@ -53,6 +53,7 @@ describe('TreeView cli', () => {
         content: false,
         relative: false,
         depth: false,
+        hidden: false,
         include: [],
         exclude: [],
         pattern: []
@@ -70,6 +71,7 @@ describe('TreeView cli', () => {
       '--content',
       '--relative',
       '--depth', '2',
+      '--hidden',
       '--include', 'path/1', 'path/2',
       '--exclude', 'path/3', 'path/4',
       '--pattern', '*.*', '**/*',
@@ -83,6 +85,7 @@ describe('TreeView cli', () => {
         content: true,
         relative: true,
         depth: 2,
+        hidden: true,
         include: [resolve('path/1'), resolve('path/2')],
         exclude: [resolve('path/3'), resolve('path/4')],
         pattern: ['*.*', '**/*']
@@ -100,6 +103,7 @@ describe('TreeView cli', () => {
       '-c',
       '-r',
       '-d', '2',
+      '-h',
       '-i', 'path/1', 'path/2',
       '-e', 'path/3', 'path/4',
       '-p', '*.*', '**/*',
@@ -113,6 +117,7 @@ describe('TreeView cli', () => {
         content: true,
         relative: true,
         depth: 2,
+        hidden: true,
         include: [resolve('path/1'), resolve('path/2')],
         exclude: [resolve('path/3'), resolve('path/4')],
         pattern: ['*.*', '**/*']
@@ -124,5 +129,4 @@ describe('TreeView cli', () => {
       done();
     });
   });
-
 });

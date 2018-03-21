@@ -16,9 +16,10 @@ const endpoints: IEndpoints = {
   '/root/files/a': { type: 'file', content: 'aaa', size: 3 },
   '/root/files/b': { type: 'file', content: 'bbbb', size: 4 },
 
-  '/root/skip-hidden': { type: 'dir', content: ['.hidden', 'visible'] },
-  '/root/skip-hidden/.hidden': { type: 'file', content: 'xxx', size: 3 },
-  '/root/skip-hidden/visible': { type: 'file', content: 'ok', size: 2 },
+  '/root/hidden': { type: 'dir', content: ['.git', '.gitignore', 'README.md'] },
+  '/root/hidden/.git': { type: 'dir', content: [] },
+  '/root/hidden/.gitignore': { type: 'file', content: 'node_modules/', size: 13 },
+  '/root/hidden/README.md': { type: 'file', content: '# Hello World!', size: 14 },
 
   '/root/binary': { type: 'dir', content: ['a.txt', 'b.png'] },
   '/root/binary/a.txt': { type: 'file', content: '', size: 0 },

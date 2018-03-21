@@ -49,7 +49,8 @@ getJson();
 const { TreeView } = require('node-treeview');
 
 new TreeView({ content: true, depth: 2 })
-  .process('path/to/dir').then(tree => console.log(tree));
+  .process('path/to/dir')
+  .then(tree => console.log(tree));
 ```
 
 The output looks like the following `json`:
@@ -104,9 +105,10 @@ It is also possible to listen to events.
 ```js
 const { TreeView } = require('node-treeview');
 
-new TreeView().listen((data, opts) => {
-  console.log(`${data.type}: ${data.pathname}`);
-}).process('path/to/dir').then(() => console.log('done!'));
+new TreeView()
+  .listen(data => console.log(`${data.type}: ${data.pathname}`))
+  .process('path/to/dir')
+  .then(() => console.log('done!'));
 ```
 
 Output:
@@ -164,6 +166,8 @@ export interface IOptsParam {
   relative?: boolean;
   // Maximum depth of directories
   depth?: boolean | number;
+  // Include hidden files in output
+  hidden?: boolean;
   // List of directory paths to include in output
   include?: string[];
   // List of directory paths to exclude from output
@@ -289,10 +293,11 @@ Usage: node-treeview <path> [options]
 
 Options:
   --version, -v   Show version number                                              [boolean]
-  --help, -h      Show help                                                        [boolean]
+  --help,         Show help                                                        [boolean]
   --content, -c   Add files content to output                     [boolean] [default: false]
   --relative, -r  Use relative path                               [boolean] [default: false]
   --depth, -d     Maximum depth of directories            [boolean|number]  [default: false]
+  --hidden, -h    Include hidden files in output                  [boolean] [default: false]
   --flatten, -f   Flatten output                                  [boolean] [default: false]
   --clean, -n     Clean empty directories from output             [boolean] [default: false]
   --include, -i   List of directory paths to include in output         [array] [default: []]
