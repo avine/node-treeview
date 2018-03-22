@@ -5,33 +5,29 @@ const ITEM  = '├─ ';
 const LAST  = '└─ ';
 const EMPTY = '   ';
 
-function draw(depth: number, empty: number[]) {
+function drawBox(depth: number, empty: number[]) {
   const fill = new Array(depth).fill(FILL);
-  const item = [...fill, ITEM];
-  const last = [...fill, LAST];
-  empty.forEach(index => item[index] = last[index] = EMPTY);
-  return { item: item.join(''), last: last.join('') };
+  empty.forEach(index => fill[index] = EMPTY);
+  const filled = fill.join('');
+  return { item: filled + ITEM, last: filled + LAST };
 }
 
-export function pretty(
-  tree: Model.TreeNode[],
-  depth = 0,
-  empty: number[] = []
-) {
+const defaultRender = (item: Model.TreeNode) => item.name;
+
+function walk(tree: Model.TreeNode[], render = defaultRender, depth = 0, empty: number[] = []) {
   const result: string[] = [];
-  const d = draw(depth, empty);
+  const box = drawBox(depth, empty);
   tree.forEach((item, index) => {
     const last = index === tree.length - 1;
-    const prefix = last ? d.last : d.item;
-    result.push(prefix + item.name);
+    const current = last ? box.last : box.item;
+    result.push(current + render(item));
     if ((item as Model.IDir).type === 'dir') {
-      result.push(
-        pretty(
-          (item as Model.IDir).content,
-          depth + 1,
-          last ? [...empty, depth] : empty)
-      );
+      result.push(...walk((item as Model.IDir).content, render, depth + 1, last ? [...empty, depth] : empty));
     }
   });
-  return result.join('\n');
+  return result;
+}
+
+export function pretty(tree: Model.TreeNode[], render = defaultRender) {
+  return walk(tree, render).join('\n');
 }
