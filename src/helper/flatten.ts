@@ -1,7 +1,7 @@
 import * as Model from '../model';
 
-export function flatten(list: Model.TreeNode[]) {
-  return list.reduce((acc: Model.TreeNode[], item: Model.TreeNode) => {
+export function flatten(tree: Model.TreeNode[]) {
+  return tree.reduce((acc: Model.TreeNode[], item: Model.TreeNode) => {
     if ((item as Model.IDir).type === 'dir' && (item as Model.IDir).content) {
       acc = acc.concat(flatten((item as Model.IDir).content));
     } else {
