@@ -60,18 +60,6 @@ yargs
     default: false,
     describe: 'Maximum depth of directories (use boolean or number)'
 
-  }).option('flatten', {
-    alias: 'f',
-    default: false,
-    describe: 'Flatten output',
-    type: 'boolean'
-
-  }).option('clean', {
-    alias: 'n', // notice: it's "n" (and not "c" which is already used for "content")
-    default: false,
-    describe: 'Clean empty directories from output',
-    type: 'boolean'
-
   }).option('include', {
     alias: 'i',
     default: [],
@@ -84,11 +72,23 @@ yargs
     describe: 'List of directory paths to exclude from output',
     type: 'array'
 
-  }).option('pattern', {
-    alias: 'p',
+  }).option('glob', {
+    alias: 'g',
     default: [],
     describe: 'Match files based on glob pattern',
     type: 'array'
+
+  }).option('flatten', {
+    alias: 'f',
+    default: false,
+    describe: 'Flatten output',
+    type: 'boolean'
+
+  }).option('clean', {
+    alias: 'n', // notice: it's "n" (and not "c" which is already used for "content")
+    default: false,
+    describe: 'Clean empty directories from output',
+    type: 'boolean'
 
   }).option('output', {
     alias: 'o',
@@ -105,9 +105,9 @@ yargs
 // log(yargs.argv); // For debugging
 
 const path = yargs.argv._[0];
-const { all, content, relative, depth, include, exclude, pattern } = yargs.argv;
+const { all, content, relative, depth, include, exclude, glob } = yargs.argv;
 if (path) {
-  new TreeView({ all, content, relative, depth, include, exclude, pattern })
+  new TreeView({ all, content, relative, depth, include, exclude, glob })
     .process(path)
     .then((tree) => {
       // Note that if the output is flattened there's no need to clean it!
@@ -119,7 +119,7 @@ if (path) {
       const outputPath = yargs.argv.output;
       if (yargs.argv.debug) {
         const debug: IDebug = {
-          opts: { all, content, relative, depth, include, exclude, pattern },
+          opts: { all, content, relative, depth, include, exclude, glob },
           path,
           flatten: yargs.argv.flatten,
           clean: yargs.argv.clean,

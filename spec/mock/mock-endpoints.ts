@@ -68,11 +68,11 @@ const endpoints: IEndpoints = {
   '/root/clean/d': { type: 'dir', content: ['f'] },
   '/root/clean/d/f': { type: 'file', content: 'fff', size: 3 },
 
-  '/root/pattern': { type: 'dir', content: ['a.html', 'b'] },
-  '/root/pattern/a.html': { type: 'file', content: 'aaa', size: 3 },
-  '/root/pattern/b': { type: 'dir', content: ['c.css', 'd.html'] },
-  '/root/pattern/b/c.css': { type: 'file', content: 'ccc', size: 3 },
-  '/root/pattern/b/d.html': { type: 'file', content: 'ddd', size: 3 },
+  '/root/glob': { type: 'dir', content: ['a.html', 'b'] },
+  '/root/glob/a.html': { type: 'file', content: 'aaa', size: 3 },
+  '/root/glob/b': { type: 'dir', content: ['c.css', 'd.html'] },
+  '/root/glob/b/c.css': { type: 'file', content: 'ccc', size: 3 },
+  '/root/glob/b/d.html': { type: 'file', content: 'ddd', size: 3 },
 };
 
 for (const path in endpoints) {

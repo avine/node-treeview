@@ -173,7 +173,7 @@ export interface IOptsParam {
   // List of directory paths to exclude from output
   exclude?: string[];
   // Match files based on glob pattern
-  pattern?: string[];
+  glob?: string[];
 }
 ```
 
@@ -323,12 +323,12 @@ Options:
   --all, -a       Include hidden files in output                  [boolean] [default: false]
   --content, -c   Add files content to output                     [boolean] [default: false]
   --relative, -r  Use relative path                               [boolean] [default: false]
-  --depth, -d     Maximum depth of directories            [boolean|number]  [default: false]
-  --flatten, -f   Flatten output                                  [boolean] [default: false]
-  --clean, -n     Clean empty directories from output             [boolean] [default: false]
+  --depth, -d     Maximum depth of directories (use boolean or number)      [default: false]
   --include, -i   List of directory paths to include in output         [array] [default: []]
   --exclude, -e   List of directory paths to exclude from output       [array] [default: []]
-  --pattern, -p   Match files based on glob pattern                    [array] [default: []]
+  --glob, -g      Match files based on glob pattern                    [array] [default: []]
+  --flatten, -f   Flatten output                                  [boolean] [default: false]
+  --clean, -n     Clean empty directories from output             [boolean] [default: false]
   --output, -o    Output file path                                                  [string]
   --debug         Add debugging information to output             [boolean] [default: false]
 ```

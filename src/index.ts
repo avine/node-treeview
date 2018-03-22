@@ -23,7 +23,7 @@ export class TreeView {
     depth: false,
     include: [],
     exclude: [],
-    pattern: []
+    glob: []
   };
   events = new EventEmitter();
   providers!: Model.IProviders;
@@ -123,9 +123,9 @@ export class TreeView {
   }
 
   private checkFile(file: string) {
-    return this.opts.pattern.reduce(
-      (match: boolean, pattern: string) => match || minimatch(file, pattern),
-      !this.opts.pattern.length
+    return this.opts.glob.reduce(
+      (match: boolean, glob: string) => match || minimatch(file, glob),
+      !this.opts.glob.length
     );
   }
 
