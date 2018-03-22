@@ -7,8 +7,7 @@ const npmPkgRoot = resolve('dist/src');
 
 // Path to the `main` entry point, the `flatten` and `clean` helpers
 const treeViewPath = resolve(npmPkgRoot/*, './index'*/);
-const flattenPath = resolve(npmPkgRoot, './helper/flatten');
-const cleanPath = resolve(npmPkgRoot, './helper/clean');
+const helperPath = resolve(npmPkgRoot, './helper');
 
 const basePath = resolve('spec/fixture');
 
@@ -19,8 +18,7 @@ describe('TreeView require from ./dist', () => {
   it('should require and use TreeView(), flatten() and clean()', (done) => {
     // Check that `TreeView` and `flatten` can be required...
     const { TreeView } = require(treeViewPath);
-    const { flatten } = require(flattenPath);
-    const { clean } = require(cleanPath);
+    const { clean, flatten } = require(helperPath);
 
     // ...and used ;-)
     new TreeView().process(basePath).then((tree: any) => {

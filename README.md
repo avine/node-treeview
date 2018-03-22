@@ -210,7 +210,7 @@ If you need a flat version of the tree, use the `flatten` helper.
 
 ```ts
 import { TreeView } from 'node-treeview';
-import { flatten } from 'node-treeview/helper/flatten';
+import { flatten } from 'node-treeview/helper';
 
 new TreeView().process('path/to/dir').then(tree => {
   const flat = flatten(tree);
@@ -222,7 +222,7 @@ Or for JavaScript style using `require`:
 
 ```js
 const { TreeView } = require('node-treeview');
-const { flatten } = require('node-treeview/helper/flatten');
+const { flatten } = require('node-treeview/helper');
 // ...
 ```
 
@@ -268,7 +268,7 @@ If you need to clean empty directories from the tree, use the `clean` helper.
 
 ```ts
 import { TreeView } from 'node-treeview';
-import { clean } from 'node-treeview/helper/clean';
+import { clean } from 'node-treeview/helper';
 
 new TreeView().process('path/to/dir').then(tree => {
   const cleaned = clean(tree);
@@ -280,7 +280,7 @@ Or for JavaScript style using `require`:
 
 ```js
 const { TreeView } = require('node-treeview');
-const { clean } = require('node-treeview/helper/clean');
+const { clean } = require('node-treeview/helper');
 // ...
 ```
 

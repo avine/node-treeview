@@ -3,8 +3,7 @@
 
 import * as Model from '../src/model';
 import { TreeView } from '../src/index';
-import { flatten } from '../src/helper/flatten';
-import { clean } from '../src/helper/clean';
+import { clean, flatten } from '../src/helper';
 import { isBinaryPath } from '../src/helper/binary';
 
 import { providers } from './mock/mock-api';

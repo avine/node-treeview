@@ -2,7 +2,7 @@
 
 import { extname } from 'path';
 
-export const binaryExtensions = [
+const binaryExtensions = [
   '3ds',
   '3g2',
   '3gp',

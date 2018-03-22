@@ -6,8 +6,7 @@ import { resolve } from 'path';
 import { writeFile } from 'fs';
 
 import { TreeView } from '../index';
-import { flatten } from '../helper/flatten';
-import { clean } from '../helper/clean';
+import { clean, flatten } from '../helper';
 
 import { IDebug } from './cli-model';
 
