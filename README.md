@@ -284,6 +284,32 @@ const { clean } = require('node-treeview/helper');
 // ...
 ```
 
+### pretty
+
+If you need to visualize the tree in the console, use the `pretty` helper.
+
+```ts
+import { TreeView } from 'node-treeview';
+import { pretty } from 'node-treeview/helper';
+
+new TreeView().process('path/to/dir').then(tree => {
+  console.log(pretty(tree));
+});
+```
+
+The output looks like the following `txt`:
+
+```txt
+├─ fruits
+│  ├─ apple.txt
+│  └─ pears.txt
+├─ vegetables
+│  ├─ bean.txt
+│  ├─ potato.txt
+│  └─ endive.txt
+└─ shop.txt
+```
+
 ## Cli
 
 ```txt
