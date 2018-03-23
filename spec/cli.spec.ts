@@ -46,10 +46,10 @@ describe('TreeView cli', () => {
   });
 
   it('should use default options', (done) => {
-    cli([basePath, '--debug'], (error, result) => {
-      result = result as IDebug;
+    cli([basePath, '--debug'], (error, debug) => {
+      debug = debug as IDebug;
       expect(error).toBeUndefined();
-      expect(result.opts).toEqual({
+      expect(debug.opts).toEqual({
         all: false,
         content: false,
         relative: false,
@@ -58,10 +58,11 @@ describe('TreeView cli', () => {
         exclude: [],
         glob: []
       });
-      expect(result.flatten).toBeFalsy();
-      expect(result.clean).toBeFalsy();
-      expect(result.outputPath).toBeUndefined();
-      expect(result.path).toEqual(basePath);
+      expect(debug.helper.clean).toBeFalsy();
+      expect(debug.helper.flatten).toBeFalsy();
+      expect(debug.helper.pretty).toBeFalsy();
+      expect(debug.outputPath).toBeUndefined();
+      expect(debug.path).toEqual(basePath);
       done();
     });
   });
@@ -75,13 +76,14 @@ describe('TreeView cli', () => {
       '--include', 'path/1', 'path/2',
       '--exclude', 'path/3', 'path/4',
       '--glob', '*.*', '**/*',
-      '--flatten',
       '--clean',
+      '--flatten',
+      '--pretty',
       '--output', './tree.json'
-    ], (error, result) => {
-      result = result as IDebug;
+    ], (error, debug) => {
+      debug = debug as IDebug;
       expect(error).toBeUndefined();
-      expect(result.opts).toEqual({
+      expect(debug.opts).toEqual({
         all: true,
         content: true,
         relative: true,
@@ -90,10 +92,11 @@ describe('TreeView cli', () => {
         exclude: [resolve('path/3'), resolve('path/4')],
         glob: ['*.*', '**/*']
       });
-      expect(result.flatten).toBeTruthy();
-      expect(result.clean).toBeTruthy();
-      expect(result.outputPath).toEqual('./tree.json');
-      expect(result.path).toEqual(basePath);
+      expect(debug.helper.clean).toBeTruthy();
+      expect(debug.helper.flatten).toBeTruthy();
+      expect(debug.helper.pretty).toBeTruthy();
+      expect(debug.outputPath).toEqual('./tree.json');
+      expect(debug.path).toEqual(basePath);
       done();
     });
   });
@@ -107,13 +110,14 @@ describe('TreeView cli', () => {
       '-i', 'path/1', 'path/2',
       '-e', 'path/3', 'path/4',
       '-g', '*.*', '**/*',
-      '-f',
       '-n', // notice: it's "n" (and not "c" which is already used for "content")
+      '-f',
+      '-p',
       '-o', './tree.json'
-    ], (error, result) => {
-      result = result as IDebug;
+    ], (error, debug) => {
+      debug = debug as IDebug;
       expect(error).toBeUndefined();
-      expect(result.opts).toEqual({
+      expect(debug.opts).toEqual({
         all: true,
         content: true,
         relative: true,
@@ -122,10 +126,11 @@ describe('TreeView cli', () => {
         exclude: [resolve('path/3'), resolve('path/4')],
         glob: ['*.*', '**/*']
       });
-      expect(result.flatten).toBeTruthy();
-      expect(result.clean).toBeTruthy();
-      expect(result.outputPath).toEqual('./tree.json');
-      expect(result.path).toEqual(basePath);
+      expect(debug.helper.clean).toBeTruthy();
+      expect(debug.helper.flatten).toBeTruthy();
+      expect(debug.helper.pretty).toBeTruthy();
+      expect(debug.outputPath).toEqual('./tree.json');
+      expect(debug.path).toEqual(basePath);
       done();
     });
   });

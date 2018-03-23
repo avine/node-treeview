@@ -286,7 +286,7 @@ const { clean } = require('node-treeview/helper');
 
 ### pretty
 
-If you need to visualize the tree in the console, use the `pretty` helper.
+If you need to pretty-print the tree, use the `pretty` helper.
 
 ```ts
 import { TreeView } from 'node-treeview';
@@ -327,8 +327,9 @@ Options:
   --include, -i   List of directory paths to include in output         [array] [default: []]
   --exclude, -e   List of directory paths to exclude from output       [array] [default: []]
   --glob, -g      Match files based on glob pattern                    [array] [default: []]
-  --flatten, -f   Flatten output                                  [boolean] [default: false]
   --clean, -n     Clean empty directories from output             [boolean] [default: false]
+  --flatten, -f   Flatten output                                  [boolean] [default: false]
+  --pretty, -p    Pretty-print output                             [boolean] [default: false]
   --output, -o    Output file path                                                  [string]
   --debug         Add debugging information to output             [boolean] [default: false]
 ```

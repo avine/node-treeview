@@ -18,14 +18,16 @@ describe('TreeView require from ./dist', () => {
   it('should require and use TreeView(), flatten() and clean()', (done) => {
     // Check that `TreeView` and `flatten` can be required...
     const { TreeView } = require(treeViewPath);
-    const { clean, flatten } = require(helperPath);
+    const { clean, flatten, pretty } = require(helperPath);
 
     // ...and used ;-)
     new TreeView().process(basePath).then((tree: any) => {
       const flat = flatten(tree);
       const cleaned = clean(tree);
+      const print = pretty(tree);
       // log(flat);
       // log(cleaned);
+      // log(print);
       done();
     });
   });

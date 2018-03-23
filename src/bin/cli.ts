@@ -6,9 +6,9 @@ import { resolve } from 'path';
 import { writeFile } from 'fs';
 
 import { TreeView } from '../index';
-import { clean, flatten } from '../helper';
+import { clean, flatten, pretty } from '../helper';
 
-import { IDebug } from './cli-model';
+import { DebugOutput, IDebug } from './cli-model';
 
 // Don't forget to update cli version according to `package.json` version
 
@@ -16,7 +16,6 @@ import { IDebug } from './cli-model';
 const pkgVersion = require(resolve('package.json')).version;
 
 const stringify = (data: any) => JSON.stringify(data, undefined, 2) + '\n';
-const log = (data: any) => process.stdout.write(stringify(data));
 
 // `depth` arguments validation
 const booleanOrNumber = (arg: boolean | string) => {
@@ -78,16 +77,22 @@ yargs
     describe: 'Match files based on glob pattern',
     type: 'array'
 
+  }).option('clean', {
+    alias: 'n', // notice: it's "n" (and not "c" which is already used for "content")
+    default: false,
+    describe: 'Clean empty directories from output',
+    type: 'boolean'
+
   }).option('flatten', {
     alias: 'f',
     default: false,
     describe: 'Flatten output',
     type: 'boolean'
 
-  }).option('clean', {
-    alias: 'n', // notice: it's "n" (and not "c" which is already used for "content")
+  }).option('pretty', {
+    alias: 'p',
     default: false,
-    describe: 'Clean empty directories from output',
+    describe: 'Pretty-print output',
     type: 'boolean'
 
   }).option('output', {
@@ -102,7 +107,7 @@ yargs
 
   });
 
-// log(yargs.argv); // For debugging
+// process.stdout.write(stringify(yargs.argv)); // For debugging
 
 const path = yargs.argv._[0];
 const { all, content, relative, depth, include, exclude, glob } = yargs.argv;
@@ -116,24 +121,33 @@ if (path) {
         yargs.argv.flatten ? flatten(tree) :
         yargs.argv.clean ? clean(tree) :
         tree;
+      let outputStr;
+      if (yargs.argv.pretty) {
+        outputStr = pretty(output) + '\n';
+      } else {
+        outputStr = stringify(output);
+      }
       const outputPath = yargs.argv.output;
       if (yargs.argv.debug) {
         const debug: IDebug = {
           opts: { all, content, relative, depth, include, exclude, glob },
           path,
-          flatten: yargs.argv.flatten,
-          clean: yargs.argv.clean,
-          output,
+          helper: {
+            clean: yargs.argv.clean,
+            flatten: yargs.argv.flatten,
+            pretty: yargs.argv.pretty
+          },
+          output: yargs.argv.pretty ? outputStr : output,
           outputPath
         };
-        log(debug);
+        process.stdout.write(stringify(debug));
       } else {
         if (outputPath) {
-          writeFile(resolve(outputPath), stringify(output), (error) => {
+          writeFile(resolve(outputPath), outputStr, (error) => {
             if (error) throw error;
           });
         } else {
-          log(output);
+          process.stdout.write(outputStr);
         }
       }
     })
