@@ -50,6 +50,7 @@
     "typescript": "^2.7.2"
   },
   "dependencies": {
+    "chalk": "^2.3.2",
     "minimatch": "^3.0.4",
     "yargs": "^11.0.0"
   }

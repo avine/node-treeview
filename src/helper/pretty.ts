@@ -1,4 +1,8 @@
+import chalk from 'chalk';
+
 import * as Model from '../model';
+
+// --- DrawBox ---
 
 const FILL  = '│  ';
 const ITEM  = '├─ ';
@@ -12,15 +16,28 @@ function drawBox(depth: number, empty: number[]) {
   return { item: filled + ITEM, last: filled + LAST };
 }
 
-const defaultRender = (item: Model.TreeNode) => item.name;
+// --- Renderer ---
 
-function walk(tree: Model.TreeNode[], render = defaultRender, depth = 0, empty: number[] = []) {
+export type Renderer = (box: string, item: Model.TreeNode) => string;
+
+export const renderer = {
+  default(box: string, item: Model.TreeNode) {
+    return box + item.name;
+  },
+  light(box: string, item: Model.TreeNode) {
+    return chalk.gray(box) + ((item as Model.IDir).type === 'dir' ? chalk.gray(item.name) : item.name);
+  }
+};
+
+// --- Pretty ---
+
+function walk(tree: Model.TreeNode[], render: Renderer, depth = 0, empty: number[] = []) {
   const result: string[] = [];
   const box = drawBox(depth, empty);
   tree.forEach((item, index) => {
     const last = index === tree.length - 1;
     const current = last ? box.last : box.item;
-    result.push(current + render(item));
+    result.push(render(current, item));
     if ((item as Model.IDir).type === 'dir') {
       result.push(...walk((item as Model.IDir).content, render, depth + 1, last ? [...empty, depth] : empty));
     }
@@ -28,6 +45,6 @@ function walk(tree: Model.TreeNode[], render = defaultRender, depth = 0, empty: 
   return result;
 }
 
-export function pretty(tree: Model.TreeNode[], render = defaultRender) {
+export function pretty(tree: Model.TreeNode[], render: Renderer = renderer.default) {
   return walk(tree, render).join('\n');
 }
