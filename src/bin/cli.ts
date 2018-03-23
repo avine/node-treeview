@@ -121,7 +121,7 @@ if (path) {
         yargs.argv.flatten ? flatten(tree) :
         yargs.argv.clean ? clean(tree) :
         tree;
-      let outputStr;
+      let outputStr: string;
       if (yargs.argv.pretty) {
         outputStr = pretty(output) + '\n';
       } else {

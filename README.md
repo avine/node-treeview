@@ -303,11 +303,22 @@ The output looks like the following `txt`:
 ├─ fruits
 │  ├─ apple.txt
 │  └─ pears.txt
-├─ vegetables
-│  ├─ bean.txt
-│  ├─ potato.txt
-│  └─ endive.txt
-└─ shop.txt
+└─ vegetables
+   ├─ bean.txt
+   ├─ potato.txt
+   └─ endive.txt
+```
+
+And you have full control over how to render the tree.
+
+```ts
+import { TreeView } from 'node-treeview';
+import { pretty } from 'node-treeview/helper';
+import { renderer } from 'node-treeview/helper/pretty';
+
+new TreeView().process('path/to/dir').then(tree => {
+  console.log(pretty(tree, renderer.light));
+});
 ```
 
 ## Cli

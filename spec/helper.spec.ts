@@ -3,7 +3,7 @@
 
 import * as Model from '../src/model';
 import { TreeView } from '../src/index';
-import { clean, flatten } from '../src/helper';
+import { clean, flatten, pretty } from '../src/helper';
 import { isBinaryPath } from '../src/helper/binary';
 
 import { providers } from './mock/mock-api';
@@ -64,6 +64,23 @@ describe('TreeView helper', () => {
         });
       })
     ]).then(done);
+  });
+
+  it('should pretty tree', (done) => {
+    new TreeViewMock().process('./deep-dirs').then((tree) => {
+      const print = pretty(tree);
+      const txt = `
+├─ a
+└─ folder
+   ├─ folder
+   │  ├─ d
+   │  └─ c
+   └─ b
+`;
+
+      expect(print).toBe(txt.trim());
+      done();
+    });
   });
 
   it('should check binary extensions', () => {
