@@ -1,5 +1,5 @@
 import * as Model from '../../src/model';
-import endpoints from './mock-endpoints';
+import endpoints from './mock.endpoints';
 
 export const providers: Model.IProviders = {
   /**

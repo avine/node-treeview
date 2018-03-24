@@ -6,7 +6,7 @@ import { TreeView } from '../src/index';
 import { clean, flatten, pretty } from '../src/helper';
 import { isBinaryPath } from '../src/helper/binary';
 
-import { providers } from './mock/mock-api';
+import { providers } from './mock/mock.api';
 
 import { customMatchers } from './matchers/matchers';
 

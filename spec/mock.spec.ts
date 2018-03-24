@@ -4,8 +4,8 @@
 import { TreeView } from '../src/index';
 import * as Model from '../src/model';
 
-import { providers } from './mock/mock-api';
-import { DATE } from './mock/mock-endpoints';
+import { providers } from './mock/mock.api';
+import { DATE } from './mock/mock.endpoints';
 
 import { customMatchers } from './matchers/matchers';
 

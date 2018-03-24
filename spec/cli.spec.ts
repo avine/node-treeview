@@ -7,7 +7,7 @@ import { spawn } from 'child_process';
 import { TreeView } from '../src/index';
 import * as Model from '../src/model';
 
-import { IDebug } from '../src/bin/cli-model';
+import { IDebug } from '../src/bin/cli.model';
 
 import { customMatchers } from './matchers/matchers';
 

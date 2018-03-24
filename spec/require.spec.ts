@@ -15,7 +15,7 @@ const basePath = resolve('spec/fixture');
 // const log = (data: any) => console.log(JSON.stringify(data, undefined, 2));
 
 describe('TreeView require from ./dist', () => {
-  it('should require and use TreeView(), flatten() and clean()', (done) => {
+  it('should require and use TreeView and helpers', (done) => {
     // Check that `TreeView` and `flatten` can be required...
     const { TreeView } = require(treeViewPath);
     const { clean, flatten, pretty } = require(helperPath);

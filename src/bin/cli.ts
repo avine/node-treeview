@@ -8,7 +8,7 @@ import { writeFile } from 'fs';
 import { TreeView } from '../index';
 import { clean, flatten, pretty } from '../helper';
 
-import { DebugOutput, IDebug } from './cli-model';
+import { DebugOutput, IDebug } from './cli.model';
 
 // Don't forget to update cli version according to `package.json` version
 
