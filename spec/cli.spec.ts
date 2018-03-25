@@ -4,8 +4,10 @@
 import { resolve } from 'path';
 import { spawn } from 'child_process';
 
-import { TreeView } from '../src/index';
+import { NO_DEPTH, TreeView } from '../src/index';
 import * as Model from '../src/model';
+
+import { DEF_RENDERER } from '../src/helper/pretty';
 
 import { IDebug } from '../src/bin/cli.model';
 
@@ -53,7 +55,7 @@ describe('TreeView cli', () => {
         all: false,
         content: false,
         relative: false,
-        depth: -1,
+        depth: NO_DEPTH,
         include: [],
         exclude: [],
         glob: []
@@ -78,7 +80,7 @@ describe('TreeView cli', () => {
       '--glob', '*.*', '**/*',
       '--clean',
       '--flatten',
-      '--pretty', 'light',
+      '--pretty', /*DEF_RENDERER,*/
       '--output', './tree.json'
     ], (error, debug) => {
       debug = debug as IDebug;
@@ -94,7 +96,7 @@ describe('TreeView cli', () => {
       });
       expect(debug.helper.clean).toBe(true);
       expect(debug.helper.flatten).toBe(true);
-      expect(debug.helper.pretty).toBe('light');
+      expect(debug.helper.pretty).toBe(DEF_RENDERER);
       expect(debug.outputPath).toEqual('./tree.json');
       expect(debug.path).toEqual(basePath);
       done();

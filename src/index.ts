@@ -6,6 +6,8 @@ import * as minimatch from 'minimatch';
 import * as Model from './model';
 import { isBinaryPath } from './helper/binary';
 
+export const NO_DEPTH = -1;
+
 export class TreeView {
   private static addTime(item: Model.Item, stats: Model.IStats) {
     item.created = stats.birthtime;
@@ -20,7 +22,7 @@ export class TreeView {
     all: false,
     content: false,
     relative: false,
-    depth: -1,
+    depth: NO_DEPTH,
     include: [],
     exclude: [],
     glob: []
@@ -167,7 +169,7 @@ export class TreeView {
   private addDir(item: Model.IDir, depth: number) {
     item.type = 'dir';
     this.emit(item);
-    if (this.opts.depth === -1 || depth < this.opts.depth) {
+    if (this.opts.depth === NO_DEPTH || depth < this.opts.depth) {
       item.content = [];
       return this.walk(this.getPath(item), item.content, depth + 1)
         .catch((error) => {

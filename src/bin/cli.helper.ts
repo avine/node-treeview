@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 
-import { renderer, Renderer } from '../helper/pretty';
+import { renderer, DEF_RENDERER, Renderer } from '../helper/pretty';
 
-export const getDepthArg = (arg: string | -1) => {
+export const getDepthArg = (arg: string | number) => {
   const numArg = parseInt(arg as string, 10);
   if (!isNaN(numArg)) {
     return numArg;
@@ -14,7 +14,7 @@ export const getDepthArg = (arg: string | -1) => {
 
 export const getPrettyArg = (arg: string) => {
   if (arg === '') {
-    return 'default'; // TODO: should be a constant!
+    return DEF_RENDERER;
   }
   if (arg in renderer) {
     return arg;

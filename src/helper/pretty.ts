@@ -20,8 +20,10 @@ function drawBox(depth: number, empty: number[]) {
 
 export type Renderer = (box: string, item: Model.TreeNode) => string;
 
+export const DEF_RENDERER = 'default';
+
 export const renderer = {
-  default(box: string, item: Model.TreeNode) {
+  [DEF_RENDERER](box: string, item: Model.TreeNode) {
     return box + item.name;
   },
   light(box: string, item: Model.TreeNode) {
