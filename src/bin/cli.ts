@@ -6,11 +6,13 @@ import { resolve } from 'path';
 import { writeFile } from 'fs';
 
 import { TreeView } from '../index';
+import * as Model from '../model';
+
 import { clean, flatten } from '../helper';
 import { pretty, renderer, Renderer } from '../helper/pretty';
 
 import { exit, getDepthArg, getPrettyArg } from './cli.helper';
-import { DebugOutput, IDebug } from './cli.model';
+import { DebugOutput, IDebug, IDebugHelper } from './cli.model';
 
 // Don't forget to update cli version according to `package.json` version
 
@@ -27,63 +29,56 @@ yargs
   .demandCommand(1, 'Error: argument <path> is missing!')
   .option('all', {
     alias: 'a',
-    default: false,
     describe: 'Include hidden files in output',
     type: 'boolean'
 
   }).option('content', {
     alias: 'c',
-    default: false,
     describe: 'Add files content to output',
     type: 'boolean'
 
   }).option('relative', {
     alias: 'r',
-    default: false,
     describe: 'Use relative path',
     type: 'boolean'
 
   }).option('depth', {
     alias: 'd',
     coerce: getDepthArg,
-    default: false,
-    describe: 'Maximum depth of directories (use boolean or number)'
+    describe: 'Maximum depth of directories',
+    type: 'number',
+    default: -1 // Setting a default value ensures that the coerce function will always be called
 
   }).option('include', {
     alias: 'i',
-    default: [],
     describe: 'List of directory paths to include in output',
     type: 'array'
 
   }).option('exclude', {
     alias: 'e',
-    default: [],
     describe: 'List of directory paths to exclude from output',
     type: 'array'
 
   }).option('glob', {
     alias: 'g',
-    default: [],
     describe: 'Match files based on glob pattern',
     type: 'array'
 
   }).option('clean', {
     alias: 'n', // notice: it's "n" (and not "c" which is already used for "content")
-    default: false,
     describe: 'Clean empty directories from output',
     type: 'boolean'
 
   }).option('flatten', {
     alias: 'f',
-    default: false,
     describe: 'Flatten output',
     type: 'boolean'
 
   }).option('pretty', {
     alias: 'p',
     coerce: getPrettyArg,
-    default: false,
-    describe: 'Pretty-print output'
+    describe: 'Pretty-print output',
+    type: 'string'
 
   }).option('output', {
     alias: 'o',
@@ -91,7 +86,6 @@ yargs
     type: 'string'
 
   }).option('debug', {
-    default: false,
     describe: 'Add debugging information to output',
     type: 'boolean'
 
@@ -103,24 +97,24 @@ const a = yargs.argv;
 
 const path = a._[0];
 
-const opts = {
+const opts: Model.IOpts = {
   all: a.all,
   content: a.content,
   relative: a.relative,
   depth: a.depth,
-  include: a.include,
-  exclude: a.exclude,
-  glob: a.glob
+  include: a.include || [],
+  exclude: a.exclude || [],
+  glob: a.glob || []
 };
 
-const helper = {
+const helper: IDebugHelper = {
   clean: a.clean,
   flatten: a.flatten,
   pretty: a.pretty
 };
 
-const outputPath = a.output;
-const debugMode = a.debug;
+const outputPath = a.output as string || undefined;
+const debugMode: boolean = a.debug;
 
 if (path) {
   new TreeView(opts)
@@ -135,12 +129,8 @@ if (path) {
 
       let outputStr: string;
       if (helper.pretty) {
-        if (typeof helper.pretty === 'string') {
-          const render = (renderer as { [index: string]: Renderer })[helper.pretty];
-          outputStr = pretty(output, render) + '\n';
-        } else {
-          outputStr = pretty(output) + '\n';
-        }
+        const render = (renderer as { [index: string]: Renderer })[helper.pretty as string];
+        outputStr = pretty(output, render) + '\n';
       } else {
         outputStr = stringify(output);
       }

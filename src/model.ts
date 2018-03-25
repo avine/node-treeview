@@ -32,7 +32,7 @@ export interface IOpts {
   // Use relative path
   relative: boolean;
   // Maximum depth of directories
-  depth: boolean | number;
+  depth: number;
   // List of directory paths to include in output
   include: string[];
   // List of directory paths to exclude from output
@@ -46,7 +46,7 @@ export interface IOptsParam {
   all?: boolean;
   content?: boolean;
   relative?: boolean;
-  depth?: boolean | number;
+  depth?: number;
   include?: string[];
   exclude?: string[];
   glob?: string[];

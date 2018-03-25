@@ -20,7 +20,7 @@ export class TreeView {
     all: false,
     content: false,
     relative: false,
-    depth: false,
+    depth: -1,
     include: [],
     exclude: [],
     glob: []
@@ -167,7 +167,7 @@ export class TreeView {
   private addDir(item: Model.IDir, depth: number) {
     item.type = 'dir';
     this.emit(item);
-    if (this.opts.depth === false || depth < this.opts.depth) {
+    if (this.opts.depth === -1 || depth < this.opts.depth) {
       item.content = [];
       return this.walk(this.getPath(item), item.content, depth + 1)
         .catch((error) => {

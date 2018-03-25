@@ -167,7 +167,7 @@ export interface IOptsParam {
   // Use relative path
   relative?: boolean;
   // Maximum depth of directories
-  depth?: boolean | number;
+  depth?: number;
   // List of directory paths to include in output
   include?: string[];
   // List of directory paths to exclude from output
@@ -329,20 +329,20 @@ node-treeview
 Usage: node-treeview <path> [options]
 
 Options:
-  --version, -v   Show version number                                              [boolean]
-  --help, -h      Show help                                                        [boolean]
-  --all, -a       Include hidden files in output                  [boolean] [default: false]
-  --content, -c   Add files content to output                     [boolean] [default: false]
-  --relative, -r  Use relative path                               [boolean] [default: false]
-  --depth, -d     Maximum depth of directories (use boolean or number)      [default: false]
-  --include, -i   List of directory paths to include in output         [array] [default: []]
-  --exclude, -e   List of directory paths to exclude from output       [array] [default: []]
-  --glob, -g      Match files based on glob pattern                    [array] [default: []]
-  --clean, -n     Clean empty directories from output             [boolean] [default: false]
-  --flatten, -f   Flatten output                                  [boolean] [default: false]
-  --pretty, -p    Pretty-print output                             [boolean] [default: false]
-  --output, -o    Output file path                                                  [string]
-  --debug         Add debugging information to output             [boolean] [default: false]
+  --version, -v   Show version number                                  [boolean]
+  --help, -h      Show help                                            [boolean]
+  --all, -a       Include hidden files in output                       [boolean]
+  --content, -c   Add files content to output                          [boolean]
+  --relative, -r  Use relative path                                    [boolean]
+  --depth, -d     Maximum depth of directories            [number] [default: -1]
+  --include, -i   List of directory paths to include in output           [array]
+  --exclude, -e   List of directory paths to exclude from output         [array]
+  --glob, -g      Match files based on glob pattern                      [array]
+  --clean, -n     Clean empty directories from output                  [boolean]
+  --flatten, -f   Flatten output                                       [boolean]
+  --pretty, -p    Pretty-print output                                   [string]
+  --output, -o    Output file path                                      [string]
+  --debug         Add debugging information to output                  [boolean]
 ```
 
 ## Contribute

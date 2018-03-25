@@ -53,14 +53,14 @@ describe('TreeView cli', () => {
         all: false,
         content: false,
         relative: false,
-        depth: false,
+        depth: -1,
         include: [],
         exclude: [],
         glob: []
       });
-      expect(debug.helper.clean).toBeFalsy();
-      expect(debug.helper.flatten).toBeFalsy();
-      expect(debug.helper.pretty).toBeFalsy();
+      expect(debug.helper.clean).toBe(false);
+      expect(debug.helper.flatten).toBe(false);
+      expect(debug.helper.pretty).toBeUndefined();
       expect(debug.outputPath).toBeUndefined();
       expect(debug.path).toEqual(basePath);
       done();
@@ -92,8 +92,8 @@ describe('TreeView cli', () => {
         exclude: [resolve('path/3'), resolve('path/4')],
         glob: ['*.*', '**/*']
       });
-      expect(debug.helper.clean).toBeTruthy();
-      expect(debug.helper.flatten).toBeTruthy();
+      expect(debug.helper.clean).toBe(true);
+      expect(debug.helper.flatten).toBe(true);
       expect(debug.helper.pretty).toBe('light');
       expect(debug.outputPath).toEqual('./tree.json');
       expect(debug.path).toEqual(basePath);
@@ -126,8 +126,8 @@ describe('TreeView cli', () => {
         exclude: [resolve('path/3'), resolve('path/4')],
         glob: ['*.*', '**/*']
       });
-      expect(debug.helper.clean).toBeTruthy();
-      expect(debug.helper.flatten).toBeTruthy();
+      expect(debug.helper.clean).toBe(true);
+      expect(debug.helper.flatten).toBe(true);
       expect(debug.helper.pretty).toBe('light');
       expect(debug.outputPath).toEqual('./tree.json');
       expect(debug.path).toEqual(basePath);

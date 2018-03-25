@@ -38,7 +38,7 @@ function walk(tree: Model.TreeNode[], render: Renderer, depth = 0, empty: number
     const last = index === tree.length - 1;
     const current = last ? box.last : box.item;
     result.push(render(current, item));
-    if ((item as Model.IDir).type === 'dir') {
+    if ((item as Model.IDir).type === 'dir' && (item as Model.IDir).content) {
       result.push(...walk((item as Model.IDir).content, render, depth + 1, last ? [...empty, depth] : empty));
     }
   });
