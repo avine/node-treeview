@@ -6,7 +6,7 @@ export interface IDebug {
   helper: {
     clean: boolean;
     flatten: boolean;
-    pretty: boolean;
+    pretty: boolean | string;
   };
   output: DebugOutput;
   outputPath?: string;

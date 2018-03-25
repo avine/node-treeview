@@ -78,7 +78,7 @@ describe('TreeView cli', () => {
       '--glob', '*.*', '**/*',
       '--clean',
       '--flatten',
-      '--pretty',
+      '--pretty', 'light',
       '--output', './tree.json'
     ], (error, debug) => {
       debug = debug as IDebug;
@@ -94,7 +94,7 @@ describe('TreeView cli', () => {
       });
       expect(debug.helper.clean).toBeTruthy();
       expect(debug.helper.flatten).toBeTruthy();
-      expect(debug.helper.pretty).toBeTruthy();
+      expect(debug.helper.pretty).toBe('light');
       expect(debug.outputPath).toEqual('./tree.json');
       expect(debug.path).toEqual(basePath);
       done();
@@ -112,7 +112,7 @@ describe('TreeView cli', () => {
       '-g', '*.*', '**/*',
       '-n', // notice: it's "n" (and not "c" which is already used for "content")
       '-f',
-      '-p',
+      '-p', 'light',
       '-o', './tree.json'
     ], (error, debug) => {
       debug = debug as IDebug;
@@ -128,7 +128,7 @@ describe('TreeView cli', () => {
       });
       expect(debug.helper.clean).toBeTruthy();
       expect(debug.helper.flatten).toBeTruthy();
-      expect(debug.helper.pretty).toBeTruthy();
+      expect(debug.helper.pretty).toBe('light');
       expect(debug.outputPath).toEqual('./tree.json');
       expect(debug.path).toEqual(basePath);
       done();

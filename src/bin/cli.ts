@@ -6,28 +6,18 @@ import { resolve } from 'path';
 import { writeFile } from 'fs';
 
 import { TreeView } from '../index';
-import { clean, flatten, pretty } from '../helper';
+import { clean, flatten } from '../helper';
+import { pretty, renderer, Renderer } from '../helper/pretty';
 
+import { exit, getDepthArg, getPrettyArg } from './cli.helper';
 import { DebugOutput, IDebug } from './cli.model';
 
 // Don't forget to update cli version according to `package.json` version
 
-// tslint:disable-next-line:no-var-requires
-const pkgVersion = require(resolve('package.json')).version;
-
 const stringify = (data: any) => JSON.stringify(data, undefined, 2) + '\n';
 
-// `depth` arguments validation
-const booleanOrNumber = (arg: boolean | string) => {
-  const strArg = arg.toString();
-  switch (strArg) {
-    case 'true': return true;
-    case 'false': return false;
-  }
-  const numArg = parseInt(strArg, 10);
-  if (!isNaN(numArg)) return numArg;
-  throw new Error(`Boolean or number expected, but got "${arg}" instead!`);
-};
+// tslint:disable-next-line:no-var-requires
+const pkgVersion = require(resolve('package.json')).version;
 
 yargs
   .locale('en')
@@ -55,7 +45,7 @@ yargs
 
   }).option('depth', {
     alias: 'd',
-    coerce: booleanOrNumber,
+    coerce: getDepthArg,
     default: false,
     describe: 'Maximum depth of directories (use boolean or number)'
 
@@ -91,9 +81,9 @@ yargs
 
   }).option('pretty', {
     alias: 'p',
+    coerce: getPrettyArg,
     default: false,
-    describe: 'Pretty-print output',
-    type: 'boolean'
+    describe: 'Pretty-print output'
 
   }).option('output', {
     alias: 'o',
@@ -109,35 +99,58 @@ yargs
 
 // process.stdout.write(stringify(yargs.argv)); // For debugging
 
-const path = yargs.argv._[0];
-const { all, content, relative, depth, include, exclude, glob } = yargs.argv;
+const a = yargs.argv;
+
+const path = a._[0];
+
+const opts = {
+  all: a.all,
+  content: a.content,
+  relative: a.relative,
+  depth: a.depth,
+  include: a.include,
+  exclude: a.exclude,
+  glob: a.glob
+};
+
+const helper = {
+  clean: a.clean,
+  flatten: a.flatten,
+  pretty: a.pretty
+};
+
+const outputPath = a.output;
+const debugMode = a.debug;
+
 if (path) {
-  new TreeView({ all, content, relative, depth, include, exclude, glob })
+  new TreeView(opts)
     .process(path)
     .then((tree) => {
       // Note that if the output is flattened there's no need to clean it!
       // Because the flatten version only contains the files (and not the directories).
       const output =
-        yargs.argv.flatten ? flatten(tree) :
-        yargs.argv.clean ? clean(tree) :
+        helper.flatten ? flatten(tree) :
+        helper.clean ? clean(tree) :
         tree;
+
       let outputStr: string;
-      if (yargs.argv.pretty) {
-        outputStr = pretty(output) + '\n';
+      if (helper.pretty) {
+        if (typeof helper.pretty === 'string') {
+          const render = (renderer as { [index: string]: Renderer })[helper.pretty];
+          outputStr = pretty(output, render) + '\n';
+        } else {
+          outputStr = pretty(output) + '\n';
+        }
       } else {
         outputStr = stringify(output);
       }
-      const outputPath = yargs.argv.output;
-      if (yargs.argv.debug) {
+
+      if (debugMode) {
         const debug: IDebug = {
-          opts: { all, content, relative, depth, include, exclude, glob },
+          opts,
           path,
-          helper: {
-            clean: yargs.argv.clean,
-            flatten: yargs.argv.flatten,
-            pretty: yargs.argv.pretty
-          },
-          output: yargs.argv.pretty ? outputStr : output,
+          helper,
+          output: helper.pretty ? outputStr : output,
           outputPath
         };
         process.stdout.write(stringify(debug));
@@ -150,9 +163,5 @@ if (path) {
           process.stdout.write(outputStr);
         }
       }
-    })
-    .catch((error: Error) => {
-      process.stderr.write(error.toString() + '\n');
-      process.exit(1);
-    });
+    }).catch(exit);
 }
