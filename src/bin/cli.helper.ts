@@ -2,15 +2,14 @@ import chalk from 'chalk';
 
 import { renderer, Renderer } from '../helper/pretty';
 
-export const getDepthArg = (arg: boolean | string) => {
-  const strArg = arg.toString();
-  switch (strArg) {
-    case 'true': return true;
-    case 'false': return false;
+export const getDepthArg = (arg: false | string) => {
+  if (arg === false) {
+    return arg;
+  } else {
+    const numArg = parseInt(arg, 10);
+    if (!isNaN(numArg)) return numArg;
   }
-  const numArg = parseInt(strArg, 10);
-  if (!isNaN(numArg)) return numArg;
-  exit(new Error(`Invalid "depth" argument: boolean or number expected, but got "${arg}" instead!`));
+  exit(new Error(`Invalid "depth" argument: number expected, but got "${arg}" instead!`));
 };
 
 export const getPrettyArg = (arg: boolean | string) => {
