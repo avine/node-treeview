@@ -113,7 +113,7 @@ export class TreeView {
               if (task) tasks.push(task);
             }
             pending -= 1;
-            if (!pending) Promise.all(tasks).then(() => success(tree));
+            if (!pending) Promise.all(tasks).then(() => success(this.sort(tree)));
           });
         });
       });
@@ -179,6 +179,18 @@ export class TreeView {
         });
     }
     return null;
+  }
+
+  private sort(tree: Model.TreeNode[]) {
+    return tree.sort((a, b) => {
+      if ((a as Model.IDir).type === 'dir' && (b as Model.IFile).type === 'file') {
+        return 1;
+      } else if ((a as Model.IFile).type === 'file' && (b as Model.IDir).type === 'dir') {
+        return -1;
+      } else {
+        return a.name > b.name ? 1 : -1;
+      }
+    });
   }
 
   /**

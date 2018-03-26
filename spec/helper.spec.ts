@@ -72,10 +72,10 @@ describe('TreeView helper', () => {
       const txt = `
 ├─ a
 └─ folder
-   ├─ folder
-   │  ├─ d
-   │  └─ c
-   └─ b
+   ├─ b
+   └─ folder
+      ├─ c
+      └─ d
 `;
 
       expect(print).toBe(txt.trim());
