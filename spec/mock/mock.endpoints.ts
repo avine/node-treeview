@@ -60,6 +60,12 @@ const endpoints: IEndpoints = {
   '/root/deep-dirs/folder/folder/c': { type: 'file', content: 'ccc', size: 3 },
   '/root/deep-dirs/folder/folder/d': { type: 'file', content: 'dddd', size: 4 },
 
+  '/root/sort': { type: 'dir', content: ['c', 'b', 'a', 'e', 'd'] }, // Notice that 'a' is in error!
+  '/root/sort/c': { type: 'file', content: '', size: 0 },
+  '/root/sort/b': { type: 'dir', content: [] },
+  '/root/sort/e': { type: 'dir', content: [] },
+  '/root/sort/d': { type: 'file', content: '', size: 0 },
+
   '/root/clean': { type: 'dir', content: ['a', 'b', 'c', 'd'] },
   '/root/clean/a': { type: 'file', content: 'aaa', size: 3 },
   '/root/clean/b': { type: 'dir', content: [] }, // empty!

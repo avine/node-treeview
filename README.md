@@ -174,6 +174,15 @@ export interface IOptsParam {
   exclude?: string[];
   // Match files based on glob pattern
   glob?: string[];
+  // Sort output
+  sort?: Sorting;
+}
+
+// Tree sort type
+export enum Sorting {
+  Alpha,
+  FileFirst,
+  DirFirst
 }
 ```
 
@@ -329,20 +338,21 @@ node-treeview
 Usage: node-treeview <path> [options]
 
 Options:
-  --version, -v   Show version number                                  [boolean]
-  --help, -h      Show help                                            [boolean]
-  --all, -a       Include hidden files in output                       [boolean]
-  --content, -c   Add files content to output                          [boolean]
-  --relative, -r  Use relative path                                    [boolean]
-  --depth, -d     Maximum depth of directories            [number] [default: -1]
-  --include, -i   List of directory paths to include in output           [array]
-  --exclude, -e   List of directory paths to exclude from output         [array]
-  --glob, -g      Match files based on glob pattern                      [array]
-  --clean, -n     Clean empty directories from output                  [boolean]
-  --flatten, -f   Flatten output                                       [boolean]
-  --pretty, -p    Pretty-print output                                   [string]
-  --output, -o    Output file path                                      [string]
-  --debug         Add debugging information to output                  [boolean]
+  --version, -v   Show version number                                             [boolean]
+  --help, -h      Show help                                                       [boolean]
+  --all, -a       Include hidden files in output                                  [boolean]
+  --content, -c   Add files content to output                                     [boolean]
+  --relative, -r  Use relative path                                               [boolean]
+  --depth, -d     Maximum depth of directories                       [number] [default: -1]
+  --include, -i   List of directory paths to include in output                      [array]
+  --exclude, -e   List of directory paths to exclude from output                    [array]
+  --glob, -g      Match files based on glob pattern                                 [array]
+  --sort, -s      Sort output 0 (Alpha), 1 (FileFirst), 2 (DirFirst)  [number] [default: 0]
+  --clean, -n     Clean empty directories from output                             [boolean]
+  --flatten, -f   Flatten output                                                  [boolean]
+  --pretty, -p    Pretty-print output                                              [string]
+  --output, -o    Output file path                                                 [string]
+  --debug         Add debugging information to output                             [boolean]
 ```
 
 ## Contribute

@@ -366,6 +366,25 @@ describe('TreeView mock options', () => {
     ]).then(done);
   });
 
+  it('should sort tree', (done) => {
+    const getNames = (tree: Model.TreeNode[]) => [tree[0].name, tree[1].name, tree[2].name, tree[3].name, tree[4].name];
+    Promise.all([
+      new TreeViewMock(/* sort: Model.Sorting.Alpha }*/).process('./sort').then((tree) => {
+        expect(getNames(tree)).toEqual(['a', 'b', 'c', 'd', 'e']);
+      }),
+
+      new TreeViewMock({ sort: Model.Sorting.FileFirst }).process('./sort').then((tree) => {
+        // 'a' is in error and always pushed at the end
+        expect(getNames(tree)).toEqual(['c', 'd', 'b', 'e', 'a']);
+      }),
+
+      new TreeViewMock({ sort: Model.Sorting.DirFirst }).process('./sort').then((tree) => {
+        // 'a' is in error and always pushed at the end
+        expect(getNames(tree)).toEqual(['b', 'e', 'c', 'd', 'a']);
+      })
+    ]).then(done);
+  });
+
   it('should add listener', (done) => {
     let list: string[] = [];
     new TreeViewMock().listen((data) => {

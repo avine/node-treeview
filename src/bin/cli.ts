@@ -11,7 +11,7 @@ import * as Model from '../model';
 import { clean, flatten } from '../helper';
 import { pretty, renderer, Renderer } from '../helper/pretty';
 
-import { exit, getDepthArg, getPrettyArg } from './cli.helper';
+import { exit, getDepthArg, getPrettyArg, getSortArg, getSortDesc } from './cli.helper';
 import { DebugOutput, IDebug, IDebugHelper } from './cli.model';
 
 // Don't forget to update cli version according to `package.json` version
@@ -64,6 +64,13 @@ yargs
     describe: 'Match files based on glob pattern',
     type: 'array'
 
+  }).option('sort', {
+    alias: 's',
+    coerce: getSortArg,
+    describe: 'Sort output ' + getSortDesc(),
+    type: 'number',
+    default: 0
+
   }).option('clean', {
     alias: 'n', // notice: it's "n" (and not "c" which is already used for "content")
     describe: 'Clean empty directories from output',
@@ -105,7 +112,7 @@ const opts: Model.IOpts = {
   include: a.include || [],
   exclude: a.exclude || [],
   glob: a.glob || [],
-  sort: Model.Sorting.Alpha
+  sort: a.sort
 };
 
 const helper: IDebugHelper = {

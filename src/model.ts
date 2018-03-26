@@ -39,7 +39,7 @@ export interface IOpts {
   exclude: string[];
   // Match files based on glob pattern
   glob: string[];
-  // Tree sorting
+  // Sort output
   sort: Sorting;
 }
 
@@ -57,9 +57,9 @@ export interface IOptsParam {
 
 // Tree sorting type
 export enum Sorting {
-  Alpha = 'Alpha',
-  FileFirst = 'FileFirst',
-  DirFirst = 'DirFirst'
+  Alpha,
+  FileFirst,
+  DirFirst
 }
 
 // Like require('fs').Stats interface
