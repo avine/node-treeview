@@ -25,7 +25,8 @@ export class TreeView {
     depth: NO_DEPTH,
     include: [],
     exclude: [],
-    glob: []
+    glob: [],
+    sort: Model.Sorting.Alpha
   };
   events = new EventEmitter();
   providers!: Model.IProviders;
@@ -182,15 +183,18 @@ export class TreeView {
   }
 
   private sort(tree: Model.TreeNode[]) {
-    return tree.sort((a, b) => {
-      if ((a as Model.IDir).type === 'dir' && (b as Model.IFile).type === 'file') {
-        return 1;
-      } else if ((a as Model.IFile).type === 'file' && (b as Model.IDir).type === 'dir') {
-        return -1;
-      } else {
+    if (this.opts.sort === Model.Sorting.Alpha) {
+      return tree.sort((a, b) => a.name > b.name ? 1 : -1);
+    } else {
+      const x = this.opts.sort === Model.Sorting.FileFirst ? 1 : -1;
+      return tree.sort((a, b) => {
+        if ((a as Model.IDir).type === 'dir' && (b as Model.IFile).type === 'file') return x;
+        if ((a as Model.IFile).type === 'file' && (b as Model.IDir).type === 'dir') return -x;
+        if (a.error && !b.error) return 1;
+        if (!a.error && b.error) return -1;
         return a.name > b.name ? 1 : -1;
-      }
-    });
+      });
+    }
   }
 
   /**

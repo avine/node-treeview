@@ -104,7 +104,8 @@ const opts: Model.IOpts = {
   depth: a.depth,
   include: a.include || [],
   exclude: a.exclude || [],
-  glob: a.glob || []
+  glob: a.glob || [],
+  sort: Model.Sorting.Alpha
 };
 
 const helper: IDebugHelper = {

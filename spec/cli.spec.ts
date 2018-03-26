@@ -58,7 +58,8 @@ describe('TreeView cli', () => {
         depth: NO_DEPTH,
         include: [],
         exclude: [],
-        glob: []
+        glob: [],
+        sort: Model.Sorting.Alpha
       });
       expect(debug.helper.clean).toBe(false);
       expect(debug.helper.flatten).toBe(false);
@@ -92,7 +93,8 @@ describe('TreeView cli', () => {
         depth: 2,
         include: [resolve('path/1'), resolve('path/2')],
         exclude: [resolve('path/3'), resolve('path/4')],
-        glob: ['*.*', '**/*']
+        glob: ['*.*', '**/*'],
+        sort: Model.Sorting.Alpha
       });
       expect(debug.helper.clean).toBe(true);
       expect(debug.helper.flatten).toBe(true);
@@ -126,7 +128,8 @@ describe('TreeView cli', () => {
         depth: 2,
         include: [resolve('path/1'), resolve('path/2')],
         exclude: [resolve('path/3'), resolve('path/4')],
-        glob: ['*.*', '**/*']
+        glob: ['*.*', '**/*'],
+        sort: Model.Sorting.Alpha
       });
       expect(debug.helper.clean).toBe(true);
       expect(debug.helper.flatten).toBe(true);

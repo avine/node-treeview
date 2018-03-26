@@ -39,6 +39,8 @@ export interface IOpts {
   exclude: string[];
   // Match files based on glob pattern
   glob: string[];
+  // Tree sorting
+  sort: Sorting;
 }
 
 // Like `IOpts` interface but with all properties optional
@@ -50,6 +52,14 @@ export interface IOptsParam {
   include?: string[];
   exclude?: string[];
   glob?: string[];
+  sort?: Sorting;
+}
+
+// Tree sorting type
+export enum Sorting {
+  Alpha = 'Alpha',
+  FileFirst = 'FileFirst',
+  DirFirst = 'DirFirst'
 }
 
 // Like require('fs').Stats interface
