@@ -4,7 +4,7 @@
 import { resolve } from 'path';
 import { spawn } from 'child_process';
 
-import { NO_DEPTH, TreeView } from '../src/index';
+import { INFINITE_DEPTH, TreeView } from '../src/index';
 import * as Model from '../src/model';
 
 import { DEF_RENDERER } from '../src/helper/pretty';
@@ -55,7 +55,7 @@ describe('TreeView cli', () => {
         all: false,
         content: false,
         relative: false,
-        depth: NO_DEPTH,
+        depth: INFINITE_DEPTH,
         include: [],
         exclude: [],
         glob: [],

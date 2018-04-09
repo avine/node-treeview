@@ -6,7 +6,7 @@ import * as minimatch from 'minimatch';
 import * as Model from './model';
 import { isBinaryPath } from './helper/binary';
 
-export const NO_DEPTH = -1;
+export const INFINITE_DEPTH = -1;
 
 export class TreeView {
   private static addTime(item: Model.Item, stats: Model.IStats) {
@@ -22,7 +22,7 @@ export class TreeView {
     all: false,
     content: false,
     relative: false,
-    depth: NO_DEPTH,
+    depth: INFINITE_DEPTH,
     include: [],
     exclude: [],
     glob: [],
@@ -170,7 +170,7 @@ export class TreeView {
   private addDir(item: Model.IDir, depth: number) {
     item.type = 'dir';
     this.emit(item);
-    if (this.opts.depth === NO_DEPTH || depth < this.opts.depth) {
+    if (this.opts.depth === INFINITE_DEPTH || depth < this.opts.depth) {
       item.nodes = []; // FIXME: should be setted before .emit ???
       return this.walk(this.getPath(item), item.nodes, depth + 1)
         .catch((error) => {

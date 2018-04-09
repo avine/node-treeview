@@ -5,7 +5,7 @@ import * as yargs from 'yargs';
 import { resolve } from 'path';
 import { writeFile } from 'fs';
 
-import { NO_DEPTH, TreeView } from '../index';
+import { INFINITE_DEPTH, TreeView } from '../index';
 import * as Model from '../model';
 
 import { clean, flatten } from '../helper';
@@ -47,7 +47,7 @@ yargs
     coerce: getDepthArg,
     describe: 'Maximum depth of directories',
     type: 'number',
-    default: NO_DEPTH // Setting a default value ensures that the coerce function will always be called
+    default: INFINITE_DEPTH // Setting a default value ensures that the coerce function will always be called
 
   }).option('include', {
     alias: 'i',
