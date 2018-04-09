@@ -171,11 +171,11 @@ export class TreeView {
     item.type = 'dir';
     this.emit(item);
     if (this.opts.depth === NO_DEPTH || depth < this.opts.depth) {
-      item.content = [];
-      return this.walk(this.getPath(item), item.content, depth + 1)
+      item.nodes = []; // FIXME: should be setted before .emit ???
+      return this.walk(this.getPath(item), item.nodes, depth + 1)
         .catch((error) => {
           item.error = error;
-          delete item.content;
+          delete item.nodes; // FIXME: don't delete this ???
           return Promise.resolve(); // Don't break the walk...
         });
     }
@@ -198,15 +198,14 @@ export class TreeView {
   }
 
   /**
-   * Emit an event each time a file or a directory is discovered.
+   * Emit an event each time a `TreeNode` is discovered.
+   * Note: the emitted `item` does not contains the `XXX` property.
    */
   private emit(item: Model.TreeNode) {
-    const data = { ...item };
-    if (!item.error) {
-      // When available, the `content` property of the emitted `item` is always an empty array!
-      (data as Model.Item).content = [];
-    }
-    // We should match the signature of `Model.Listener`
-    this.events.emit('item', data, this.opts);
+    // We should match the signature of `Model.Listener`.
+    // Emit an immutable item.
+    this.events.emit('item', { ...item }, this.opts);
+
+    // FIXME: should emit dir with `nodes`property ???
   }
 }

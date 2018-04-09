@@ -9,19 +9,19 @@ export interface IRef {
 
 export interface IFile extends IRef {
   type: 'file';
-  content: string;
   created: Date;
   modified: Date;
   size: number;
   ext: string;
   binary: boolean;
+  content?: string;
 }
 
 export interface IDir extends IRef {
   type: 'dir';
-  content: TreeNode[];
   created: Date;
   modified: Date;
+  nodes: TreeNode[]; // FIXME: should be optional ???
 }
 
 export interface IOpts {

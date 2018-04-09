@@ -51,10 +51,10 @@ export const providers: Model.IProviders = {
   readdir(path, cb) {
     const endpoint = endpoints[path];
     if (endpoint && endpoint.type === 'dir') {
-      if (endpoint.content !== false) {
-        cb(null, endpoint.content || []);
+      if (endpoint.nodes !== false) {
+        cb(null, endpoint.nodes || []);
       } else {
-        cb(new Error(`Unable to read directory content: "${path}"`), []);
+        cb(new Error(`Unable to read directory child nodes: "${path}"`), []);
       }
     } else {
       cb(new Error(`Unable to find directory: "${path}"`), []);

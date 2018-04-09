@@ -29,21 +29,21 @@ describe('TreeView e2e', () => {
 
       let filtered = tree.filter(r => r.name === 'sub');
       const sub = filtered[0] as Model.IDir;
-      expect(sub.content).toContainItem({
+      expect(sub.nodes).toContainItem({
         type: 'file', path: subPath, name: 'b.txt', content: 'bbb', size: 3, binary: false
       });
-      expect(sub.content).toContainItem({
+      expect(sub.nodes).toContainItem({
         type: 'dir', path: subPath, name: 'deep'
       });
 
-      filtered = sub.content.filter(r => r.name === 'deep');
+      filtered = sub.nodes.filter(r => r.name === 'deep');
       const deep = filtered[0] as Model.IDir;
 
       const png = 'ccc'; // this is the real content of the dummy file `c.png`
       const pngContent = new Buffer(png).toString('base64');
       const pngSize = png.length;
 
-      expect(deep.content).toContainItem({
+      expect(deep.nodes).toContainItem({
         type: 'file', path: deepPath, name: 'c.png', content: pngContent, size: pngSize, binary: true
       });
 

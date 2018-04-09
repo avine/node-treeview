@@ -74,7 +74,7 @@ The output looks like the following `json`:
   "created": "2017-10-22T10:48:48.000Z",
   "modified": "2017-10-23T18:29:29.000Z",
   "type": "dir",
-  "content": [{
+  "nodes": [{
     "name": "file2.txt",
     "path": "path/to/dir/subdir",
     "pathname": "path/to/dir/subdir/file2.txt",
@@ -136,19 +136,19 @@ export interface IRef {
 
 export interface IFile extends IRef {
   type: 'file';
-  content: string;
   created: Date;
   modified: Date;
   size: number;
   ext: string;
   binary: boolean;
+  content?: string;
 }
 
 export interface IDir extends IRef {
   type: 'dir';
-  content: TreeNode[];
   created: Date;
   modified: Date;
+  nodes: TreeNode[];
 }
 
 // The final output is of type: `TreeNode[]`
