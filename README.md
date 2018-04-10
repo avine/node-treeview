@@ -332,10 +332,12 @@ import { pretty } from 'node-treeview/helper';
 new TreeView().process('path/to/dir').then(tree => {
   console.log(
     pretty(tree, (box: string, item: Model.TreeNode) => {
-      if ((item as Model.IFile).type === 'file') {
-        return box + item.name + ` [${item.size}]`;
-      } else {
+      if ((item as Model.IDir).type === 'dir') {
         return box + `(${item.name})`;
+      } else if ((item as Model.IFile).type === 'file') {
+        return box + item.name + ` [${(item as Model.IFile).size} bytes]`;
+      } else {
+        return box + item.name;
       }
     })
   );
