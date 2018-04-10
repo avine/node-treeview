@@ -44,8 +44,8 @@ describe('TreeView helper', () => {
         expect(tree).toContainItem({ type: 'dir', path: '/root/clean', name: 'c', pathname: '/root/clean/c' });
         expect(tree).toContainItem({ type: 'dir', path: '/root/clean', name: 'd', pathname: '/root/clean/d' });
 
-        const subDir = tree.filter(r => r.name === 'd')[0] as Model.IDir;
-        expect(subDir.nodes).toContainItem({
+        const sub = tree.filter(r => r.name === 'd')[0] as Model.IDir;
+        expect(sub.nodes).toContainItem({
           type: 'file', path: '/root/clean/d', name: 'f', pathname: '/root/clean/d/f'
         });
       }),
@@ -58,8 +58,8 @@ describe('TreeView helper', () => {
         expect(cleaned).not.toContainItem({ type: 'dir', path: '/root/clean', name: 'c', pathname: '/root/clean/c' });
         expect(cleaned).toContainItem({ type: 'dir', path: '/root/clean', name: 'd', pathname: '/root/clean/d' });
 
-        const subDir = cleaned.filter(r => r.name === 'd')[0] as Model.IDir;
-        expect(subDir.nodes).toContainItem({
+        const sub = cleaned.filter(r => r.name === 'd')[0] as Model.IDir;
+        expect(sub.nodes).toContainItem({
           type: 'file', path: '/root/clean/d', name: 'f', pathname: '/root/clean/d/f'
         });
       })

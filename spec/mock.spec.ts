@@ -121,9 +121,9 @@ describe('TreeView mock', () => {
       expect(tree).toContainItem({ path: '/root/sub-dirs', name: 'b', type: 'dir' });
 
       const filtered = tree.filter(r => r.name === 'b');
-      const subDir = filtered[0] as Model.IDir;
-      expect(subDir.nodes).toContainItem({ path: '/root/sub-dirs/b', name: 'c', type: 'file', content: 'ccc' });
-      expect(subDir.nodes).toContainItem({ path: '/root/sub-dirs/b', name: 'd', type: 'file', content: 'ddd' });
+      const sub = filtered[0] as Model.IDir;
+      expect(sub.nodes).toContainItem({ path: '/root/sub-dirs/b', name: 'c', type: 'file', content: 'ccc' });
+      expect(sub.nodes).toContainItem({ path: '/root/sub-dirs/b', name: 'd', type: 'file', content: 'ddd' });
 
       done();
     });
@@ -213,19 +213,19 @@ describe('TreeView mock options', () => {
       }),
 
       new TreeViewMock({ depth: 1 }).process('./deep-dirs').then((tree) => {
-        const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
+        const sub = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
 
-        expect(subDir.nodes).toContainItem({ type: 'file', name: 'b' });
-        expect(subDir.nodes).toContainItem({ type: 'dir', name: 'folder' });
-        expect(subDir.nodes).not.toContainItem({ type: 'dir', name: 'folder', nodes: ['c', 'd'] });
+        expect(sub.nodes).toContainItem({ type: 'file', name: 'b' });
+        expect(sub.nodes).toContainItem({ type: 'dir', name: 'folder' });
+        expect(sub.nodes).not.toContainItem({ type: 'dir', name: 'folder', nodes: ['c', 'd'] });
       }),
 
       new TreeViewMock({ depth: 2 }).process('./deep-dirs').then((tree) => {
-        const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
-        const deepDir = subDir.nodes.filter(r => r.name === 'folder')[0] as Model.IDir;
+        const sub = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
+        const deep = sub.nodes.filter(r => r.name === 'folder')[0] as Model.IDir;
 
-        expect(deepDir.nodes).toContainItem({ type: 'file', name: 'c' });
-        expect(deepDir.nodes).toContainItem({ type: 'file', name: 'd' });
+        expect(deep.nodes).toContainItem({ type: 'file', name: 'c' });
+        expect(deep.nodes).toContainItem({ type: 'file', name: 'd' });
       })
     ]).then(done);
   });
@@ -235,19 +235,19 @@ describe('TreeView mock options', () => {
       expect(tree).toContainItem({ type: 'file', path: '', name: 'a', pathname: 'a' });
       expect(tree).toContainItem({ type: 'dir', path: '', name: 'folder', pathname: 'folder' });
 
-      const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
-      expect(subDir.nodes).toContainItem({
+      const sub = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
+      expect(sub.nodes).toContainItem({
         type: 'file', path: 'folder', name: 'b', pathname: 'folder/b'
       });
-      expect(subDir.nodes).toContainItem({
+      expect(sub.nodes).toContainItem({
         type: 'dir', path: 'folder', name: 'folder', pathname: 'folder/folder'
       });
 
-      const deepDir = subDir.nodes.filter(r => r.name === 'folder')[0] as Model.IDir;
-      expect(deepDir.nodes).toContainItem({
+      const deep = sub.nodes.filter(r => r.name === 'folder')[0] as Model.IDir;
+      expect(deep.nodes).toContainItem({
         name: 'c', path: 'folder/folder', pathname: 'folder/folder/c', type: 'file'
       });
-      expect(deepDir.nodes).toContainItem({
+      expect(deep.nodes).toContainItem({
         name: 'd', path: 'folder/folder', pathname: 'folder/folder/d', type: 'file'
       });
 
@@ -263,16 +263,16 @@ describe('TreeView mock options', () => {
       expect(tree).toContainItem({ type: 'dir', name: 'folder' });
 
       // Skip file `./deep-dirs/folder/b`
-      const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
-      expect(subDir.nodes.length).toBe(1);
-      expect(subDir.nodes).not.toContainItem({ type: 'file', name: 'b' });
-      expect(subDir.nodes).toContainItem({ type: 'dir', name: 'folder' });
+      const sub = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
+      expect(sub.nodes.length).toBe(1);
+      expect(sub.nodes).not.toContainItem({ type: 'file', name: 'b' });
+      expect(sub.nodes).toContainItem({ type: 'dir', name: 'folder' });
 
       // Keep files `./deep-dirs/folder/folder/c` and  `./deep-dirs/folder/folder/d`
-      const deepDir = subDir.nodes.filter(r => r.name === 'folder')[0] as Model.IDir;
-      expect(deepDir.nodes.length).toBe(2);
-      expect(deepDir.nodes).toContainItem({ type: 'file', name: 'c' });
-      expect(deepDir.nodes).toContainItem({ type: 'file', name: 'd' });
+      const deep = sub.nodes.filter(r => r.name === 'folder')[0] as Model.IDir;
+      expect(deep.nodes.length).toBe(2);
+      expect(deep.nodes).toContainItem({ type: 'file', name: 'c' });
+      expect(deep.nodes).toContainItem({ type: 'file', name: 'd' });
     };
 
     Promise.all([
@@ -294,10 +294,10 @@ describe('TreeView mock options', () => {
       expect(tree).toContainItem({ type: 'file', name: 'a' });
       expect(tree).toContainItem({ type: 'dir', name: 'folder' });
 
-      const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
-      expect(subDir.nodes.length).toBe(1);
-      expect(subDir.nodes).toContainItem({ type: 'file', name: 'b' });
-      expect(subDir.nodes).not.toContainItem({ type: 'dir', name: 'folder' });
+      const sub = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
+      expect(sub.nodes.length).toBe(1);
+      expect(sub.nodes).toContainItem({ type: 'file', name: 'b' });
+      expect(sub.nodes).not.toContainItem({ type: 'dir', name: 'folder' });
     };
 
     Promise.all([
@@ -324,15 +324,15 @@ describe('TreeView mock options', () => {
         expect(tree).toContainItem({ type: 'file', name: 'a' });
         expect(tree).toContainItem({ type: 'dir', name: 'folder' });
 
-        const subDir = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
-        expect(subDir.nodes.length).toBe(2);
-        expect(subDir.nodes).toContainItem({ type: 'file', name: 'b' });
-        expect(subDir.nodes).toContainItem({ type: 'dir', name: 'folder' });
+        const sub = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
+        expect(sub.nodes.length).toBe(2);
+        expect(sub.nodes).toContainItem({ type: 'file', name: 'b' });
+        expect(sub.nodes).toContainItem({ type: 'dir', name: 'folder' });
 
-        const deepDir = subDir.nodes.filter(r => r.name === 'folder')[0] as Model.IDir;
-        expect(deepDir.nodes.length).toBe(2);
-        expect(deepDir.nodes).toContainItem({ type: 'file', name: 'c' });
-        expect(deepDir.nodes).toContainItem({ type: 'file', name: 'd' });
+        const deep = sub.nodes.filter(r => r.name === 'folder')[0] as Model.IDir;
+        expect(deep.nodes.length).toBe(2);
+        expect(deep.nodes).toContainItem({ type: 'file', name: 'c' });
+        expect(deep.nodes).toContainItem({ type: 'file', name: 'd' });
       })
     ]).then(done);
   });
@@ -343,33 +343,33 @@ describe('TreeView mock options', () => {
       new TreeViewMock().process('./glob').then((tree) => {
         expect(tree).toContainItem({ type: 'file', path: '/root/glob', name: 'a.html' });
 
-        const subDir = tree.filter(r => r.name === 'b')[0] as Model.IDir;
-        expect(subDir.nodes).toContainItem({ type: 'file', path: '/root/glob/b', name: 'c.css' });
-        expect(subDir.nodes).toContainItem({ type: 'file', path: '/root/glob/b', name: 'd.html' });
+        const sub = tree.filter(r => r.name === 'b')[0] as Model.IDir;
+        expect(sub.nodes).toContainItem({ type: 'file', path: '/root/glob/b', name: 'c.css' });
+        expect(sub.nodes).toContainItem({ type: 'file', path: '/root/glob/b', name: 'd.html' });
       }),
 
       new TreeViewMock({ glob: ['**/*.html'] }).process('./glob').then((tree) => {
         expect(tree).toContainItem({ type: 'file', path: '/root/glob', name: 'a.html' });
 
-        const subDir = tree.filter(r => r.name === 'b')[0] as Model.IDir;
-        expect(subDir.nodes).not.toContainItem({ type: 'file', path: '/root/glob/b', name: 'c.css' });
-        expect(subDir.nodes).toContainItem({ type: 'file', path: '/root/glob/b', name: 'd.html' });
+        const sub = tree.filter(r => r.name === 'b')[0] as Model.IDir;
+        expect(sub.nodes).not.toContainItem({ type: 'file', path: '/root/glob/b', name: 'c.css' });
+        expect(sub.nodes).toContainItem({ type: 'file', path: '/root/glob/b', name: 'd.html' });
       }),
 
       new TreeViewMock({ glob: ['**/*.css'] }).process('./glob').then((tree) => {
         expect(tree).not.toContainItem({ type: 'file', path: '/root/glob', name: 'a.html' });
 
-        const subDir = tree.filter(r => r.name === 'b')[0] as Model.IDir;
-        expect(subDir.nodes).toContainItem({ type: 'file', path: '/root/glob/b', name: 'c.css' });
-        expect(subDir.nodes).not.toContainItem({ type: 'file', path: '/root/glob/b', name: 'd.html' });
+        const sub = tree.filter(r => r.name === 'b')[0] as Model.IDir;
+        expect(sub.nodes).toContainItem({ type: 'file', path: '/root/glob/b', name: 'c.css' });
+        expect(sub.nodes).not.toContainItem({ type: 'file', path: '/root/glob/b', name: 'd.html' });
       }),
 
       new TreeViewMock({ glob: ['**/*.js'] }).process('./glob').then((tree) => {
         expect(tree).not.toContainItem({ type: 'file', path: '/root/glob', name: 'a.html' });
 
-        const subDir = tree.filter(r => r.name === 'b')[0] as Model.IDir;
-        expect(subDir.nodes).not.toContainItem({ type: 'file', path: '/root/glob/b', name: 'c.css' });
-        expect(subDir.nodes).not.toContainItem({ type: 'file', path: '/root/glob/b', name: 'd.html' });
+        const sub = tree.filter(r => r.name === 'b')[0] as Model.IDir;
+        expect(sub.nodes).not.toContainItem({ type: 'file', path: '/root/glob/b', name: 'c.css' });
+        expect(sub.nodes).not.toContainItem({ type: 'file', path: '/root/glob/b', name: 'd.html' });
       })
     ]).then(done);
   });
@@ -434,7 +434,7 @@ describe('TreeView mock options', () => {
       }
     }).process('./deep-dirs').then((tree) => {
       // Check that the `content` property was never added to the emitted files.
-      expect(haveContent).toBe(false);
+      expect(haveContent).toBeFalsy();
 
       // Check that the `content` property was added to the tree as required by the options.
       const file = tree.filter(r => r.name === 'a')[0] as Model.IFile;

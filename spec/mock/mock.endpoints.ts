@@ -48,7 +48,7 @@ const endpoints: IEndpoints = {
   '/root/skip-content/b': { type: 'file', content: 'bbbb', size: 4 },
 
    // In order to check the `flatten` helper (especially the `.sort()` part),
-   // some contents are unordered (*):
+   // some nodes are unordered (*):
    //     - ['folder', 'b'] instead of ['b', 'folder']
    //     - ['d', 'c'] instead of ['c', 'd']
    // (see `helper.spec.ts` for more details)
