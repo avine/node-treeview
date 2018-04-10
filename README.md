@@ -169,10 +169,10 @@ export interface IOptsParam {
   all?: boolean;
   // Add files content to output
   content?: boolean;
-  // Use relative path
-  relative?: boolean;
   // Maximum depth of directories
   depth?: number;
+  // Use relative path
+  relative?: boolean;
   // List of directory paths to include in output
   include?: string[];
   // List of directory paths to exclude from output
@@ -347,8 +347,8 @@ Options:
   --help, -h      Show help                                                       [boolean]
   --all, -a       Include hidden files in output                                  [boolean]
   --content, -c   Add files content to output                                     [boolean]
-  --relative, -r  Use relative path                                               [boolean]
   --depth, -d     Maximum depth of directories                       [number] [default: -1]
+  --relative, -r  Use relative path                                               [boolean]
   --include, -i   List of directory paths to include in output                      [array]
   --exclude, -e   List of directory paths to exclude from output                    [array]
   --glob, -g      Match files based on glob pattern                                 [array]

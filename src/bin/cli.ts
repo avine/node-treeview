@@ -37,17 +37,17 @@ yargs
     describe: 'Add files content to output',
     type: 'boolean'
 
-  }).option('relative', {
-    alias: 'r',
-    describe: 'Use relative path',
-    type: 'boolean'
-
   }).option('depth', {
     alias: 'd',
     coerce: getDepthArg,
     describe: 'Maximum depth of directories',
     type: 'number',
     default: INFINITE_DEPTH // Setting a default value ensures that the coerce function will always be called
+
+  }).option('relative', {
+    alias: 'r',
+    describe: 'Use relative path',
+    type: 'boolean'
 
   }).option('include', {
     alias: 'i',
@@ -107,8 +107,8 @@ const path = a._[0];
 const opts: Model.IOpts = {
   all: a.all,
   content: a.content,
-  relative: a.relative,
   depth: a.depth,
+  relative: a.relative,
   include: a.include || [],
   exclude: a.exclude || [],
   glob: a.glob || [],

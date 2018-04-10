@@ -30,10 +30,10 @@ export interface IOpts {
   all: boolean;
   // Include files content in output
   content: boolean;
-  // Use relative path
-  relative: boolean;
   // Maximum depth of directories
   depth: number;
+  // Use relative path
+  relative: boolean;
   // List of directory paths to include in output
   include: string[];
   // List of directory paths to exclude from output
@@ -48,8 +48,8 @@ export interface IOpts {
 export interface IOptsParam {
   all?: boolean;
   content?: boolean;
-  relative?: boolean;
   depth?: number;
+  relative?: boolean;
   include?: string[];
   exclude?: string[];
   glob?: string[];

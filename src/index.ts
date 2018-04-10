@@ -21,8 +21,8 @@ export class TreeView {
   opts: Model.IOpts = {
     all: false,
     content: false,
-    relative: false,
     depth: INFINITE_DEPTH,
+    relative: false,
     include: [],
     exclude: [],
     glob: [],
