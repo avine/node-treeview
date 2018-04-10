@@ -31,7 +31,7 @@ new TreeView(options).process(path).then(tree => {
 });
 
 // Using async/await
-async function getJson() {
+async function getTree() {
   let tree;
   try {
     tree = await new TreeView(options).process(path);
@@ -40,7 +40,7 @@ async function getJson() {
   }
   // do some stuff...
 }
-getJson();
+getTree();
 ```
 
 ### Example

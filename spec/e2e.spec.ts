@@ -27,7 +27,7 @@ describe('TreeView e2e', () => {
         type: 'dir', path: basePath, name: 'sub'
       });
 
-      let filtered = tree.filter(r => r.name === 'sub');
+      let filtered = tree.filter(item => item.name === 'sub');
       const sub = filtered[0] as Model.IDir;
       expect(sub.nodes).toContainItem({
         type: 'file', path: subPath, name: 'b.txt', content: 'bbb', size: 3, binary: false
@@ -36,7 +36,7 @@ describe('TreeView e2e', () => {
         type: 'dir', path: subPath, name: 'deep'
       });
 
-      filtered = sub.nodes.filter(r => r.name === 'deep');
+      filtered = sub.nodes.filter(item => item.name === 'deep');
       const deep = filtered[0] as Model.IDir;
 
       const png = 'ccc'; // this is the real content of the dummy file `c.png`
