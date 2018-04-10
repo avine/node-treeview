@@ -175,6 +175,7 @@ export class TreeView {
   private addDir(item: Model.IDir, depth: number) {
     item.type = 'dir';
     item.nodes = [];
+    if (depth === this.opts.depth) item.maxDepth = true;
     this.emit(item);
     if (this.opts.depth === INFINITE_DEPTH || depth < this.opts.depth) {
       return this.walk(this.getPath(item), item.nodes, depth + 1)

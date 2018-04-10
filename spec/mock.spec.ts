@@ -210,14 +210,14 @@ describe('TreeView mock options', () => {
     Promise.all([
       new TreeViewMock({ depth: 0 }).process('./deep-dirs').then((tree) => {
         expect(tree).toContainItem({ type: 'file', name: 'a' });
-        expect(tree).toContainItem({ type: 'dir', name: 'folder', nodes: [] });
+        expect(tree).toContainItem({ type: 'dir', name: 'folder', nodes: [], maxDepth: true });
       }),
 
       new TreeViewMock({ depth: 1 }).process('./deep-dirs').then((tree) => {
         const sub = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
 
         expect(sub.nodes).toContainItem({ type: 'file', name: 'b' });
-        expect(sub.nodes).toContainItem({ type: 'dir', name: 'folder', nodes: [] });
+        expect(sub.nodes).toContainItem({ type: 'dir', name: 'folder', nodes: [], maxDepth: true });
       }),
 
       new TreeViewMock({ depth: 2 }).process('./deep-dirs').then((tree) => {

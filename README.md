@@ -153,6 +153,7 @@ export interface IDir extends IRef {
   created: Date;
   modified: Date;
   nodes: TreeNode[];
+  maxDepth?: true;
 }
 
 // The final output is of type: `TreeNode[]`
