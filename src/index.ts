@@ -93,8 +93,7 @@ export class TreeView {
           const pathfile = this.getPath(item);
           this.providers.stat(pathfile, (err, stats: Model.IStats) => {
             if (err) {
-              item.error = err;
-              this.emit(item);
+              this.addError(item, err);
               tree.push(item);
             } else {
               TreeView.addTime(item as Model.Item, stats);
@@ -141,6 +140,11 @@ export class TreeView {
     return included && !excluded;
   }
 
+  private addError(item: Model.IRef, error: Error) {
+    item.error = error;
+    this.emit(item);
+  }
+
   private addFile(item: Model.IFile, stats: Model.IStats) {
     item.type = 'file';
     item.size = stats.size;
@@ -160,6 +164,7 @@ export class TreeView {
       }, (error, data) => {
         if (error) {
           item.error = error;
+          item.content = '';
         } else {
           item.content = data.toString();
         }
@@ -169,13 +174,12 @@ export class TreeView {
 
   private addDir(item: Model.IDir, depth: number) {
     item.type = 'dir';
+    item.nodes = [];
     this.emit(item);
     if (this.opts.depth === INFINITE_DEPTH || depth < this.opts.depth) {
-      item.nodes = []; // FIXME: should be setted before .emit ???
       return this.walk(this.getPath(item), item.nodes, depth + 1)
         .catch((error) => {
           item.error = error;
-          delete item.nodes; // FIXME: don't delete this ???
           return Promise.resolve(); // Don't break the walk...
         });
     }
@@ -199,13 +203,14 @@ export class TreeView {
 
   /**
    * Emit an event each time a `TreeNode` is discovered.
-   * Note: the emitted `item` does not contains the `XXX` property.
+   *
+   * Note:
+   *  - Emitted file never have `content` property.
+   *  - Emitted dir always have `nodes` property equal to an empty array.
    */
   private emit(item: Model.TreeNode) {
     // We should match the signature of `Model.Listener`.
     // Emit an immutable item.
     this.events.emit('item', { ...item }, this.opts);
-
-    // FIXME: should emit dir with `nodes`property ???
   }
 }

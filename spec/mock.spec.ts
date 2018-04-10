@@ -162,9 +162,11 @@ describe('TreeView mock spies', () => {
         expect(r.error instanceof Error).toBeTruthy();
 
         if (r.name === 'a') {
-          expect('content' in r).toBeFalsy(); // Supposed to be a file
+          // When file content is not readable, the `content` property is set to an empty string
+          expect((r as Model.IFile).content).toEqual('');
         } else if (r.name === 'b') {
-          expect('nodes' in r).toBeFalsy(); // Supposed to be a dir
+          // When dir nodes is not readable, the `nodes` property is set to an empty array
+          expect((r as Model.IDir).nodes).toEqual([]);
         }
       });
 
@@ -208,16 +210,14 @@ describe('TreeView mock options', () => {
     Promise.all([
       new TreeViewMock({ depth: 0 }).process('./deep-dirs').then((tree) => {
         expect(tree).toContainItem({ type: 'file', name: 'a' });
-        expect(tree).toContainItem({ type: 'dir', name: 'folder' });
-        expect(tree).not.toContainItem({ type: 'dir', name: 'folder', nodes: ['b', 'folder'] });
+        expect(tree).toContainItem({ type: 'dir', name: 'folder', nodes: [] });
       }),
 
       new TreeViewMock({ depth: 1 }).process('./deep-dirs').then((tree) => {
         const sub = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
 
         expect(sub.nodes).toContainItem({ type: 'file', name: 'b' });
-        expect(sub.nodes).toContainItem({ type: 'dir', name: 'folder' });
-        expect(sub.nodes).not.toContainItem({ type: 'dir', name: 'folder', nodes: ['c', 'd'] });
+        expect(sub.nodes).toContainItem({ type: 'dir', name: 'folder', nodes: [] });
       }),
 
       new TreeViewMock({ depth: 2 }).process('./deep-dirs').then((tree) => {
@@ -426,19 +426,32 @@ describe('TreeView mock options', () => {
     });
   });
 
-  it('should emit files without content property', (done) => {
+  it('should not emit files content or dir nodes', (done) => {
     let haveContent = false;
-    new TreeViewMock({ content: true }).listen((data) => {
+    let haveNodes = false;
+
+    new TreeViewMock({
+      // Request the files content
+      content: true
+    }).listen((data) => {
       if ((data as Model.IFile).type === 'file' && 'content' in data) {
+        // Emitted file should never have `content` property
         haveContent = true;
+      } else if ((data as Model.IDir).type === 'dir' && (data as Model.IDir).nodes.length) {
+        // Emitted dir should always have `nodes` property equal to an empty array
+        haveNodes = true;
       }
     }).process('./deep-dirs').then((tree) => {
-      // Check that the `content` property was never added to the emitted files.
       expect(haveContent).toBeFalsy();
+      expect(haveNodes).toBeFalsy();
 
-      // Check that the `content` property was added to the tree as required by the options.
+      // Check that the `content` property was indeed computed (as required by the options)
       const file = tree.filter(r => r.name === 'a')[0] as Model.IFile;
       expect('content' in file).toBeTruthy();
+
+      // Check that the `nodes` property was indeed computed
+      const folder = tree.filter(r => r.name === 'folder')[0] as Model.IDir;
+      expect(folder.nodes.length).toBeTruthy();
 
       done();
     });

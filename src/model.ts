@@ -21,7 +21,7 @@ export interface IDir extends IRef {
   type: 'dir';
   created: Date;
   modified: Date;
-  nodes: TreeNode[]; // FIXME: should be optional ???
+  nodes: TreeNode[];
 }
 
 export interface IOpts {

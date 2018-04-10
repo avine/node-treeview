@@ -102,6 +102,10 @@ The output looks like the following `json`:
 
 It is also possible to listen to events.
 
+Note:
+Emitted file never have `content` property.
+Emitted dir always have `nodes` property equal to an empty array.
+
 ```js
 const { TreeView } = require('node-treeview');
 
