@@ -21,7 +21,7 @@ export const getPrettyArg = (arg: string) => {
     return arg;
   }
   exit(new Error(
-    `Invalid "pretty" argument: boolean or renderer expected, but got "${arg}" instead!\n` +
+    `Invalid "pretty" argument: renderer expected, but got "${arg}" instead!\n` +
     `(pick one of the coolest renderers: "${Object.keys(renderer).join('", "')}")`
   ));
 };

@@ -28,6 +28,9 @@ export const renderer = {
   },
   light(box: string, item: Model.TreeNode) {
     return chalk.gray(box) + ((item as Model.IDir).type === 'dir' ? chalk.gray(item.name) : item.name);
+  },
+  dark(box: string, item: Model.TreeNode) {
+    return chalk.gray(box) + ((item as Model.IFile).type === 'file' ? chalk.gray(item.name) : item.name);
   }
 };
 
@@ -47,6 +50,6 @@ function walk(tree: Model.TreeNode[], render: Renderer, depth = 0, empty: number
   return result;
 }
 
-export function pretty(tree: Model.TreeNode[], render: Renderer = renderer.default) {
+export function pretty(tree: Model.TreeNode[], render: Renderer = renderer[DEF_RENDERER]) {
   return walk(tree, render).join('\n');
 }

@@ -19,7 +19,7 @@ new TreeView(options).process(path, (error, tree) => {
   if (tree) {
     // do some stuff...
   } else {
-    // handle errors...
+    // handle error...
   }
 });
 
@@ -27,7 +27,7 @@ new TreeView(options).process(path, (error, tree) => {
 new TreeView(options).process(path).then(tree => {
   // do some stuff...
 }).catch(error => {
-  // handle errors...
+  // handle error...
 });
 
 // Using async/await
@@ -36,7 +36,7 @@ async function getJson() {
   try {
     tree = await new TreeView(options).process(path);
   } catch (error) {
-    // handle errors...
+    // handle error...
   }
   // do some stuff...
 }
@@ -102,9 +102,9 @@ The output looks like the following `json`:
 
 It is also possible to listen to events.
 
-Note:
-Emitted file never have `content` property.
-Emitted dir always have `nodes` property equal to an empty array.
+(**note:**
+  emitted file never have `content` property,
+  emitted dir always have `nodes` property equal to an empty array)
 
 ```js
 const { TreeView } = require('node-treeview');
@@ -191,7 +191,7 @@ export enum Sorting {
 }
 ```
 
-### Using type
+### Using typing
 
 ```ts
 import { TreeView } from 'node-treeview';
@@ -205,12 +205,12 @@ const promise: Promise<TreeNode[]> =
 
 promise.then(tree => {
   tree.forEach(item => {
-    if ((item as Model.IDir).type === 'dir') {
-      // do some stuff...
+    if ((item as Model.IRef).error) {
+      // handle error...
+    } else if ((item as Model.IDir).type === 'dir') {
+      // handle directory...
     } else if ((item as Model.IFile).type === 'file') {
-      // do some stuff...
-    }  else if ((item as Model.IRef).error) {
-      // do some stuff...
+      // handle file...
     }
   });
 });
@@ -323,7 +323,38 @@ The output looks like the following `txt`:
    └─ endive.txt
 ```
 
-And you have full control over how to render the tree.
+You have full control over how to render the tree.
+
+```ts
+import { TreeView } from 'node-treeview';
+import { pretty } from 'node-treeview/helper';
+
+new TreeView().process('path/to/dir').then(tree => {
+  console.log(
+    pretty(tree, (box: string, item: Model.TreeNode) => {
+      if ((item as Model.IFile).type === 'file') {
+        return box + item.name + ` [${item.size}]`;
+      } else {
+        return box + `(${item.name})`;
+      }
+    })
+  );
+});
+```
+
+The output looks like the following `txt`:
+
+```txt
+├─ (fruits)
+│  ├─ apple.txt [51 bytes]
+│  └─ pears.txt [24 bytes]
+└─ (vegetables)
+   ├─ bean.txt [13 bytes]
+   ├─ potato.txt [87 bytes]
+   └─ endive.txt [69 bytes]
+```
+
+You can also use predefined `renderer`.
 
 ```ts
 import { TreeView } from 'node-treeview';
@@ -332,6 +363,7 @@ import { renderer } from 'node-treeview/helper/pretty';
 
 new TreeView().process('path/to/dir').then(tree => {
   console.log(pretty(tree, renderer.light));
+  console.log(pretty(tree, renderer.dark));
 });
 ```
 
