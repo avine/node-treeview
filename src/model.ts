@@ -87,6 +87,13 @@ export interface IProviders {
   stat(path: string, callback: (err: Err, stats: IStats) => void): void;
 }
 
+export interface ICtx {
+  rootPath: string;
+  getPath: (item: IRef) => string;
+  path: string;
+  depth: number;
+}
+
 export type Item = IFile | IDir;
 export type TreeNode = Item | IRef;
 

@@ -30,7 +30,6 @@ export class TreeView {
   };
   events = new EventEmitter();
   providers!: Model.IProviders;
-  rootPath!: string;
 
   constructor(opts?: Model.IOptsParam) {
     this.inject();
@@ -49,8 +48,14 @@ export class TreeView {
   }
 
   process(path: string, cb?: Model.Cb) {
-    this.rootPath = this.providers.resolve(path);
-    const promise = this.walk(this.rootPath);
+    const rootPath = this.providers.resolve(path);
+    const ctx: Model.ICtx = {
+      rootPath,
+      getPath: this.getPathFactory(rootPath),
+      path: rootPath,
+      depth: 0
+    };
+    const promise = this.walk(ctx);
     if (cb) promise.then(tree => cb(null, tree), error => cb(error));
     return promise;
   }
@@ -65,9 +70,13 @@ export class TreeView {
     );
   }
 
-  private walk(path: string, tree: Model.TreeNode[] = [], depth = 0) {
+  private getPathFactory(rootPath: string) {
+    return (item: Model.IRef) => this.providers.resolve(this.opts.relative ? rootPath : '', item.path, item.name);
+  }
+
+  private walk(ctx: Model.ICtx, tree: Model.TreeNode[] = []) {
     return new Promise<Model.TreeNode[]>((success, reject) => {
-      this.providers.readdir(path, (error, files) => {
+      this.providers.readdir(ctx.path, (error, files) => {
         if (error) {
           reject(error);
           return;
@@ -83,14 +92,14 @@ export class TreeView {
         const tasks: Promise<any>[] = [];
         files.forEach((name) => {
           // `path` and `pathname` are always absolute
-          const pathname = this.providers.resolve(path, name);
+          const pathname = this.providers.resolve(ctx.path, name);
 
           // while `itemPath` and `itemPathname` are relative when the option `relative` is `true`.
-          const itemPath = this.opts.relative ? this.providers.relative(this.rootPath, path) : path;
+          const itemPath = this.opts.relative ? this.providers.relative(ctx.rootPath, ctx.path) : ctx.path;
           const itemPathname = this.opts.relative ? this.providers.join(itemPath, name) : pathname;
 
           const item: Model.IRef = { name, path: itemPath, pathname: itemPathname };
-          const pathfile = this.getPath(item);
+          const pathfile = ctx.getPath(item);
           this.providers.stat(pathfile, (err, stats: Model.IStats) => {
             if (err) {
               this.addError(item, err);
@@ -103,11 +112,14 @@ export class TreeView {
               // option `relative` is `false` and "relative path" otherwise.
               // Accordingly, we check the file against `item.pathname` (and not `pathname`).
               // On the other hand, we check the directory against `path` or `pathname` which are always absolute.
-              if (stats.isFile() && this.checkFile(item.pathname) && this.checkDirectory(path, true)) {
-                task = this.addFile(item as Model.IFile, stats);
+              if (stats.isFile() && this.checkFile(item.pathname) && this.checkDirectory(ctx.path, true)) {
+                this.addFile(item as Model.IFile, stats);
+                if (this.opts.content) {
+                  task = this.addContent(ctx, item as Model.IFile);
+                }
                 tree.push(item as Model.IFile);
               } else if (stats.isDirectory() && this.checkDirectory(pathname)) {
-                task = this.addDir(item as Model.IDir, depth);
+                task = this.addDir(ctx, item as Model.IDir);
                 tree.push(item as Model.IDir);
               }
               if (task) tasks.push(task);
@@ -118,10 +130,6 @@ export class TreeView {
         });
       });
     });
-  }
-
-  private getPath(item: Model.IRef) {
-    return this.providers.resolve(this.opts.relative ? this.rootPath : '', item.path, item.name);
   }
 
   private checkFile(file: string) {
@@ -151,15 +159,11 @@ export class TreeView {
     item.ext = extname(item.name).slice(1); // remove '.'
     item.binary = isBinaryPath(item.name);
     this.emit(item);
-    if (this.opts.content) {
-      return this.addContent(item);
-    }
-    return null;
   }
 
-  private addContent(item: Model.IFile) {
+  private addContent(ctx: Model.ICtx, item: Model.IFile) {
     return new Promise<void>(success =>
-      this.providers.readFile(this.getPath(item), {
+      this.providers.readFile(ctx.getPath(item), {
         encoding: item.binary ? 'base64' : 'utf8'
       }, (error, data) => {
         if (error) {
@@ -172,13 +176,18 @@ export class TreeView {
       }));
   }
 
-  private addDir(item: Model.IDir, depth: number) {
+  private addDir(ctx: Model.ICtx, item: Model.IDir) {
     item.type = 'dir';
     item.nodes = [];
-    if (depth === this.opts.depth) item.maxDepth = true;
+    if (ctx.depth === this.opts.depth) item.maxDepth = true;
     this.emit(item);
-    if (this.opts.depth === INFINITE_DEPTH || depth < this.opts.depth) {
-      return this.walk(this.getPath(item), item.nodes, depth + 1)
+    if (this.opts.depth === INFINITE_DEPTH || ctx.depth < this.opts.depth) {
+      const newCtx: Model.ICtx = {
+        ...ctx,
+        path: ctx.getPath(item),
+        depth: ctx.depth + 1
+      };
+      return this.walk(newCtx, item.nodes)
         .catch((error) => {
           item.error = error;
           return Promise.resolve(); // Don't break the walk...
@@ -202,6 +211,7 @@ export class TreeView {
     }
   }
 
+  // TODO: add ctx in emitted item!
   /**
    * Emit an event each time a `TreeNode` is discovered.
    *
