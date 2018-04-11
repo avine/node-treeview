@@ -392,6 +392,10 @@ describe('TreeView mock options', () => {
       })
     ]).then(done);
   });
+});
+
+describe('TreeView mock events', () => {
+  beforeEach(() => jasmine.addMatchers(customMatchers));
 
   it('should add listener', (done) => {
     const list: string[] = [];
@@ -452,6 +456,48 @@ describe('TreeView mock options', () => {
       // Check that the `nodes` property was indeed computed
       const folder = tree.filter(item => item.name === 'folder')[0] as Model.IDir;
       expect(folder.nodes.length).toBeTruthy();
+
+      done();
+    });
+  });
+
+  it('should handle parallel process calls', (done) => {
+    const subDirs1: string[] = [];
+    const subDirs2: string[] = [];
+
+    const treeView = new TreeViewMock({
+      content: true,
+      relative: true
+    }).listen((data, ctx) => {
+      if (ctx.rootPath === '/root/sub-dirs') subDirs1.push(data.pathname);
+      if (ctx.rootPath === '/root/sub-dirs-alt') subDirs2.push(data.pathname);
+    });
+
+    Promise.all([
+      // Use the same instance to process in parallel
+      treeView.process('./sub-dirs'),
+      treeView.process('./sub-dirs-alt')
+    ]).then((trees) => {
+      // Each emitted data should have the right ctx
+      expect(subDirs1.sort()).toEqual(['a', 'b', 'b/c', 'b/d']);
+      expect(subDirs2.sort()).toEqual(['w', 'x', 'x/y', 'x/z']);
+
+      // Processed trees should be ok
+      const [tree1, tree2] = trees;
+
+      expect(tree1).toContainItem({ pathname: 'a', type: 'file' });
+      expect(tree1).toContainItem({ pathname: 'b', type: 'dir' });
+      const filtered1 = tree1.filter(item => item.name === 'b');
+      const sub1 = filtered1[0] as Model.IDir;
+      expect(sub1.nodes).toContainItem({ pathname: 'b/c', type: 'file', content: 'ccc' });
+      expect(sub1.nodes).toContainItem({ pathname: 'b/d', type: 'file', content: 'ddd' });
+
+      expect(tree2).toContainItem({ pathname: 'w', type: 'file' });
+      expect(tree2).toContainItem({ pathname: 'x', type: 'dir' });
+      const filtered2 = tree2.filter(item => item.name === 'x');
+      const sub2 = filtered2[0] as Model.IDir;
+      expect(sub2.nodes).toContainItem({ pathname: 'x/y', type: 'file', content: 'yyy' });
+      expect(sub2.nodes).toContainItem({ pathname: 'x/z', type: 'file', content: 'zzz' });
 
       done();
     });

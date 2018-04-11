@@ -53,7 +53,7 @@ new TreeView({ content: true, depth: 2 })
   .then(tree => console.log(tree));
 ```
 
-The output looks like the following `json`:
+Here is the `json` output:
 
 ```json
 [{
@@ -100,11 +100,11 @@ The output looks like the following `json`:
 }]
 ```
 
-It is also possible to listen to events.
+The `TreeView` lets you listen to events.
 
 (**note:**
   emitted file never have `content` property,
-  emitted dir always have `nodes` property equal to an empty array)
+  emitted dir always have `nodes` property equal to an empty array).
 
 ```js
 const { TreeView } = require('node-treeview');
@@ -115,7 +115,7 @@ new TreeView()
   .then(() => console.log('done!'));
 ```
 
-Output:
+Here is the `txt` output:
 
 ```txt
 file: path/to/dir/file1.txt
@@ -123,6 +123,31 @@ dir: path/to/dir/subdir
 file: path/to/dir/subdir/file2.txt
 file: path/to/dir/subdir/logo.png
 done!
+```
+
+The `TreeView` lets you process trees in parallel.
+
+```js
+const { TreeView } = require('node-treeview');
+
+const treeView = new TreeView({
+  relative: true
+}).listen((data, ctx) => {
+  // Listen to each emitted data in its own context
+  // ('path/to/dir1' or 'path/to/dir2')
+  console.log(`${ctx.rootPath} -> ${data.pathname}`);
+});
+
+Promise.all[
+  // Use the same TreeView instance to process different
+  // paths in parallel with the same options
+  treeView.process('path/to/dir1'),
+  treeView.process('path/to/dir2')
+].then((trees) => {
+  const [tree1, tree2] = trees;
+  console.log(tree1);
+  console.log(tree2);
+});
 ```
 
 ## TypeScript
@@ -220,7 +245,7 @@ promise.then(tree => {
 
 ### flatten
 
-If you need a flat version of the tree, use the `flatten` helper.
+The `flatten` helper lets you get a flat version of the tree.
 
 ```ts
 import { TreeView } from 'node-treeview';
@@ -240,7 +265,7 @@ const { flatten } = require('node-treeview/helper');
 // ...
 ```
 
-The output looks like the following `json`:
+Here is the `json` output:
 
 ```json
 [{
@@ -278,7 +303,7 @@ The output looks like the following `json`:
 
 ### clean
 
-If you need to clean empty directories from the tree, use the `clean` helper.
+The `clean` helper lets you clean empty directories from the tree.
 
 ```ts
 import { TreeView } from 'node-treeview';
@@ -300,7 +325,7 @@ const { clean } = require('node-treeview/helper');
 
 ### pretty
 
-If you need to pretty-print the tree, use the `pretty` helper.
+The `pretty` helper lets you pretty-print the tree.
 
 ```ts
 import { TreeView } from 'node-treeview';
@@ -311,7 +336,7 @@ new TreeView().process('path/to/dir').then(tree => {
 });
 ```
 
-The output looks like the following `txt`:
+Here is the `txt` output:
 
 ```txt
 ├─ fruits
@@ -323,7 +348,7 @@ The output looks like the following `txt`:
    └─ endive.txt
 ```
 
-You have full control over how to render the tree.
+With the `pretty` helper you have full control over how to render the tree.
 
 ```ts
 import { TreeView } from 'node-treeview';
@@ -344,7 +369,7 @@ new TreeView().process('path/to/dir').then(tree => {
 });
 ```
 
-The output looks like the following `txt`:
+Here is the `txt` output:
 
 ```txt
 ├─ (fruits)
@@ -356,7 +381,7 @@ The output looks like the following `txt`:
    └─ endive.txt [69 bytes]
 ```
 
-You can also use predefined `renderer`.
+And for quick rendering, use the predefined `renderer` functions.
 
 ```ts
 import { TreeView } from 'node-treeview';

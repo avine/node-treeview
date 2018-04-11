@@ -35,6 +35,12 @@ const endpoints: IEndpoints = {
   '/root/sub-dirs/b/c': { type: 'file', content: 'ccc', size: 3 },
   '/root/sub-dirs/b/d': { type: 'file', content: 'ddd', size: 3 },
 
+  '/root/sub-dirs-alt': { type: 'dir', nodes: ['w', 'x'] },
+  '/root/sub-dirs-alt/w': { type: 'file', content: 'www', size: 3 },
+  '/root/sub-dirs-alt/x': { type: 'dir', nodes: ['y', 'z'] },
+  '/root/sub-dirs-alt/x/y': { type: 'file', content: 'yyy', size: 3 },
+  '/root/sub-dirs-alt/x/z': { type: 'file', content: 'zzz', size: 3 },
+
   '/root/sub-dir-not-found': { type: 'dir', nodes: ['oups'] },
 
   '/root/not-readable-eagerly': { type: 'dir', nodes: false },
