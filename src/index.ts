@@ -102,7 +102,7 @@ export class TreeView {
           const pathfile = ctx.getPath(item);
           this.providers.stat(pathfile, (err, stats: Model.IStats) => {
             if (err) {
-              this.addError(item, err);
+              this.addError(ctx, item, err);
               tree.push(item);
             } else {
               TreeView.addTime(item as Model.Item, stats);
@@ -113,10 +113,7 @@ export class TreeView {
               // Accordingly, we check the file against `item.pathname` (and not `pathname`).
               // On the other hand, we check the directory against `path` or `pathname` which are always absolute.
               if (stats.isFile() && this.checkFile(item.pathname) && this.checkDirectory(ctx.path, true)) {
-                this.addFile(item as Model.IFile, stats);
-                if (this.opts.content) {
-                  task = this.addContent(ctx, item as Model.IFile);
-                }
+                task = this.addFile(ctx, item as Model.IFile, stats);
                 tree.push(item as Model.IFile);
               } else if (stats.isDirectory() && this.checkDirectory(pathname)) {
                 task = this.addDir(ctx, item as Model.IDir);
@@ -148,17 +145,21 @@ export class TreeView {
     return included && !excluded;
   }
 
-  private addError(item: Model.IRef, error: Error) {
+  private addError(ctx: Model.ICtx, item: Model.IRef, error: Error) {
     item.error = error;
-    this.emit(item);
+    this.emit(ctx, item);
   }
 
-  private addFile(item: Model.IFile, stats: Model.IStats) {
+  private addFile(ctx: Model.ICtx, item: Model.IFile, stats: Model.IStats) {
     item.type = 'file';
     item.size = stats.size;
     item.ext = extname(item.name).slice(1); // remove '.'
     item.binary = isBinaryPath(item.name);
-    this.emit(item);
+    this.emit(ctx, item);
+    if (this.opts.content) {
+      return this.addContent(ctx, item);
+    }
+    return null;
   }
 
   private addContent(ctx: Model.ICtx, item: Model.IFile) {
@@ -180,7 +181,7 @@ export class TreeView {
     item.type = 'dir';
     item.nodes = [];
     if (ctx.depth === this.opts.depth) item.maxDepth = true;
-    this.emit(item);
+    this.emit(ctx, item);
     if (this.opts.depth === INFINITE_DEPTH || ctx.depth < this.opts.depth) {
       const newCtx: Model.ICtx = {
         ...ctx,
@@ -211,7 +212,6 @@ export class TreeView {
     }
   }
 
-  // TODO: add ctx in emitted item!
   /**
    * Emit an event each time a `TreeNode` is discovered.
    *
@@ -219,9 +219,9 @@ export class TreeView {
    *  - Emitted file never have `content` property.
    *  - Emitted dir always have `nodes` property equal to an empty array.
    */
-  private emit(item: Model.TreeNode) {
+  private emit(ctx: Model.ICtx, item: Model.TreeNode) {
     // We should match the signature of `Model.Listener`.
     // Emit an immutable item.
-    this.events.emit('item', { ...item }, this.opts);
+    this.events.emit('item', { ...item }, ctx, this.opts);
   }
 }

@@ -97,7 +97,7 @@ export interface ICtx {
 export type Item = IFile | IDir;
 export type TreeNode = Item | IRef;
 
-export type Listener = (data: TreeNode, opts: IOpts) => void;
+export type Listener = (data: TreeNode, ctx: ICtx, opts: IOpts) => void;
 
 export type Cb = (error: Err, tree?: TreeNode[]) => any;
 export type Err = Error | null | undefined;
