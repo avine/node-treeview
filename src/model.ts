@@ -4,6 +4,7 @@ export interface IRef {
   name: string;
   path: string;
   pathname: string;
+  depth: number;
   error?: any;
 }
 
@@ -22,7 +23,6 @@ export interface IDir extends IRef {
   created: Date;
   modified: Date;
   nodes: TreeNode[];
-  maxDepth?: true;
 }
 
 export interface IOpts {

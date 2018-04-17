@@ -98,7 +98,12 @@ export class TreeView {
           const itemPath = this.opts.relative ? this.providers.relative(ctx.rootPath, ctx.path) : ctx.path;
           const itemPathname = this.opts.relative ? this.providers.join(itemPath, name) : pathname;
 
-          const item: Model.IRef = { name, path: itemPath, pathname: itemPathname };
+          const item: Model.IRef = {
+            name,
+            path: itemPath,
+            pathname: itemPathname,
+            depth: ctx.depth
+          };
           const pathfile = ctx.getPath(item);
           this.providers.stat(pathfile, (err, stats: Model.IStats) => {
             if (err) {
@@ -180,7 +185,6 @@ export class TreeView {
   private addDir(ctx: Model.ICtx, item: Model.IDir) {
     item.type = 'dir';
     item.nodes = [];
-    if (ctx.depth === this.opts.depth) item.maxDepth = true;
     this.emit(ctx, item);
     if (this.opts.depth === INFINITE_DEPTH || ctx.depth < this.opts.depth) {
       const newCtx: Model.ICtx = {
