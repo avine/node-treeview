@@ -53,7 +53,7 @@ new TreeView({ content: true, depth: 2 })
   .then(tree => console.log(tree));
 ```
 
-Here is the `json` output:
+Here is what the `json` output looks like:
 
 ```json
 [{
@@ -119,7 +119,7 @@ new TreeView()
   .then(() => console.log('done!'));
 ```
 
-Here is the `txt` output:
+Here is what the `txt` output looks like:
 
 ```txt
 file: path/to/dir/file1.txt
@@ -269,7 +269,7 @@ const { flatten } = require('node-treeview/helper');
 // ...
 ```
 
-Here is the `json` output:
+Here is what the `json` output looks like:
 
 ```json
 [{
@@ -343,7 +343,7 @@ new TreeView().process('path/to/dir').then(tree => {
 });
 ```
 
-Here is the `txt` output:
+Here is what the `txt` output looks like:
 
 ```txt
 ├─ fruits
@@ -376,7 +376,7 @@ new TreeView().process('path/to/dir').then(tree => {
 });
 ```
 
-Here is the `txt` output:
+Here is what the `txt` output looks like:
 
 ```txt
 ├─ (fruits)
