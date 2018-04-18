@@ -87,17 +87,46 @@ export interface IProviders {
   stat(path: string, callback: (err: Err, stats: IStats) => void): void;
 }
 
-export interface ICtx {
+export interface ISearch {
+  include?: string[];
+  exclude?: string[];
+  glob?: string[];
+}
+
+export interface ICtx extends ISearch {
   rootPath: string;
   getPath: (item: IRef) => string;
   path: string;
   depth: number;
 }
 
+export interface IResult {
+  rootPath: string;
+  tree: TreeNode[];
+}
+
+export interface IMatch {
+  item: TreeNode;
+  parentNodes: TreeNode[];
+}
+
 export type Item = IFile | IDir;
 export type TreeNode = Item | IRef;
 
-export type Listener = (data: TreeNode, ctx: ICtx, opts: IOpts) => void;
+export type Event
+  = 'item'
+  | 'ready'
+  | 'tree'
+  | 'add'
+  | 'change'
+  | 'unlink'
+  | 'all';
 
-export type Cb = (error: Err, tree?: TreeNode[]) => any;
+export type OnTree = (tree: TreeNode[]) => void;
+export type OnItem = (item: TreeNode) => void;
+export type OnItemCtx = (item: TreeNode, ctx: ICtx) => void;
+
+export type OnAll = (event: Event, data: TreeNode[] | TreeNode, ctx?: ICtx) => void;
+
+export type ProcessCb = (error: Err, tree?: TreeNode[]) => any;
 export type Err = Error | null | undefined;

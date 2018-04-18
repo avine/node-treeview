@@ -1,13 +1,11 @@
 // tslint:disable:object-literal-key-quotes
 
+import { IEndpoints } from './mock.api';
+
 export const DATE = {
   CREATED: new Date(new Date().getTime() - 1000 * 60 * 60),
   MODIFIED: new Date()
 };
-
-export interface IEndpoints {
-  [index: string]: { [index: string]: any };
-}
 
 const endpoints: IEndpoints = {
   '/root/empty-dir': { type: 'dir', nodes: [] },

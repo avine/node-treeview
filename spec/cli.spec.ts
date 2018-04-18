@@ -1,6 +1,8 @@
 // tslint:disable-next-line:no-reference
 /// <reference path='./matchers/matchers.d.ts' />
 
+import { customMatchers } from './matchers/matchers';
+
 import { resolve } from 'path';
 import { spawn } from 'child_process';
 
@@ -10,8 +12,6 @@ import * as Model from '../src/model';
 import { DEF_RENDERER } from '../src/helper/pretty';
 
 import { IDebug } from '../src/bin/cli.model';
-
-import { customMatchers } from './matchers/matchers';
 
 // tslint:disable-next-line:no-console
 // const log = (data: any) => console.log(JSON.stringify(data, undefined, 2));

@@ -1,14 +1,17 @@
 // tslint:disable-next-line:no-reference
 /// <reference path='./matchers/matchers.d.ts' />
 
+import { customMatchers } from './matchers/matchers';
+
 import * as Model from '../src/model';
 import { TreeView } from '../src/index';
 import { clean, flatten, pretty } from '../src/helper';
 import { isBinaryPath } from '../src/helper/binary';
 
-import { providers } from './mock/mock.api';
+import { providersFactory } from './mock/mock.api';
+import endpoints from './mock/mock.endpoints';
 
-import { customMatchers } from './matchers/matchers';
+const providers = providersFactory(endpoints);
 
 class TreeViewMock extends TreeView {
   inject() {
@@ -44,7 +47,7 @@ describe('TreeView helper', () => {
         expect(tree).toContainItem({ type: 'dir', path: '/root/clean', name: 'c', pathname: '/root/clean/c' });
         expect(tree).toContainItem({ type: 'dir', path: '/root/clean', name: 'd', pathname: '/root/clean/d' });
 
-        const sub = tree.filter(item => item.name === 'd')[0] as Model.IDir;
+        const sub = tree.find(item => item.name === 'd') as Model.IDir;
         expect(sub.nodes).toContainItem({
           type: 'file', path: '/root/clean/d', name: 'f', pathname: '/root/clean/d/f'
         });
@@ -58,7 +61,7 @@ describe('TreeView helper', () => {
         expect(cleaned).not.toContainItem({ type: 'dir', path: '/root/clean', name: 'c', pathname: '/root/clean/c' });
         expect(cleaned).toContainItem({ type: 'dir', path: '/root/clean', name: 'd', pathname: '/root/clean/d' });
 
-        const sub = cleaned.filter(item => item.name === 'd')[0] as Model.IDir;
+        const sub = cleaned.find(item => item.name === 'd') as Model.IDir;
         expect(sub.nodes).toContainItem({
           type: 'file', path: '/root/clean/d', name: 'f', pathname: '/root/clean/d/f'
         });
