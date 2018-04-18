@@ -58,12 +58,14 @@ describe('TreeView mock', () => {
       expect(tree.length).toBe(2);
 
       expect(tree).toContainItem({
-        binary: false, content: 'aaa', created: DATE.CREATED, modified: DATE.MODIFIED,
-        name: 'a', path: '/root/files', pathname: '/root/files/a', size: 3, type: 'file'
+        name: 'a.css', path: '/root/files', pathname: '/root/files/a.css', depth: 0,
+        type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED,
+        size: 3, ext: 'css', binary: false, content: 'aaa'
       });
       expect(tree).toContainItem({
-        binary: false, content: 'bbbb', created: DATE.CREATED, modified: DATE.MODIFIED,
-        name: 'b', path: '/root/files', pathname: '/root/files/b', size: 4, type: 'file'
+        name: 'b.js', path: '/root/files', pathname: '/root/files/b.js', depth: 0,
+        type: 'file', created: DATE.CREATED, modified: DATE.MODIFIED,
+        size: 4, ext: 'js', binary: false, content: 'bbbb'
       });
       done();
     });
@@ -104,12 +106,12 @@ describe('TreeView mock', () => {
       expect(tree.length).toBe(2);
 
       expect(tree).toContainItem({
-        nodes: [], created: DATE.CREATED, modified: DATE.MODIFIED,
-        name: 'a', path: '/root/dirs', pathname: '/root/dirs/a', type: 'dir'
+        name: 'a', path: '/root/dirs', pathname: '/root/dirs/a', depth: 0,
+        type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, nodes: []
       });
       expect(tree).toContainItem({
-        nodes: [], created: DATE.CREATED, modified: DATE.MODIFIED,
-        name: 'b', path: '/root/dirs', pathname: '/root/dirs/b', type: 'dir'
+        name: 'b', path: '/root/dirs', pathname: '/root/dirs/b', depth: 0,
+        type: 'dir', created: DATE.CREATED, modified: DATE.MODIFIED, nodes: []
       });
       done();
     });
@@ -117,13 +119,13 @@ describe('TreeView mock', () => {
 
   it('should find sub-directory', (done) => {
     new TreeViewMock({ content: true }).process('./sub-dirs').then((tree) => {
-      expect(tree).toContainItem({ path: '/root/sub-dirs', name: 'a', type: 'file' });
-      expect(tree).toContainItem({ path: '/root/sub-dirs', name: 'b', type: 'dir' });
+      expect(tree).toContainItem({ path: '/root/sub-dirs', name: 'a', type: 'file', depth: 0 });
+      expect(tree).toContainItem({ path: '/root/sub-dirs', name: 'b', type: 'dir', depth: 0 });
 
       const filtered = tree.filter(item => item.name === 'b');
       const sub = filtered[0] as Model.IDir;
-      expect(sub.nodes).toContainItem({ path: '/root/sub-dirs/b', name: 'c', type: 'file', content: 'ccc' });
-      expect(sub.nodes).toContainItem({ path: '/root/sub-dirs/b', name: 'd', type: 'file', content: 'ddd' });
+      expect(sub.nodes).toContainItem({ path: '/root/sub-dirs/b', name: 'c', type: 'file', content: 'ccc', depth: 1 });
+      expect(sub.nodes).toContainItem({ path: '/root/sub-dirs/b', name: 'd', type: 'file', content: 'ddd', depth: 1 });
 
       done();
     });

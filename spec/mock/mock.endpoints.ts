@@ -12,9 +12,9 @@ export interface IEndpoints {
 const endpoints: IEndpoints = {
   '/root/empty-dir': { type: 'dir', nodes: [] },
 
-  '/root/files': { type: 'dir', nodes: ['a', 'b'] },
-  '/root/files/a': { type: 'file', content: 'aaa', size: 3 },
-  '/root/files/b': { type: 'file', content: 'bbbb', size: 4 },
+  '/root/files': { type: 'dir', nodes: ['a.css', 'b.js'] },
+  '/root/files/a.css': { type: 'file', content: 'aaa', size: 3 },
+  '/root/files/b.js': { type: 'file', content: 'bbbb', size: 4 },
 
   '/root/hidden': { type: 'dir', nodes: ['.git', '.gitignore', 'README.md'] },
   '/root/hidden/.git': { type: 'dir', nodes: [] },
