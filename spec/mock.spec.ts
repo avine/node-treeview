@@ -286,7 +286,7 @@ describe('TreeView mock options', () => {
       // Use absolute path to define the option `include` but process the tree with relative paths.
       new TreeViewMock({
         include: ['/root/deep-dirs/folder/folder'], relative: true
-      }).process('./deep-dirs').then(callback),
+      }).process('./deep-dirs').then(callback)
     ]).then(done);
   });
 

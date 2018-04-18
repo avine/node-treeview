@@ -87,11 +87,27 @@ export interface IProviders {
   stat(path: string, callback: (err: Err, stats: IStats) => void): void;
 }
 
-export interface ICtx {
+export interface ISearch {
+  include?: string[];
+  exclude?: string[];
+  glob?: string[];
+}
+
+export interface ICtx extends ISearch {
   rootPath: string;
   getPath: (item: IRef) => string;
   path: string;
   depth: number;
+}
+
+export interface IResult {
+  rootPath: string;
+  tree: TreeNode[];
+}
+
+export interface IMatch {
+  item: TreeNode;
+  parentNodes: TreeNode[];
 }
 
 export type Item = IFile | IDir;

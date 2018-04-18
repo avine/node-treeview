@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/avine/node-treeview#readme",
   "devDependencies": {
+    "@types/chokidar": "^1.7.5",
     "@types/jasmine": "^2.8.6",
     "@types/minimatch": "^3.0.3",
     "@types/node": "^9.4.7",
@@ -51,6 +52,7 @@
   },
   "dependencies": {
     "chalk": "^2.3.2",
+    "chokidar": "^2.0.3",
     "minimatch": "^3.0.4",
     "yargs": "^11.0.0"
   }

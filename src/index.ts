@@ -30,6 +30,7 @@ export class TreeView {
   };
   events = new EventEmitter();
   providers!: Model.IProviders;
+  lastResult!: Model.IResult;
 
   constructor(opts?: Model.IOptsParam) {
     this.inject();
@@ -56,8 +57,18 @@ export class TreeView {
       depth: 0
     };
     const promise = this.walk(ctx);
+    promise.then(tree => this.lastResult = { rootPath, tree }, error => error);
     if (cb) promise.then(tree => cb(null, tree), error => cb(error));
     return promise;
+  }
+
+  refresh(paths: string[] | string) {
+    const getPath = this.getPathFactory(this.lastResult.rootPath);
+    const { matchs, remains } = this.filter(paths);
+    return Promise.all([
+      ...matchs.map(match => this.updateTreeNode(match)),
+      ...remains.map(pathname => this.addTreeNode(pathname))
+    ]);
   }
 
   protected inject() {
@@ -84,69 +95,79 @@ export class TreeView {
         if (!this.opts.all) {
           files = TreeView.removeHidden(files);
         }
-        let pending = files.length;
-        if (!pending) {
+        if (!files.length) {
           success(tree);
           return;
         }
-        const tasks: Promise<any>[] = [];
-        files.forEach((name) => {
-          // `path` and `pathname` are always absolute
-          const pathname = this.providers.resolve(ctx.path, name);
-
-          // while `itemPath` and `itemPathname` are relative when the option `relative` is `true`.
-          const itemPath = this.opts.relative ? this.providers.relative(ctx.rootPath, ctx.path) : ctx.path;
-          const itemPathname = this.opts.relative ? this.providers.join(itemPath, name) : pathname;
-
-          const item: Model.IRef = {
-            name,
-            path: itemPath,
-            pathname: itemPathname,
-            depth: ctx.depth
-          };
-          const pathfile = ctx.getPath(item);
-          this.providers.stat(pathfile, (err, stats: Model.IStats) => {
-            if (err) {
-              this.addError(ctx, item, err);
-              tree.push(item);
-            } else {
-              TreeView.addTime(item as Model.Item, stats);
-              let task;
-
-              // The glob pattern should match "absolute path" when the
-              // option `relative` is `false` and "relative path" otherwise.
-              // Accordingly, we check the file against `item.pathname` (and not `pathname`).
-              // On the other hand, we check the directory against `path` or `pathname` which are always absolute.
-              if (stats.isFile() && this.checkFile(item.pathname) && this.checkDirectory(ctx.path, true)) {
-                task = this.addFile(ctx, item as Model.IFile, stats);
-                tree.push(item as Model.IFile);
-              } else if (stats.isDirectory() && this.checkDirectory(pathname)) {
-                task = this.addDir(ctx, item as Model.IDir);
-                tree.push(item as Model.IDir);
-              }
-              if (task) tasks.push(task);
-            }
-            pending -= 1;
-            if (!pending) Promise.all(tasks).then(() => success(this.sort(tree)));
-          });
+        const tasks = files.map(name => this.getTreeNode(ctx, name));
+        Promise.all(tasks).then((items) => {
+          items.forEach((item) => { if (item) tree.push(item); });
+          success(this.sort(tree));
         });
       });
     });
   }
 
-  private checkFile(file: string) {
-    return this.opts.glob.reduce(
+  private getTreeNode(ctx: Model.ICtx, name: string) {
+    // `path` and `pathname` are always absolute
+    const pathname = this.providers.resolve(ctx.path, name);
+
+    // while `itemPath` and `itemPathname` are relative when the option `relative` is `true`.
+    const itemPath = this.opts.relative ? this.providers.relative(ctx.rootPath, ctx.path) : ctx.path;
+    const itemPathname = this.opts.relative ? this.providers.join(itemPath, name) : pathname;
+
+    const item: Model.IRef = {
+      name,
+      path: itemPath,
+      pathname: itemPathname,
+      depth: ctx.depth
+    };
+    const pathfile = ctx.getPath(item);
+    return new Promise<Model.TreeNode | void>((success) => {
+      this.providers.stat(pathfile, (err, stats) => {
+        if (err) {
+          this.addError(ctx, item, err);
+          success(item);
+        } else {
+          TreeView.addTime(item as Model.Item, stats);
+
+          let task;
+          let checked = false;
+          const cb = () => checked ? success(item) : success();
+
+          // The glob pattern should match "absolute path" when the
+          // option `relative` is `false` and "relative path" otherwise.
+          // Accordingly, we check the file against `item.pathname` (and not `pathname`).
+          // On the other hand, we check the directory against `path` or `pathname` which are always absolute.
+          if (stats.isFile() && this.checkFile(item.pathname, ctx) && this.checkDirectory(ctx.path, ctx, true)) {
+            task = this.addFile(ctx, item as Model.IFile, stats);
+            checked = true;
+          } else if (stats.isDirectory() && this.checkDirectory(pathname, ctx)) {
+            task = this.addDir(ctx, item as Model.IDir);
+            checked = true;
+          }
+          task ? task.then(cb) : cb();
+        }
+      });
+    });
+  }
+
+  private checkFile(file: string, search: Model.ISearch = {}) {
+    const globList = [...this.opts.glob, ...(search.glob || [])];
+    return globList.reduce(
       (match: boolean, glob: string) => match || minimatch(file, glob),
-      !this.opts.glob.length
+      !globList.length
     );
   }
 
-  private checkDirectory(directory: string, strict = false) {
-    const included = this.opts.include.reduce(
+  private checkDirectory(directory: string, search: Model.ISearch = {}, strict = false) {
+    const incList = [...this.opts.include, ...(search.include || [])];
+    const excList = [...this.opts.exclude, ...(search.exclude || [])];
+    const included = incList.reduce(
       (match: boolean, path: string) => match || (strict ? directory.startsWith(path) : path.startsWith(directory)),
-      !this.opts.include.length
+      !incList.length
     );
-    const excluded = this.opts.exclude.includes(directory);
+    const excluded = excList.includes(directory);
     return included && !excluded;
   }
 
@@ -227,5 +248,93 @@ export class TreeView {
     // We should match the signature of `Model.Listener`.
     // Emit an immutable item.
     this.events.emit('item', { ...item }, ctx, this.opts);
+  }
+
+  private filter(paths: string[] | string) {
+    const remains = ([] as string[]).concat(paths).map(
+      this.opts.relative
+        ? p => this.providers.relative(this.lastResult.rootPath, p)
+        : p => this.providers.resolve(p)
+    );
+    const filter = (nodes: Model.TreeNode[]) => {
+      return nodes.reduce((acc: Model.IMatch[], item: Model.TreeNode) => {
+        const index = remains.indexOf(item.pathname);
+        if (index !== -1) {
+          acc.push({ item, parentNodes: nodes });
+          remains.splice(index, 1);
+          if (!remains.length) {
+            return acc;
+          }
+        }
+        for (const pathname of remains) {
+          if (pathname.startsWith(item.pathname)) {
+            acc = acc.concat(filter((item as Model.IDir).nodes));
+            break;
+          }
+        }
+        return acc;
+      }, []);
+    };
+    return { matchs: filter(this.lastResult.tree), remains };
+  }
+
+  private updateTreeNode(match: Model.IMatch) {
+    return new Promise<void>((success) => {
+      const ctx: Model.ICtx = {
+        rootPath: this.lastResult.rootPath,
+        getPath: this.getPathFactory(this.lastResult.rootPath),
+        path: match.item.path,
+        depth: match.item.depth
+      };
+      this.getTreeNode(ctx, match.item.name).then((item) => {
+        if (item && !item.error) {
+          match.parentNodes.splice(match.parentNodes.indexOf(match.item), 1, item); // Replace
+        } else {
+          match.parentNodes.splice(match.parentNodes.indexOf(match.item), 1); // Remove
+        }
+        success();
+      });
+    });
+  }
+
+  private addTreeNode(pathname: string) {
+    return new Promise<void>((success) => {
+      this.providers.stat(pathname, (err, stats) => {
+        if (err) return success();
+        const dir = this.findClosestDir(pathname);
+        const ctx: Model.ICtx = {
+          rootPath: this.lastResult.rootPath,
+          getPath: this.getPathFactory(this.lastResult.rootPath),
+          path: dir ? dir.pathname : this.lastResult.rootPath,
+          depth: dir ? dir.depth : 0
+        };
+        if (stats.isDirectory()) {
+          ctx.include = [pathname];
+        } else if (stats.isFile()) {
+          ctx.glob = [pathname]; // notice: this is not optimized after this walk will traverse all nodes...
+        } else {
+          return success();
+        }
+        this.walk(ctx, dir ? dir.nodes : this.lastResult.tree).then(() => success()); // Add
+      });
+    });
+  }
+
+  private findClosestDir(path: string) {
+    const relPath = this.providers.relative(this.lastResult.rootPath, path);
+    const names = relPath.split(/\/|\\/g);
+    let nodes = this.lastResult.tree;
+    let dir: Model.IDir | null = null;
+    while (names.length) {
+      const name = names.shift();
+      const match = nodes.find(node => node.name === name);
+      if (match && (match as Model.IDir).type === 'dir') {
+        dir = match as Model.IDir;
+        nodes = (match as Model.IDir).nodes;
+      } else {
+        break;
+      }
+    }
+    return dir;
   }
 }
