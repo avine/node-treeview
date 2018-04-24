@@ -1,12 +1,12 @@
 // tslint:disable-next-line:no-reference
 /// <reference path='./matchers/matchers.d.ts' />
 
+import { customMatchers } from './matchers/matchers';
+
 import { resolve } from 'path';
 
 import { TreeView } from '../src/index';
 import * as Model from '../src/model';
-
-import { customMatchers } from './matchers/matchers';
 
 // tslint:disable-next-line:no-console
 // const log = (data: any) => console.log(JSON.stringify(data, undefined, 2));

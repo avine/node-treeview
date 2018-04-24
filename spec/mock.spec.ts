@@ -1,13 +1,15 @@
 // tslint:disable-next-line:no-reference
 /// <reference path='./matchers/matchers.d.ts' />
 
+import { customMatchers } from './matchers/matchers';
+
 import { TreeView } from '../src/index';
 import * as Model from '../src/model';
 
-import { providers } from './mock/mock.api';
-import { DATE } from './mock/mock.endpoints';
+import { providersFactory } from './mock/mock.api';
+import endpoints, { DATE } from './mock/mock.endpoints';
 
-import { customMatchers } from './matchers/matchers';
+const providers = providersFactory(endpoints);
 
 class TreeViewMock extends TreeView {
   inject() {
