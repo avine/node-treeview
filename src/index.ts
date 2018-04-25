@@ -63,8 +63,7 @@ export class TreeView {
   }
 
   refresh(paths: string[] | string) {
-    const getPath = this.getPathFactory(this.lastResult.rootPath);
-    const { matchs, remains } = this.filter(paths);
+    const { matchs, remains } = this.filterTreeNode(paths);
     return Promise.all([
       ...matchs.map(match => this.updateTreeNode(match)),
       ...remains.map(pathname => this.addTreeNode(pathname))
@@ -250,7 +249,7 @@ export class TreeView {
     this.events.emit('item', { ...item }, ctx, this.opts);
   }
 
-  private filter(paths: string[] | string) {
+  private filterTreeNode(paths: string[] | string) {
     const remains = ([] as string[]).concat(paths).map(
       this.opts.relative
         ? p => this.providers.relative(this.lastResult.rootPath, p)
