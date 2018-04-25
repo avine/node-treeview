@@ -68,6 +68,22 @@ export class TreeView {
       ...matchs.map(match => this.updateTreeNode(match)),
       ...remains.map(pathname => this.addTreeNode(pathname))
     ]);
+
+    /*return Promise.all(
+      remains.map(pathname => this.addTreeNode(pathname))
+    ).then(() => Promise.all(
+      matchs.map(match => this.updateTreeNode(match))
+    ).then(
+      () => true
+    ));*/
+
+    /*return Promise.all(
+      matchs.map(match => this.updateTreeNode(match))
+    ).then(() => Promise.all(
+      remains.map(pathname => this.addTreeNode(pathname))
+    ).then(
+      () => true
+    ));*/
   }
 
   protected inject() {
