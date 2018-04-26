@@ -292,6 +292,31 @@ describe('TreeView mock options', () => {
     ]).then(done);
   });
 
+  it('should include deep directories', (done) => {
+    new TreeViewMock({
+      include: ['./deep-dirs/folder']/*, relative: false*/
+    }).process('./deep-dirs').then((tree: Model.TreeNode[]) => {
+      // Skip file `./deep-dirs/a`
+      expect(tree.length).toBe(1);
+      expect(tree).not.toContainItem({ type: 'file', name: 'a' });
+      expect(tree).toContainItem({ type: 'dir', name: 'folder' });
+
+      // Keep file `./deep-dirs/folder/b`
+      const sub = tree.filter(item => item.name === 'folder')[0] as Model.IDir;
+      expect(sub.nodes.length).toBe(2);
+      expect(sub.nodes).toContainItem({ type: 'file', name: 'b' });
+      expect(sub.nodes).toContainItem({ type: 'dir', name: 'folder' });
+
+      // Keep files `./deep-dirs/folder/folder/c` and  `./deep-dirs/folder/folder/d`
+      const deep = sub.nodes.filter(item => item.name === 'folder')[0] as Model.IDir;
+      expect(deep.nodes.length).toBe(2);
+      expect(deep.nodes).toContainItem({ type: 'file', name: 'c' });
+      expect(deep.nodes).toContainItem({ type: 'file', name: 'd' });
+
+      done();
+    });
+  });
+
   it('should exclude directories', (done) => {
     const callback = (tree: Model.TreeNode[]) => {
       expect(tree.length).toBe(2);

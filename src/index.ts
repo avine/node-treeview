@@ -116,7 +116,20 @@ export class TreeView {
         }
         const tasks = files.map(name => this.getTreeNode(ctx, name));
         Promise.all(tasks).then((items) => {
-          items.forEach((item) => { if (item) tree.push(item); });
+          items.forEach((item) => {
+            if (item) tree.push(item);
+
+            // FIXME: when adding items it is possible to find new items more than once...
+            /*if (item) {
+              const index = tree.findIndex(t => t.pathname === item.pathname);
+              if (index !== -1) {
+                tree.splice(index, 1, item); // Replace
+              } else {
+                tree.push(item);
+              }
+            }*/
+
+          });
           success(this.sort(tree));
         });
       });
@@ -169,19 +182,17 @@ export class TreeView {
 
   private checkFile(file: string, search: Model.ISearch = {}) {
     const globList = [...this.opts.glob, ...(search.glob || [])];
-    return globList.reduce(
-      (match: boolean, glob: string) => match || minimatch(file, glob),
-      !globList.length
-    );
+    const glogCb = (glob: string) => minimatch(file, glob);
+    return !globList.length || globList.findIndex(glogCb) !== -1;
   }
 
   private checkDirectory(directory: string, search: Model.ISearch = {}, strict = false) {
     const incList = [...this.opts.include, ...(search.include || [])];
     const excList = [...this.opts.exclude, ...(search.exclude || [])];
-    const included = incList.reduce(
-      (match: boolean, path: string) => match || (strict ? directory.startsWith(path) : path.startsWith(directory)),
-      !incList.length
-    );
+    const incCb = strict
+      ? (path: string) => directory.startsWith(path) // For a file
+      : (path: string) => (directory.startsWith(path) || path.startsWith(directory)); // For a dir
+    const included = !incList.length || incList.findIndex(incCb) !== -1;
     const excluded = excList.includes(directory);
     return included && !excluded;
   }
