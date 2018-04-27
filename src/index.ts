@@ -186,14 +186,14 @@ export class TreeView {
     return !globList.length || globList.findIndex(glogCb) !== -1;
   }
 
-  private checkDirectory(directory: string, search: Model.ISearch = {}, strict = false) {
+  private checkDirectory(dir: string, search: Model.ISearch = {}, strict = false) {
     const incList = [...this.opts.include, ...(search.include || [])];
     const excList = [...this.opts.exclude, ...(search.exclude || [])];
     const incCb = strict
-      ? (path: string) => directory.startsWith(path) // For a file
-      : (path: string) => (directory.startsWith(path) || path.startsWith(directory)); // For a dir
+      ? (path: string) => dir.startsWith(path) // For a file
+      : (path: string) => dir.length > path.length ? dir.startsWith(path) : path.startsWith(dir); // For a dir
     const included = !incList.length || incList.findIndex(incCb) !== -1;
-    const excluded = excList.includes(directory);
+    const excluded = excList.includes(dir);
     return included && !excluded;
   }
 
@@ -313,10 +313,15 @@ export class TreeView {
         depth: match.item.depth
       };
       this.getTreeNode(ctx, match.item.name).then((item) => {
-        if (item && !item.error) {
-          match.parentNodes.splice(match.parentNodes.indexOf(match.item), 1, item); // Replace
-        } else {
-          match.parentNodes.splice(match.parentNodes.indexOf(match.item), 1); // Remove
+        const index = match.parentNodes.indexOf(match.item);
+        if (index !== -1) {
+          if (item && !item.error) {
+            match.parentNodes.splice(index, 1, item); // Replace
+          } else {
+            match.parentNodes.splice(index, 1); // Remove
+          }
+        } else if (item && !item.error) {
+          match.parentNodes.push(item); // Add
         }
         success();
       });
