@@ -51,7 +51,7 @@ describe('TreeView helper', () => {
         '/root/test/b2/folder2/sub/file': { type: 'file', content: 'file', size: 4 }
       };
 
-      treeview.refresh(['./test/ok'])
+      /*treeview.refresh(['./test/ok'])
         .then(() => treeview.refresh(['./test/a1']))
         .then(() => treeview.refresh(['./test/a2']))
         .then(() => treeview.refresh(['./test/b1']))
@@ -61,11 +61,11 @@ describe('TreeView helper', () => {
         .then(() => treeview.refresh(['./test/b2/folder1/sub']))
         .then(() => treeview.refresh(['./test/folder2/sub/file']))
         .then(() => {
-          // console.log(pretty(treeview.lastResult.tree));
+          console.log(pretty(treeview.lastResult.tree));
           done();
-        });
+        });*/
 
-      /*treeview.refresh([
+      treeview.refresh([
         './test/ok', // Modified
         './test/a1', // Removed
         './test/a2', // Added
@@ -76,9 +76,9 @@ describe('TreeView helper', () => {
         './test/b2/folder1/sub', // Added deep dir
         './test/b2/folder2/sub/file', // Added deep file
       ]).then(() => {
-        log(treeview.lastResult.tree);
+        // console.log(pretty(treeview.lastResult.tree));
         done();
-      });*/
+      });
     });
   });
 });

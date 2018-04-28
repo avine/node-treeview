@@ -63,27 +63,25 @@ export class TreeView {
   }
 
   refresh(paths: string[] | string) {
-    const { matchs, remains } = this.filterTreeNode(paths);
+    const mainPaths = ([] as string[])
+      .concat(paths)
+      .sort()
+      .reduce((acc, curr, index) => {
+        if (!index || !curr.startsWith(acc.prev)) {
+          acc.paths.push(curr);
+          acc.prev = curr;
+        }
+        return acc;
+      }, {
+        paths: [] as string[],
+        prev: ''
+      }).paths;
+
+    const { matchs, remains } = this.filterTreeNode(mainPaths);
     return Promise.all([
       ...matchs.map(match => this.updateTreeNode(match)),
-      ...remains.map(pathname => this.addTreeNode(pathname))
+      ...remains.map(pathname => this.discoverTreeNode(pathname))
     ]);
-
-    /*return Promise.all(
-      remains.map(pathname => this.addTreeNode(pathname))
-    ).then(() => Promise.all(
-      matchs.map(match => this.updateTreeNode(match))
-    ).then(
-      () => true
-    ));*/
-
-    /*return Promise.all(
-      matchs.map(match => this.updateTreeNode(match))
-    ).then(() => Promise.all(
-      remains.map(pathname => this.addTreeNode(pathname))
-    ).then(
-      () => true
-    ));*/
   }
 
   protected inject() {
@@ -116,20 +114,7 @@ export class TreeView {
         }
         const tasks = files.map(name => this.getTreeNode(ctx, name));
         Promise.all(tasks).then((items) => {
-          items.forEach((item) => {
-            if (item) tree.push(item);
-
-            // FIXME: when adding items it is possible to find new items more than once...
-            /*if (item) {
-              const index = tree.findIndex(t => t.pathname === item.pathname);
-              if (index !== -1) {
-                tree.splice(index, 1, item); // Replace
-              } else {
-                tree.push(item);
-              }
-            }*/
-
-          });
+          items.forEach((item) => { if (item) tree.push(item); });
           success(this.sort(tree));
         });
       });
@@ -276,8 +261,8 @@ export class TreeView {
     this.events.emit('item', { ...item }, ctx, this.opts);
   }
 
-  private filterTreeNode(paths: string[] | string) {
-    const remains = ([] as string[]).concat(paths).map(
+  private filterTreeNode(paths: string[]) {
+    const remains = paths.map(
       this.opts.relative
         ? p => this.providers.relative(this.lastResult.rootPath, p)
         : p => this.providers.resolve(p)
@@ -328,44 +313,34 @@ export class TreeView {
     });
   }
 
-  private addTreeNode(pathname: string) {
-    return new Promise<void>((success) => {
-      this.providers.stat(pathname, (err, stats) => {
-        if (err) return success();
-        const dir = this.findClosestDir(pathname);
-        const ctx: Model.ICtx = {
-          rootPath: this.lastResult.rootPath,
-          getPath: this.getPathFactory(this.lastResult.rootPath),
-          path: dir ? dir.pathname : this.lastResult.rootPath,
-          depth: dir ? dir.depth : 0
-        };
-        if (stats.isDirectory()) {
-          ctx.include = [pathname];
-        } else if (stats.isFile()) {
-          ctx.glob = [pathname]; // notice: this is not optimized after this walk will traverse all nodes...
-        } else {
-          return success();
-        }
-        this.walk(ctx, dir ? dir.nodes : this.lastResult.tree).then(() => success()); // Add
-      });
-    });
-  }
-
-  private findClosestDir(path: string) {
-    const relPath = this.providers.relative(this.lastResult.rootPath, path);
-    const names = relPath.split(/\/|\\/g);
-    let nodes = this.lastResult.tree;
-    let dir: Model.IDir | null = null;
-    while (names.length) {
-      const name = names.shift();
-      const match = nodes.find(node => node.name === name);
+  private discoverTreeNode(pathname: string) {
+    const relPathname = this.providers.relative(this.lastResult.rootPath, pathname);
+    const names = relPathname.split(/\/|\\/g);
+    let tree = this.lastResult.tree;
+    let parent: Model.IDir | null = null;
+    let name: string | undefined;
+    // tslint:disable-next-line:no-conditional-assignment
+    while (name = names.shift()) {
+      const match = tree.find(item => item.name === name);
       if (match && (match as Model.IDir).type === 'dir') {
-        dir = match as Model.IDir;
-        nodes = (match as Model.IDir).nodes;
+        parent = match as Model.IDir;
+        tree = (match as Model.IDir).nodes;
       } else {
         break;
       }
     }
-    return dir;
+    if (name) {
+      const parentNodes = parent ? parent.nodes : this.lastResult.tree;
+      const depth = parent ? parent.depth + 1 : 1;
+      const path = parent ? parent.pathname : (this.opts.relative ? '' : this.lastResult.rootPath);
+      const item: Model.IRef = {
+        name,
+        path,
+        pathname: this.providers.join(path, name),
+        depth
+      };
+      return this.updateTreeNode({ parentNodes, item });
+    }
+    return Promise.resolve();
   }
 }
