@@ -62,7 +62,7 @@ export class TreeView {
     return promise;
   }
 
-  refresh(paths: string[] | string) {
+  refreshResult(paths: string[] | string) {
     const mainPaths = ([] as string[])
       .concat(paths)
       .sort()
@@ -77,10 +77,10 @@ export class TreeView {
         prev: ''
       }).paths;
 
-    const { matchs, remains } = this.filterTreeNode(mainPaths);
+    const { matchs, remains } = this.filterResult(mainPaths);
     return Promise.all([
-      ...matchs.map(match => this.updateTreeNode(match)),
-      ...remains.map(pathname => this.discoverTreeNode(pathname))
+      ...matchs.map(match => this.updateResult(match)),
+      ...remains.map(pathname => this.extendResult(pathname))
     ]);
   }
 
@@ -261,7 +261,7 @@ export class TreeView {
     this.events.emit('item', { ...item }, ctx, this.opts);
   }
 
-  private filterTreeNode(paths: string[]) {
+  private filterResult(paths: string[]) {
     const remains = paths.map(
       this.opts.relative
         ? p => this.providers.relative(this.lastResult.rootPath, p)
@@ -289,7 +289,7 @@ export class TreeView {
     return { matchs: filter(this.lastResult.tree), remains };
   }
 
-  private updateTreeNode(match: Model.IMatch) {
+  private updateResult(match: Model.IMatch) {
     return new Promise<void>((success) => {
       const ctx: Model.ICtx = {
         rootPath: this.lastResult.rootPath,
@@ -313,7 +313,7 @@ export class TreeView {
     });
   }
 
-  private discoverTreeNode(pathname: string) {
+  private extendResult(pathname: string) {
     const relPathname = this.providers.relative(this.lastResult.rootPath, pathname);
     const names = relPathname.split(/\/|\\/g);
     let tree = this.lastResult.tree;
@@ -339,7 +339,7 @@ export class TreeView {
         pathname: this.providers.join(path, name),
         depth
       };
-      return this.updateTreeNode({ parentNodes, item });
+      return this.updateResult({ parentNodes, item });
     }
     return Promise.resolve();
   }

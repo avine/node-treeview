@@ -12,7 +12,7 @@ export function watch(rootPath: string, opts: Model.IOptsParam = {}) {
     console.log(JSON.stringify(tree, undefined, 2));
 
     cWatch(rootPath, { persistent: true, ignoreInitial: true }).on('all', (event, path) => {
-      treeview.refresh(path).then(() => {
+      treeview.refreshResult(path).then(() => {
 
         console.log(JSON.stringify(tree, undefined, 2));
       });

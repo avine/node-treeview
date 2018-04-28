@@ -65,7 +65,7 @@ describe('TreeView helper', () => {
           done();
         });*/
 
-      treeview.refresh([
+      treeview.refreshResult([
         './test/ok', // Modified
         './test/a1', // Removed
         './test/a2', // Added
