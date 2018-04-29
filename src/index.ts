@@ -85,7 +85,7 @@ export class TreeView {
     return Promise.all([
       ...matchs.map(match => this.updateResult(match)),
       ...remains.map(pathname => this.extendResult(pathname))
-    ]);
+    ]).then(() => this.lastResult.tree);
   }
 
   protected inject() {
