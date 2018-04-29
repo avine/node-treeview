@@ -18,6 +18,23 @@ export class TreeView {
     return files.filter(file => file[0] !== '.');
   }
 
+  private static getMainPaths(paths: string[] | string) {
+    const main = ([] as string[])
+      .concat(paths)
+      .sort()
+      .reduce((acc, curr, index) => {
+        if (!index || !curr.startsWith(acc.prev)) {
+          acc.paths.push(curr);
+          acc.prev = curr;
+        }
+        return acc;
+      }, {
+        paths: [] as string[],
+        prev: ''
+      });
+    return main.paths;
+  }
+
   opts: Model.IOpts = {
     all: false,
     content: false,
@@ -63,20 +80,7 @@ export class TreeView {
   }
 
   refreshResult(paths: string[] | string) {
-    const mainPaths = ([] as string[])
-      .concat(paths)
-      .sort()
-      .reduce((acc, curr, index) => {
-        if (!index || !curr.startsWith(acc.prev)) {
-          acc.paths.push(curr);
-          acc.prev = curr;
-        }
-        return acc;
-      }, {
-        paths: [] as string[],
-        prev: ''
-      }).paths;
-
+    const mainPaths = TreeView.getMainPaths(([] as string[]).concat(paths));
     const { matchs, remains } = this.filterResult(mainPaths);
     return Promise.all([
       ...matchs.map(match => this.updateResult(match)),
