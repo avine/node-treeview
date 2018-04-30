@@ -1,21 +1,35 @@
 // tslint:disable:no-console
 
-import { watch as cWatch } from 'chokidar';
+import { watch as fsWatch } from 'fs';
+
+import { join, resolve } from 'path';
 
 import * as Model from '../model';
 import { TreeView } from '../index';
 
-export function watch(rootPath: string, opts: Model.IOptsParam = {}) {
+// import { pretty } from './pretty';
+
+export function watch(
+  rootPath: string,
+  opts: Model.IOptsParam = {},
+  callback: (tree: Model.TreeNode[]) => void
+) {
   const treeview = new TreeView(opts);
   treeview.process(rootPath).then((tree) => {
-
-    console.log(JSON.stringify(tree, undefined, 2));
-
-    cWatch(rootPath, { persistent: true, ignoreInitial: true }).on('all', (event, path) => {
-      treeview.refreshResult(path).then(() => {
-
-        console.log(JSON.stringify(tree, undefined, 2));
-      });
+    let timeout: NodeJS.Timer | null = null;
+    let paths: string[] = [];
+    fsWatch(resolve(rootPath), { recursive: true }, (eventType, filename) => {
+      paths.push(resolve(join(rootPath, filename)));
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = setTimeout(() => {
+        timeout = null;
+        treeview.refreshResult(paths).then(callback);
+        paths = [];
+      }, 50);
     });
   });
 }
+
+// watch('./coverage', {}, tree => console.log(pretty(tree)));
