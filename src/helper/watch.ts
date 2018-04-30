@@ -9,6 +9,8 @@ import { TreeView } from '../index';
 
 // import { pretty } from './pretty';
 
+const debounceTime = 50; // ms
+
 export function watch(
   rootPath: string,
   opts: Model.IOptsParam = {},
@@ -19,6 +21,7 @@ export function watch(
     let timeout: NodeJS.Timer | null = null;
     let paths: string[] = [];
     fsWatch(resolve(rootPath), { recursive: true }, (eventType, filename) => {
+      // console.log(eventType, filename);
       paths.push(resolve(join(rootPath, filename)));
       if (timeout) {
         clearTimeout(timeout);
@@ -27,7 +30,7 @@ export function watch(
         timeout = null;
         treeview.refreshResult(paths).then(callback);
         paths = [];
-      }, 50);
+      }, debounceTime);
     });
   });
 }

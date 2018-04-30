@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { readdir, readFile, stat } from 'fs';
+import { readdir, readFile, stat, watch as fsWatch } from 'fs';
 import { extname, join, relative, resolve } from 'path';
 import * as minimatch from 'minimatch';
 
@@ -63,6 +63,28 @@ export class TreeView {
   removeListeners() {
     this.events.removeAllListeners('item');
     return this;
+  }
+
+  watch(path: string, debounceTime = 50) {
+    const events = new EventEmitter();
+    this.process(path).then(() => {
+      let timeout: NodeJS.Timer | null = null;
+      let paths: string[] = [];
+      const watcher = fsWatch(this.lastResult.rootPath, { recursive: true }, (eventType, filename) => {
+        paths.push(this.providers.join(this.lastResult.rootPath, filename));
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => {
+          timeout = null;
+          this.refreshResult(paths).then(() => events.emit('change', this.lastResult.tree));
+          paths = [];
+        }, debounceTime);
+      });
+      events.on('close', () => watcher.close());
+      events.emit('ready', this.lastResult.tree);
+    });
+    return events;
   }
 
   process(path: string, cb?: Model.Cb) {
