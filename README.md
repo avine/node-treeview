@@ -114,7 +114,7 @@ The `TreeView` lets you listen to events.
 const { TreeView } = require('node-treeview');
 
 new TreeView()
-  .listen(data => console.log(`${data.type}: ${data.pathname}`))
+  .on('item', data => console.log(`${data.type}: ${data.pathname}`))
   .process('path/to/dir')
   .then(() => console.log('done!'));
 ```
@@ -136,7 +136,7 @@ const { TreeView } = require('node-treeview');
 
 const treeView = new TreeView({
   relative: true
-}).listen((data, ctx) => {
+}).on('item', (data, ctx) => {
   // Listen to each emitted data in its own context
   // ('path/to/dir1' or 'path/to/dir2')
   console.log(`${ctx.rootPath} -> ${data.pathname}`);

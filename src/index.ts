@@ -35,7 +35,9 @@ export class TreeView {
     return main.paths;
   }
 
-  opts: Model.IOpts = {
+  lastResult!: Model.IResult;
+  protected providers!: Model.IProviders;
+  protected opts: Model.IOpts = {
     all: false,
     content: false,
     depth: INFINITE_DEPTH,
@@ -45,9 +47,7 @@ export class TreeView {
     glob: [],
     sort: Model.Sorting.Alpha
   };
-  events = new EventEmitter();
-  providers!: Model.IProviders;
-  lastResult!: Model.IResult;
+  protected events = new EventEmitter();
 
   constructor(opts?: Model.IOptsParam) {
     this.inject();
@@ -55,8 +55,8 @@ export class TreeView {
     this.formatOpts();
   }
 
-  listen(listener: Model.Listener) {
-    this.events.addListener('item', listener);
+  on(event: Model.Event, listener: Model.Listener) {
+    this.events.addListener(event, listener);
     return this;
   }
 
@@ -210,7 +210,7 @@ export class TreeView {
 
   private addError(ctx: Model.ICtx, item: Model.IRef, error: Error) {
     item.error = error;
-    this.emit(ctx, item);
+    this.emitItem(ctx, item);
   }
 
   private addFile(ctx: Model.ICtx, item: Model.IFile, stats: Model.IStats) {
@@ -218,7 +218,7 @@ export class TreeView {
     item.size = stats.size;
     item.ext = extname(item.name).slice(1); // remove '.'
     item.binary = isBinaryPath(item.name);
-    this.emit(ctx, item);
+    this.emitItem(ctx, item);
     if (this.opts.content) {
       return this.addContent(ctx, item);
     }
@@ -243,7 +243,7 @@ export class TreeView {
   private addDir(ctx: Model.ICtx, item: Model.IDir) {
     item.type = 'dir';
     item.nodes = [];
-    this.emit(ctx, item);
+    this.emitItem(ctx, item);
     if (this.opts.depth === INFINITE_DEPTH || ctx.depth < this.opts.depth) {
       const newCtx: Model.ICtx = {
         ...ctx,
@@ -281,10 +281,11 @@ export class TreeView {
    *  - Emitted file never have `content` property.
    *  - Emitted dir always have `nodes` property equal to an empty array.
    */
-  private emit(ctx: Model.ICtx, item: Model.TreeNode) {
+  private emitItem(ctx: Model.ICtx, item: Model.TreeNode) {
     // We should match the signature of `Model.Listener`.
     // Emit an immutable item.
-    this.events.emit('item', { ...item }, ctx, this.opts);
+    const event: Model.Event = 'item';
+    this.events.emit(event, { ...item }, ctx, this.opts);
   }
 
   private filterResult(paths: string[]) {

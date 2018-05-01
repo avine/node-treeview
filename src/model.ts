@@ -113,6 +113,7 @@ export interface IMatch {
 export type Item = IFile | IDir;
 export type TreeNode = Item | IRef;
 
+export type Event = 'item';
 export type Listener = (data: TreeNode, ctx: ICtx, opts: IOpts) => void;
 
 export type Cb = (error: Err, tree?: TreeNode[]) => any;
