@@ -55,36 +55,53 @@ export class TreeView {
     this.formatOpts();
   }
 
-  on(event: Model.Event, listener: Model.Listener) {
+  on(event: 'item', listener: Model.Listener): this;
+  on(event: Model.Event, listener: any): this;
+  on(event: any, listener: any) {
     this.events.addListener(event, listener);
     return this;
   }
 
-  removeListeners() {
-    this.events.removeAllListeners('item');
+  removeListeners(event: Model.Event) {
+    this.events.removeAllListeners(event);
     return this;
   }
 
   watch(path: string, debounceTime = 50) {
-    const events = new EventEmitter();
-    this.process(path).then(() => {
-      let timeout: NodeJS.Timer | null = null;
-      let paths: string[] = [];
-      const watcher = fsWatch(this.lastResult.rootPath, { recursive: true }, (eventType, filename) => {
-        paths.push(this.providers.join(this.lastResult.rootPath, filename));
-        if (timeout) {
-          clearTimeout(timeout);
-        }
-        timeout = setTimeout(() => {
-          timeout = null;
-          this.refreshResult(paths).then(() => events.emit('change', this.lastResult.tree));
-          paths = [];
-        }, debounceTime);
-      });
-      events.on('close', () => watcher.close());
-      events.emit('ready', this.lastResult.tree);
+    const rootPath = this.providers.resolve(path);
+    let pathsStack: string[] = [];
+    let ready = false;
+    let timeout: NodeJS.Timer | null = null;
+    const refresh = () => {
+      if (pathsStack.length) {
+        ready = false;
+        this.refreshResult(pathsStack).then((tree) => {
+          this.emit('change', tree);
+          refresh();
+        });
+        pathsStack = [];
+      } else {
+        ready = true;
+      }
+    };
+    const watcher = fsWatch(rootPath, { recursive: true }, (eventType, filename) => {
+      pathsStack.push(this.providers.join(rootPath, filename));
+      if (!ready) {
+        return;
+      }
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = setTimeout(() => {
+        timeout = null;
+        refresh();
+      }, debounceTime);
     });
-    return events;
+    this.process(rootPath).then((tree) => {
+      this.emit('ready', tree);
+      refresh();
+    });
+    return () => watcher.close();
   }
 
   process(path: string, cb?: Model.Cb) {
@@ -104,6 +121,7 @@ export class TreeView {
   refreshResult(paths: string[] | string) {
     const mainPaths = TreeView.getMainPaths(([] as string[]).concat(paths));
     const { matchs, remains } = this.filterResult(mainPaths);
+    // TODO: checkFile and checkDirectory against what `remains`...
     return Promise.all([
       ...matchs.map(match => this.updateResult(match)),
       ...remains.map(pathname => this.extendResult(pathname))
@@ -282,10 +300,12 @@ export class TreeView {
    *  - Emitted dir always have `nodes` property equal to an empty array.
    */
   private emitItem(ctx: Model.ICtx, item: Model.TreeNode) {
-    // We should match the signature of `Model.Listener`.
-    // Emit an immutable item.
-    const event: Model.Event = 'item';
-    this.events.emit(event, { ...item }, ctx, this.opts);
+    // We should match the signature of `Model.Listener`, and emit an immutable item.
+    this.emit('item', { ...item }, ctx, this.opts);
+  }
+
+  private emit(event: Model.Event, ...args: any[]) {
+    this.events.emit(event, ...args);
   }
 
   private filterResult(paths: string[]) {

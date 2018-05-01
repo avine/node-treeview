@@ -449,7 +449,7 @@ describe('TreeView mock events', () => {
     const treeView = new TreeViewMock();
     treeView.on('item', (data) => {
       if (++count === 3) {
-        treeView.removeListeners();
+        treeView.removeListeners('item');
       }
     });
     treeView.process('./deep-dirs').then(() => {
