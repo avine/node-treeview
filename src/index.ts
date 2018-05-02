@@ -55,8 +55,10 @@ export class TreeView {
     this.formatOpts();
   }
 
-  on(event: 'item', listener: Model.OnItem): this;
+  on(event: 'item', listener: Model.OnItemCtx): this;
   on(event: 'ready' | 'tree', listener: Model.OnTree): this;
+  on(event: 'add' | 'change' | 'unlink', listener: Model.OnItem): this;
+  on(event: 'all', listener: Model.OnAll): this;
   on(event: Model.Event, listener: any) {
     this.events.addListener(event, listener);
     return this;
@@ -299,8 +301,10 @@ export class TreeView {
    */
   private emit(event: 'item', item: Model.TreeNode, ctx: Model.ICtx): void;
   private emit(event: 'ready' | 'tree', tree: Model.TreeNode[]): void;
+  private emit(event: 'add' | 'change' | 'unlink', item: Model.TreeNode): void;
   private emit(event: Model.Event, ...args: any[]) {
     this.events.emit(event, ...args);
+    this.events.emit('all', event, ...args);
   }
 
   private filterResult(paths: string[]) {
@@ -344,11 +348,14 @@ export class TreeView {
         if (index !== -1) {
           if (item && !item.error) {
             match.parentNodes.splice(index, 1, item); // Replace
+            this.emit('change', item);
           } else {
             match.parentNodes.splice(index, 1); // Remove
+            this.emit('unlink', match.item);
           }
         } else if (item && !item.error) {
           match.parentNodes.push(item); // Add
+          this.emit('add', item); // FIXME: seems to not be reached... New items are identified as 'change' event...
         }
         success();
       });

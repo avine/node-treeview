@@ -113,10 +113,20 @@ export interface IMatch {
 export type Item = IFile | IDir;
 export type TreeNode = Item | IRef;
 
-export type Event = 'item' | 'ready' | 'tree';
+export type Event
+  = 'item'
+  | 'ready'
+  | 'tree'
+  | 'add'
+  | 'change'
+  | 'unlink'
+  | 'all';
 
-export type OnItem = (item: TreeNode, ctx: ICtx) => void;
 export type OnTree = (tree: TreeNode[]) => void;
+export type OnItem = (item: TreeNode) => void;
+export type OnItemCtx = (item: TreeNode, ctx: ICtx) => void;
+
+export type OnAll = (event: Event, data: TreeNode[] | TreeNode, ctx?: ICtx) => void;
 
 export type ProcessCb = (error: Err, tree?: TreeNode[]) => any;
 export type Err = Error | null | undefined;
