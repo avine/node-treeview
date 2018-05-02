@@ -428,8 +428,8 @@ describe('TreeView mock events', () => {
 
   it('should add listener', (done) => {
     const list: string[] = [];
-    new TreeViewMock().on('item', (data) => {
-      list.push(data.pathname);
+    new TreeViewMock().on('item', (item) => {
+      list.push(item.pathname);
     }).process('./deep-dirs').then(() => {
       expect(list.sort()).toEqual([
         // We should get 6 data!
@@ -447,7 +447,7 @@ describe('TreeView mock events', () => {
   it('should remove listener', (done) => {
     let count = 0;
     const treeView = new TreeViewMock();
-    treeView.on('item', (data) => {
+    treeView.on('item', () => {
       if (++count === 3) {
         treeView.removeListeners('item');
       }
@@ -466,11 +466,11 @@ describe('TreeView mock events', () => {
     new TreeViewMock({
       // Request the files content
       content: true
-    }).on('item', (data) => {
-      if ((data as Model.IFile).type === 'file' && 'content' in data) {
+    }).on('item', (item) => {
+      if ((item as Model.IFile).type === 'file' && 'content' in item) {
         // Emitted file should never have `content` property
         haveContent = true;
-      } else if ((data as Model.IDir).type === 'dir' && (data as Model.IDir).nodes.length) {
+      } else if ((item as Model.IDir).type === 'dir' && (item as Model.IDir).nodes.length) {
         // Emitted dir should always have `nodes` property equal to an empty array
         haveNodes = true;
       }
@@ -497,9 +497,9 @@ describe('TreeView mock events', () => {
     const treeView = new TreeViewMock({
       content: true,
       relative: true
-    }).on('item', (data, ctx) => {
-      if (ctx.rootPath === '/root/sub-dirs') subDirs1.push(data.pathname);
-      if (ctx.rootPath === '/root/sub-dirs-alt') subDirs2.push(data.pathname);
+    }).on('item', (item, ctx) => {
+      if (ctx.rootPath === '/root/sub-dirs') subDirs1.push(item.pathname);
+      if (ctx.rootPath === '/root/sub-dirs-alt') subDirs2.push(item.pathname);
     });
 
     Promise.all([

@@ -55,9 +55,9 @@ export class TreeView {
     this.formatOpts();
   }
 
-  on(event: 'item', listener: Model.Listener): this;
-  on(event: Model.Event, listener: any): this;
-  on(event: any, listener: any) {
+  on(event: 'item', listener: Model.OnItem): this;
+  on(event: 'ready' | 'tree', listener: Model.OnTree): this;
+  on(event: Model.Event, listener: any) {
     this.events.addListener(event, listener);
     return this;
   }
@@ -76,7 +76,7 @@ export class TreeView {
       if (pathsStack.length) {
         ready = false;
         this.refreshResult(pathsStack).then((tree) => {
-          this.emit('change', tree);
+          this.emit('tree', tree);
           refresh();
         });
         pathsStack = [];
@@ -104,7 +104,7 @@ export class TreeView {
     return () => watcher.close();
   }
 
-  process(path: string, cb?: Model.Cb) {
+  process(path: string, cb?: Model.ProcessCb) {
     const rootPath = this.providers.resolve(path);
     const ctx: Model.ICtx = {
       rootPath,
@@ -228,7 +228,7 @@ export class TreeView {
 
   private addError(ctx: Model.ICtx, item: Model.IRef, error: Error) {
     item.error = error;
-    this.emitItem(ctx, item);
+    this.emit('item', item, ctx);
   }
 
   private addFile(ctx: Model.ICtx, item: Model.IFile, stats: Model.IStats) {
@@ -236,7 +236,7 @@ export class TreeView {
     item.size = stats.size;
     item.ext = extname(item.name).slice(1); // remove '.'
     item.binary = isBinaryPath(item.name);
-    this.emitItem(ctx, item);
+    this.emit('item', item, ctx);
     if (this.opts.content) {
       return this.addContent(ctx, item);
     }
@@ -261,7 +261,7 @@ export class TreeView {
   private addDir(ctx: Model.ICtx, item: Model.IDir) {
     item.type = 'dir';
     item.nodes = [];
-    this.emitItem(ctx, item);
+    this.emit('item', item, ctx);
     if (this.opts.depth === INFINITE_DEPTH || ctx.depth < this.opts.depth) {
       const newCtx: Model.ICtx = {
         ...ctx,
@@ -293,17 +293,12 @@ export class TreeView {
   }
 
   /**
-   * Emit an event each time a `TreeNode` is discovered.
-   *
-   * Note:
+   * Note for 'item' event:
    *  - Emitted file never have `content` property.
    *  - Emitted dir always have `nodes` property equal to an empty array.
    */
-  private emitItem(ctx: Model.ICtx, item: Model.TreeNode) {
-    // We should match the signature of `Model.Listener`, and emit an immutable item.
-    this.emit('item', { ...item }, ctx, this.opts);
-  }
-
+  private emit(event: 'item', item: Model.TreeNode, ctx: Model.ICtx): void;
+  private emit(event: 'ready' | 'tree', tree: Model.TreeNode[]): void;
   private emit(event: Model.Event, ...args: any[]) {
     this.events.emit(event, ...args);
   }

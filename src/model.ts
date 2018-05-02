@@ -113,8 +113,10 @@ export interface IMatch {
 export type Item = IFile | IDir;
 export type TreeNode = Item | IRef;
 
-export type Event = 'item' | 'ready' | 'change' | 'close';
-export type Listener = (data: TreeNode, ctx: ICtx, opts: IOpts) => void; // TODO: rename this into ListenerItem...
+export type Event = 'item' | 'ready' | 'tree';
 
-export type Cb = (error: Err, tree?: TreeNode[]) => any;
+export type OnItem = (item: TreeNode, ctx: ICtx) => void;
+export type OnTree = (tree: TreeNode[]) => void;
+
+export type ProcessCb = (error: Err, tree?: TreeNode[]) => any;
 export type Err = Error | null | undefined;
