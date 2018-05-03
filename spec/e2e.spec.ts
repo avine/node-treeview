@@ -4,6 +4,7 @@
 import { customMatchers } from './matchers/matchers';
 
 import { resolve } from 'path';
+import { copy, remove } from 'fs-extra';
 
 import { TreeView } from '../src/index';
 import * as Model from '../src/model';
@@ -18,7 +19,7 @@ const deepPath = resolve(subPath, 'deep');
 describe('TreeView e2e', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
-  it('should works!', (done) => {
+  it('should process', (done) => {
     new TreeView({ content: true }).process(basePath).then((tree) => {
       expect(tree).toContainItem({
         type: 'file', path: basePath, name: 'a', content: 'aaa', size: 3, binary: false
@@ -46,6 +47,37 @@ describe('TreeView e2e', () => {
       expect(deep.nodes).toContainItem({
         type: 'file', path: deepPath, name: 'c.png', content: pngContent, size: pngSize, binary: true
       });
+
+      done();
+    });
+  });
+});
+
+describe('TreeView e2e', () => {
+  beforeEach((done) => {
+    jasmine.addMatchers(customMatchers);
+
+    copy(basePath, resolve('dist/tmp'), () => done());
+  });
+
+  afterEach((done) => {
+    remove(resolve('dist/tmp'), () => done());
+  });
+
+  it('should watch', (done) => {
+    // Start watching...
+    const treeview = new TreeView({ relative: true });
+    const stopWatching = treeview.watch('dist/tmp');
+
+    // When ready, modify the fixture...
+    treeview.on('ready', () => {
+      remove(resolve('dist/tmp/a'));
+    });
+
+    // ...and listen to `tree` event
+    treeview.on('tree', (tree) => {
+      expect(tree).not.toContainItem({ name: 'a' });
+      stopWatching();
 
       done();
     });

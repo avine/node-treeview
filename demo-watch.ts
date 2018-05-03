@@ -20,13 +20,24 @@ treeview
     if (event === 'ready') {
       console.log(event);
     } else if (event === 'tree') {
-      // console.log(event);
+      console.log('');
+      console.log(pretty(data as Model.TreeNode[]));
+      console.log('');
     } else if (event !== 'item') {
       console.log(event, (data as Model.TreeNode).pathname);
+    } else {
+      console.log('\t\t', event, (data as Model.TreeNode).pathname);
     }
   })
-  // .on('ready', (tree: Model.TreeNode[]) => console.log(pretty(tree)))
-  // .on('tree', (tree: Model.TreeNode[]) => console.log(pretty(tree)))
+  /*.on('ready', (tree: Model.TreeNode[]) => {
+    console.log(pretty(tree));
+    console.log('');
+  })
+  .on('tree', (tree: Model.TreeNode[]) => {
+    console.log('');
+    console.log(pretty(tree));
+    console.log('');
+  })*/
   ;
 
 // setTimeout(close, 10000);

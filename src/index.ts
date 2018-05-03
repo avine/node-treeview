@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { readdir, readFile, stat, watch as fsWatch } from 'fs';
+import { readdir, readFile, stat, watch } from 'fs';
 import { extname, join, relative, resolve } from 'path';
 import * as minimatch from 'minimatch';
 
@@ -18,12 +18,13 @@ export class TreeView {
     return files.filter(file => file[0] !== '.');
   }
 
-  private static getMainPaths(paths: string[] | string) {
-    const main = ([] as string[])
+  private static getDeepPaths(paths: string[] | string) {
+    const deep = ([] as string[])
       .concat(paths)
       .sort()
+      .reverse()
       .reduce((acc, curr, index) => {
-        if (!index || !curr.startsWith(acc.prev)) {
+        if (!index || !acc.prev.startsWith(curr)) {
           acc.paths.push(curr);
           acc.prev = curr;
         }
@@ -32,7 +33,7 @@ export class TreeView {
         paths: [] as string[],
         prev: ''
       });
-    return main.paths;
+    return deep.paths;
   }
 
   lastResult!: Model.IResult;
@@ -86,7 +87,7 @@ export class TreeView {
         ready = true;
       }
     };
-    const watcher = fsWatch(rootPath, { recursive: true }, (eventType, filename) => {
+    const watcher = watch(rootPath, { recursive: true }, (eventType, filename) => {
       pathsStack.push(this.providers.join(rootPath, filename));
       if (!ready) {
         return;
@@ -121,8 +122,8 @@ export class TreeView {
   }
 
   refreshResult(paths: string[] | string) {
-    const mainPaths = TreeView.getMainPaths(([] as string[]).concat(paths));
-    const { matchs, remains } = this.filterResult(mainPaths);
+    const deepPaths = TreeView.getDeepPaths(([] as string[]).concat(paths));
+    const { matchs, remains } = this.filterResult(deepPaths);
     // TODO: checkFile and checkDirectory against what `remains`...
     return Promise.all([
       ...matchs.map(match => this.updateResult(match)),
@@ -355,7 +356,7 @@ export class TreeView {
           }
         } else if (item && !item.error) {
           match.parentNodes.push(item); // Add
-          this.emit('add', item); // FIXME: seems to not be reached... New items are identified as 'change' event...
+          this.emit('add', item);
         }
         success();
       });

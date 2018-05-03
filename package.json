@@ -37,10 +37,12 @@
   "homepage": "https://github.com/avine/node-treeview#readme",
   "devDependencies": {
     "@types/chokidar": "^1.7.5",
+    "@types/fs-extra": "^5.0.2",
     "@types/jasmine": "^2.8.6",
     "@types/minimatch": "^3.0.3",
     "@types/node": "^9.4.7",
     "@types/yargs": "^11.0.0",
+    "fs-extra": "^6.0.0",
     "istanbul": "^0.4.5",
     "jasmine": "^3.1.0",
     "jasmine-spec-reporter": "^4.2.1",
