@@ -105,9 +105,12 @@ export interface IResult {
   tree: TreeNode[];
 }
 
-export interface IMatch {
-  item: TreeNode;
-  parentNodes: TreeNode[];
+export class TreeNodeMatch {
+  constructor(public item: TreeNode, public parentNodes: TreeNode[]) {
+  }
+  toString() {
+    return this.item.pathname;
+  }
 }
 
 export type Item = IFile | IDir;

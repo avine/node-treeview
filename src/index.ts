@@ -18,22 +18,24 @@ export class TreeView {
     return files.filter(file => file[0] !== '.');
   }
 
-  private static getDeepPaths(paths: string[] | string) {
-    const deep = ([] as string[])
-      .concat(paths)
-      .sort()
-      .reverse()
+  private static extractUseful<T>(list: T[], reverse = false) {
+    const x = reverse === false ? 1 : -1;
+    const useful = list
+      .sort((a, b) => a.toString() > b.toString() ? x : -x)
       .reduce((acc, curr, index) => {
-        if (!index || !acc.prev.startsWith(curr)) {
-          acc.paths.push(curr);
-          acc.prev = curr;
+        if (!index
+          || !reverse && !curr.toString().startsWith(acc.prev)
+          || reverse && !acc.prev.startsWith(curr.toString())
+        ) {
+          acc.list.push(curr);
+          acc.prev = curr.toString();
         }
         return acc;
       }, {
-        paths: [] as string[],
+        list: [] as T[],
         prev: ''
       });
-    return deep.paths;
+    return useful.list;
   }
 
   lastResult!: Model.IResult;
@@ -122,9 +124,19 @@ export class TreeView {
   }
 
   refreshResult(paths: string[] | string) {
-    const deepPaths = TreeView.getDeepPaths(([] as string[]).concat(paths));
-    const { matchs, remains } = this.filterResult(deepPaths);
-    // TODO: checkFile and checkDirectory against what `remains`...
+    let { matchs, remains } = this.filterResult(([] as string[]).concat(paths));
+    // FIXME: for the `matchs` we extract the main paths (because parameter `reverse` is set to false)
+    //
+    // In case something was deleted, it's fine.
+    //
+    // But in case something was just updated, we should have set `reverse` to true,
+    // in order to:
+    //    1. optimize the updateResult traversing
+    //        For example, if a file was just updated in a directory,
+    //        we actually refreshing all the sibling files and directories!
+    //    2. emit the leaf and not just the trunk
+    matchs = TreeView.extractUseful(matchs);
+    remains = TreeView.extractUseful(remains);
     return Promise.all([
       ...matchs.map(match => this.updateResult(match)),
       ...remains.map(pathname => this.extendResult(pathname))
@@ -315,10 +327,10 @@ export class TreeView {
         : p => this.providers.resolve(p)
     );
     const filter = (nodes: Model.TreeNode[]) => {
-      return nodes.reduce((acc: Model.IMatch[], item: Model.TreeNode) => {
+      return nodes.reduce((acc: Model.TreeNodeMatch[], item: Model.TreeNode) => {
         const index = remains.indexOf(item.pathname);
         if (index !== -1) {
-          acc.push({ item, parentNodes: nodes });
+          acc.push(new Model.TreeNodeMatch(item, nodes));
           remains.splice(index, 1);
           if (!remains.length) {
             return acc;
@@ -336,7 +348,7 @@ export class TreeView {
     return { matchs: filter(this.lastResult.tree), remains };
   }
 
-  private updateResult(match: Model.IMatch) {
+  private updateResult(match: Model.TreeNodeMatch) {
     return new Promise<void>((success) => {
       const ctx: Model.ICtx = {
         rootPath: this.lastResult.rootPath,
