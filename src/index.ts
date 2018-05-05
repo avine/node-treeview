@@ -14,8 +14,8 @@ export class TreeView {
     item.modified = stats.mtime;
   }
 
-  private static removeHidden(files: string[]) {
-    return files.filter(file => file[0] !== '.');
+  private static removeHidden(pathfiles: string[]) {
+    return pathfiles.filter(pathfile => (pathfile.match(/[^\/|\\]+$/) || [''])[0][0] !== '.');
   }
 
   private static extractUseful<T>(list: T[], reverse = false) {
@@ -117,30 +117,24 @@ export class TreeView {
       path: rootPath,
       depth: 0
     };
-    const promise = this.walk(ctx);
+    const promise = this.discover(ctx);
     promise.then(tree => this.lastResult = { rootPath, tree }, error => error);
     if (cb) promise.then(tree => cb(null, tree), error => cb(error));
     return promise;
   }
 
   refreshResult(paths: string[] | string) {
-    let { matchs, remains } = this.filterResult(([] as string[]).concat(paths));
-    // FIXME: for the `matchs` we extract the main paths (because parameter `reverse` is set to false)
-    //
-    // In case something was deleted, it's fine.
-    //
-    // But in case something was just updated, we should have set `reverse` to true,
-    // in order to:
-    //    1. optimize the updateResult traversing
-    //        For example, if a file was just updated in a directory,
-    //        we actually refreshing all the sibling files and directories!
-    //    2. emit the leaf and not just the trunk
-    matchs = TreeView.extractUseful(matchs);
-    remains = TreeView.extractUseful(remains);
-    return Promise.all([
-      ...matchs.map(match => this.updateResult(match)),
-      ...remains.map(pathname => this.extendResult(pathname))
-    ]).then(() => this.lastResult.tree);
+    const filtered = this.filterResult(([] as string[]).concat(paths));
+    if (!this.opts.all) {
+      filtered.remains = TreeView.removeHidden(filtered.remains);
+    }
+    return Promise.all(
+      TreeView.extractUseful(filtered.remains).map(pathname => this.extendResult(pathname))
+    ).then(
+      () => Promise.all(filtered.matchs.map(match => this.updateResult(match)))
+    ).then(
+      () => this.lastResult.tree
+    );
   }
 
   protected inject() {
@@ -157,7 +151,7 @@ export class TreeView {
     return (item: Model.IRef) => this.providers.resolve(this.opts.relative ? rootPath : '', item.path, item.name);
   }
 
-  private walk(ctx: Model.ICtx, tree: Model.TreeNode[] = []) {
+  private discover(ctx: Model.ICtx, tree: Model.TreeNode[] = []) {
     return new Promise<Model.TreeNode[]>((success, reject) => {
       this.providers.readdir(ctx.path, (error, files) => {
         if (error) {
@@ -167,6 +161,7 @@ export class TreeView {
         if (!this.opts.all) {
           files = TreeView.removeHidden(files);
         }
+        files = files.filter(file => !tree.some(item => item.name === file)); // Prevent duplicate scan
         if (!files.length) {
           success(tree);
           return;
@@ -283,7 +278,7 @@ export class TreeView {
         path: ctx.getPath(item),
         depth: ctx.depth + 1
       };
-      return this.walk(newCtx, item.nodes)
+      return this.discover(newCtx, item.nodes)
         .catch((error) => {
           item.error = error;
           return Promise.resolve(); // Don't break the walk...
