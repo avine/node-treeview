@@ -18,24 +18,18 @@ export class TreeView {
     return pathfiles.filter(pathfile => (pathfile.match(/[^\/|\\]+$/) || [''])[0][0] !== '.');
   }
 
-  private static extractUseful<T>(list: T[], reverse = false) {
-    const x = reverse === false ? 1 : -1;
-    const useful = list
-      .sort((a, b) => a.toString() > b.toString() ? x : -x)
-      .reduce((acc, curr, index) => {
-        if (!index
-          || !reverse && !curr.toString().startsWith(acc.prev)
-          || reverse && !acc.prev.startsWith(curr.toString())
-        ) {
-          acc.list.push(curr);
-          acc.prev = curr.toString();
-        }
-        return acc;
-      }, {
-        list: [] as T[],
-        prev: ''
-      });
-    return useful.list;
+  private static getMainPaths(paths: string[]) {
+    const main = paths.sort().reduce((acc, curr, index) => {
+      if (!index || !curr.startsWith(acc.prev)) {
+        acc.paths.push(curr);
+        acc.prev = curr;
+      }
+      return acc;
+    }, {
+      paths: [] as string[],
+      prev: ''
+    });
+    return main.paths;
   }
 
   lastResult!: Model.IResult;
@@ -129,7 +123,7 @@ export class TreeView {
       filtered.remains = TreeView.removeHidden(filtered.remains);
     }
     return Promise.all(
-      TreeView.extractUseful(filtered.remains).map(pathname => this.extendResult(pathname))
+      TreeView.getMainPaths(filtered.remains).map(pathname => this.extendResult(pathname))
     ).then(
       () => Promise.all(filtered.matchs.map(match => this.updateResult(match)))
     ).then(
@@ -322,10 +316,10 @@ export class TreeView {
         : p => this.providers.resolve(p)
     );
     const filter = (nodes: Model.TreeNode[]) => {
-      return nodes.reduce((acc: Model.TreeNodeMatch[], item: Model.TreeNode) => {
+      return nodes.reduce((acc: Model.IMatch[], item: Model.TreeNode) => {
         const index = remains.indexOf(item.pathname);
         if (index !== -1) {
-          acc.push(new Model.TreeNodeMatch(item, nodes));
+          acc.push({ item, parentNodes: nodes });
           remains.splice(index, 1);
           if (!remains.length) {
             return acc;
@@ -343,7 +337,7 @@ export class TreeView {
     return { matchs: filter(this.lastResult.tree), remains };
   }
 
-  private updateResult(match: Model.TreeNodeMatch) {
+  private updateResult(match: Model.IMatch) {
     return new Promise<void>((success) => {
       const ctx: Model.ICtx = {
         rootPath: this.lastResult.rootPath,
