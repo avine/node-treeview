@@ -104,11 +104,12 @@ Here is what the `json` output looks like:
 }]
 ```
 
-The `TreeView` lets you listen to events.
+The `TreeView` lets you listen to `item` events.
 
-(**note:**
-  emitted file never have `content` property,
-  emitted dir always have `nodes` property equal to an empty array).
+> emitted file never have `content` property,
+emitted dir always have `nodes` property equal to an empty array.
+
+> see below for more events when you watch the filesystem.
 
 ```js
 const { TreeView } = require('node-treeview');
@@ -152,6 +153,35 @@ Promise.all[
   console.log(tree1);
   console.log(tree2);
 });
+```
+
+> You should process trees in parallel ONLY if you don't watch the filesystem.
+Otherwise the watch method will NOT work properly.
+
+The `TreeView` lets you watch the filesystem.
+
+```js
+const { TreeView } = require('node-treeview');
+
+const treeView = new TreeView();
+
+treeview.on('item'), (item) => { /* Item emitted */ });
+
+treeview.on('ready'), (tree) => { /* Initial scan complete */ });
+
+treeview.on('add'), (item) => { /* File or directory added */ });
+treeview.on('change'), (item) => { /* File or directory modified */ });
+treeview.on('unlink'), (item) => { /* File or directory removed */ });
+
+treeview.on('tree'), (tree) => { /* New version of the tree available */ });
+
+treeview.on('all'), (event, data) => { /* Listen to all events */ });
+
+// Start watching
+const stopWatching = treeview.watch('./coverage');
+
+// Stop watching after 1mn
+setTimeout(stopWatching, 60000);
 ```
 
 ## TypeScript
