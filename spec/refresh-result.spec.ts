@@ -115,7 +115,7 @@ function checkAfterState(tree: Model.TreeNode[], relative = false) {
   expect(ad1N).toContainItem({ path: join(root, 'ad1'), name: 'ad3', type: 'dir' });
 }
 
-describe('TreeView refreshResult mock', () => {
+describe('TreeView mock refreshResult', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   it('should refresh result sequentially with absolute path', (done) => {

@@ -106,10 +106,8 @@ Here is what the `json` output looks like:
 
 The `TreeView` lets you listen to `item` events.
 
-> emitted file never have `content` property,
+> Emitted file never have `content` property,
 emitted dir always have `nodes` property equal to an empty array.
-
-> see below for more events when you watch the filesystem.
 
 ```js
 const { TreeView } = require('node-treeview');
@@ -155,9 +153,6 @@ Promise.all[
 });
 ```
 
-> You should process trees in parallel ONLY if you don't watch the filesystem.
-Otherwise the watch method will NOT work properly.
-
 The `TreeView` lets you watch the filesystem.
 
 ```js
@@ -165,24 +160,28 @@ const { TreeView } = require('node-treeview');
 
 const treeView = new TreeView();
 
-treeview.on('item'), (item) => { /* Item emitted */ });
+treeview
+  .on('item'), (item) => {/* Item emitted (discovered, added, modified or removed) */})
 
-treeview.on('ready'), (tree) => { /* Initial scan complete */ });
+  .on('ready'), (tree) => {/* Initial tree available */})
 
-treeview.on('add'), (item) => { /* File or directory added */ });
-treeview.on('change'), (item) => { /* File or directory modified */ });
-treeview.on('unlink'), (item) => { /* File or directory removed */ });
+  .on('add'), (item) => {/* Item added */})
+  .on('change'), (item) => {/* Item modified */})
+  .on('unlink'), (item) => {/* Item removed */})
 
-treeview.on('tree'), (tree) => { /* New version of the tree available */ });
+  .on('tree'), (tree) => {/* Refreshed tree available (after 'add', 'change' or 'unlink' event) */})
 
-treeview.on('all'), (event, data) => { /* Listen to all events */ });
+  .on('all'), (event, data) => {/* Listen to all events */});
 
 // Start watching
-const stopWatching = treeview.watch('./coverage');
+const stopWatching = treeview.watch('path/to/dir');
 
 // Stop watching after 1mn
 setTimeout(stopWatching, 60000);
 ```
+
+> You should NOT process trees in parallel when you watch the filesystem.
+Otherwise the `watch` method will NOT work properly.
 
 ## TypeScript
 
