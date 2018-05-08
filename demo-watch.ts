@@ -13,7 +13,7 @@ treeview.on('item', (item: Model.TreeNode) => {
   // console.log(item.pathname, item.error ? 'DELETE' : 'CHANGE');
 });
 
-const close = treeview.watch('./coverage');
+const close = treeview.watch('./dist');
 
 treeview
   .on('all', (event, data) => {
@@ -24,9 +24,9 @@ treeview
       console.log(pretty(data as Model.TreeNode[]));
       console.log('');
     } else if (event !== 'item') {
-      console.log(event, (data as Model.TreeNode).pathname);
+      console.log('>', event, (data as Model.TreeNode).pathname);
     } else {
-      console.log('\t\t', event, (data as Model.TreeNode).pathname);
+      // console.log('\t\t', event, (data as Model.TreeNode).pathname);
     }
   })
   /*.on('ready', (tree: Model.TreeNode[]) => {

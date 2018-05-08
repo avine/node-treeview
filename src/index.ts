@@ -1,10 +1,11 @@
 import { EventEmitter } from 'events';
-import { readdir, readFile, stat, watch } from 'fs';
+import { readdir, readFile, stat } from 'fs';
 import { extname, join, relative, resolve } from 'path';
 import * as minimatch from 'minimatch';
 
 import * as Model from './model';
 import { isBinaryPath } from './helper/binary';
+import { cWatch } from './watch';
 
 export const INFINITE_DEPTH = -1;
 
@@ -66,11 +67,10 @@ export class TreeView {
     return this;
   }
 
-  watch(path: string, debounceTime = 50) {
+  watch(path: string) {
     const rootPath = this.providers.resolve(path);
     let pathsStack: string[] = [];
     let ready = false;
-    let timeout: NodeJS.Timer | null = null;
     const refresh = () => {
       if (pathsStack.length) {
         ready = false;
@@ -83,24 +83,17 @@ export class TreeView {
         ready = true;
       }
     };
-    const watcher = watch(rootPath, { recursive: true }, (eventType, filename) => {
-      pathsStack.push(this.providers.join(rootPath, filename));
-      if (!ready) {
-        return;
-      }
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-      timeout = setTimeout(() => {
-        timeout = null;
+    const watcher = cWatch(rootPath, (fullpaths) => {
+      pathsStack.push(...fullpaths);
+      if (ready) {
         refresh();
-      }, debounceTime);
+      }
     });
     this.process(rootPath).then((tree) => {
       this.emit('ready', tree);
       refresh();
     });
-    return () => watcher.close();
+    return watcher;
   }
 
   process(path: string, cb?: Model.ProcessCb) {

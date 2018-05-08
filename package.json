@@ -1,6 +1,6 @@
 {
   "name": "node-treeview",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Asynchronous filesystem tree view for node",
   "main": "./index.js",
   "types": "./index.d.ts",
@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/avine/node-treeview#readme",
   "devDependencies": {
+    "@types/chokidar": "^1.7.5",
     "@types/fs-extra": "^5.0.2",
     "@types/jasmine": "^2.8.6",
     "@types/minimatch": "^3.0.3",
@@ -53,6 +54,7 @@
   },
   "dependencies": {
     "chalk": "^2.3.2",
+    "chokidar": "^2.0.3",
     "minimatch": "^3.0.4",
     "yargs": "^11.0.0"
   }

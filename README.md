@@ -153,7 +153,7 @@ Promise.all[
 });
 ```
 
-The `TreeView` lets you watch the filesystem.
+The `TreeView` lets you watch the filesystem *(Beta version)*.
 
 ```js
 const { TreeView } = require('node-treeview');
@@ -174,10 +174,10 @@ treeview
   .on('all'), (event, data) => {/* Listen to all events */});
 
 // Start watching
-const stopWatching = treeview.watch('path/to/dir');
+const watcher = treeview.watch('path/to/dir');
 
 // Stop watching after 1mn
-setTimeout(stopWatching, 60000);
+setTimeout(watcher.close, 60000);
 ```
 
 > You should NOT process trees in parallel when you watch the filesystem.
