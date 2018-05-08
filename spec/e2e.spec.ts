@@ -64,7 +64,7 @@ describe('TreeView e2e', () => {
 
   afterEach((done) => {
     // Delete temporary directory
-    // remove(resolve('dist/tmp'), () => done());
+    remove(resolve('dist/tmp'), () => done());
   });
 
   it('should watch with absolute path', (done) => {
