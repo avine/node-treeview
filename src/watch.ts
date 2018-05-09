@@ -15,7 +15,10 @@ export const cWatch: Model.Watch = (rootPath: string, cb: Model.WatchCb, debounc
     if (!['change', 'add', 'addDir', 'unlink', 'unlinkDir'].includes(event)) {
       return;
     }
-    fullpaths.push(resolve(rootPath, relative(rootPath, filename)));
+    const fullpath = resolve(rootPath, relative(rootPath, filename));
+    if (!fullpaths.includes(fullpath)) {
+      fullpaths.push(fullpath);
+    }
     if (timeout) {
       clearTimeout(timeout);
     }
@@ -36,7 +39,10 @@ export const fWatch: Model.Watch = (rootPath: string, cb: Model.WatchCb, debounc
   const options = { recursive: true }; // Warning: Only supported on MacOS and Windows!
 
   const watcher = fWatchProvider(rootPath, options, (event, filename) => {
-    fullpaths.push(resolve(rootPath, filename));
+    const fullpath = resolve(rootPath, filename);
+    if (!fullpaths.includes(fullpath)) {
+      fullpaths.push(fullpath);
+    }
     if (timeout) {
       clearTimeout(timeout);
     }

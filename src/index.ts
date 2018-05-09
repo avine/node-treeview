@@ -5,7 +5,7 @@ import * as minimatch from 'minimatch';
 
 import * as Model from './model';
 import { isBinaryPath } from './helper/binary';
-import { cWatch } from './watch';
+import watch from './watch';
 
 export const INFINITE_DEPTH = -1;
 
@@ -83,7 +83,7 @@ export class TreeView {
         ready = true;
       }
     };
-    const watcher = cWatch(rootPath, (fullpaths) => {
+    const watcher = watch(rootPath, (fullpaths) => {
       pathsStack.push(...fullpaths);
       if (ready) {
         refresh();
