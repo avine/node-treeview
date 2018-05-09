@@ -56,7 +56,8 @@ describe('TreeView e2e', () => {
 });
 
 /**
- * FIXME: for now, an error occurs in the following spec when using 'chokidar'.
+ * FIXME: For now, when using 'chokidar' as watch provider, not all changes are reported.
+ * In the following spec, chokidar doesn't report unlink on file 'a' and unlinkDir on directory 'deep'.
  * Thus, we had disabled the spec... :-(
  */
 if (DEF_PROVIDER === 'fs') {
@@ -79,7 +80,7 @@ if (DEF_PROVIDER === 'fs') {
     });
 
     it('should watch with absolute path', (done) => {
-      const treeview = new TreeView({ relative: false });
+      const treeview = new TreeView(/*{ relative: false }*/);
 
       let changesDone = false;
 
@@ -146,5 +147,7 @@ if (DEF_PROVIDER === 'fs') {
 
     // FIXME: Actually, it's NOT working! An infinite loop occurs... :(
     // Do the same test but with option { relative: true }
+    // ...
+
   });
 }

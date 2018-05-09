@@ -358,7 +358,9 @@ export class TreeView {
   }
 
   private extendResult(pathname: string) {
-    const relPathname = this.providers.relative(this.lastResult.rootPath, pathname);
+    const relPathname = this.opts.relative
+      ? pathname
+      : this.providers.relative(this.lastResult.rootPath, pathname);
     const names = relPathname.split(/\/|\\/g);
     let tree = this.lastResult.tree;
     let parent: Model.IDir | null = null;
