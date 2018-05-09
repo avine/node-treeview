@@ -385,7 +385,7 @@ export class TreeView {
         pathname: this.providers.join(path, name),
         depth
       };
-      return this.updateResult({ parentNodes, item });
+      return this.updateResult({ item, parentNodes });
     }
     return Promise.resolve();
   }
