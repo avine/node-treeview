@@ -155,6 +155,8 @@ Promise.all[
 
 The `TreeView` lets you watch the filesystem *(Beta version)*.
 
+> Under the hood, the `watch` feature is provided by `fs.watch` on Mac and Windows, and `chokidar` on other platforms.
+
 ```js
 const { TreeView } = require('node-treeview');
 
@@ -217,6 +219,16 @@ export interface IDir extends IRef {
 // The final output is of type: `TreeNode[]`
 // and the `TreeView.process` method returns a `Promise<TreeNode[]>`
 export type TreeNode = IFile | IDir | IRef;
+
+// List of emitted events
+export type Event
+  = 'item'
+  | 'ready'
+  | 'tree'
+  | 'add'
+  | 'change'
+  | 'unlink'
+  | 'all';
 ```
 
 ### Options

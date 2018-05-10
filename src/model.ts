@@ -131,5 +131,5 @@ export type OnAll = (event: Event, data: TreeNode[] | TreeNode, ctx?: ICtx) => v
 export type ProcessCb = (error: Err, tree?: TreeNode[]) => any;
 export type Err = Error | null | undefined;
 
-export type Watch = (rootPath: string, cb: WatchCb, debounceTime?: number) => { close: () => void; };
+export type WatchFn = (rootPath: string, cb: WatchCb, debounceTime?: number) => { close: () => void; };
 export type WatchCb = (fullpaths: string[]) => void;

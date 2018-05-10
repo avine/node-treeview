@@ -1,16 +1,16 @@
-import { watch as fWatchProvider } from 'fs';
-import { watch as cWatchProvider } from 'chokidar';
+import { watch as fWatch } from 'fs';
+import { watch as cWatch } from 'chokidar';
 import { relative, resolve } from 'path';
 
 import * as Model from './model';
 
-export const fWatch: Model.Watch = (rootPath: string, cb: Model.WatchCb, debounceTime = 100) => {
+export const fWatchFn: Model.WatchFn = (rootPath: string, cb: Model.WatchCb, debounceTime = 100) => {
   let fullpaths: string[] = [];
   let timeout: NodeJS.Timer | null = null;
 
   const options = { recursive: true }; // Warning: Only supported on MacOS and Windows!
 
-  const watcher = fWatchProvider(rootPath, options, (event, filename) => {
+  const watcher = fWatch(rootPath, options, (event, filename) => {
     const fullpath = resolve(rootPath, filename);
     if (!fullpaths.includes(fullpath)) {
       fullpaths.push(fullpath);
@@ -28,13 +28,13 @@ export const fWatch: Model.Watch = (rootPath: string, cb: Model.WatchCb, debounc
   return { close: () => watcher.close() };
 };
 
-export const cWatch: Model.Watch = (rootPath: string, cb: Model.WatchCb, debounceTime = 100) => {
+export const cWatchFn: Model.WatchFn = (rootPath: string, cb: Model.WatchCb, debounceTime = 100) => {
   let fullpaths: string[] = [];
   let timeout: NodeJS.Timer | null = null;
 
   const options = { ignoreInitial: true };
 
-  const watcher = cWatchProvider(rootPath, options);
+  const watcher = cWatch(rootPath, options);
   watcher.on('all', (event, filename) => {
     if (!['change', 'add', 'addDir', 'unlink', 'unlinkDir'].includes(event)) {
       return;
@@ -57,6 +57,7 @@ export const cWatch: Model.Watch = (rootPath: string, cb: Model.WatchCb, debounc
 };
 
 const fsWatchSupport = process.platform === 'darwin' || process.platform === 'win32';
-export const DEF_PROVIDER = fsWatchSupport ? 'fs' : 'chokidar';
-const watch = fsWatchSupport ? fWatch : cWatch;
-export default watch;
+
+export const DEF_WATCH_MODULE = fsWatchSupport ? 'fs' : 'chokidar';
+
+export default fsWatchSupport ? fWatchFn : cWatchFn;

@@ -67,7 +67,21 @@ export class TreeView {
     return this;
   }
 
-  watch(path: string) {
+  process(path: string, cb?: Model.ProcessCb) {
+    const rootPath = this.providers.resolve(path);
+    const ctx: Model.ICtx = {
+      rootPath,
+      getPath: this.getPathFactory(rootPath),
+      path: rootPath,
+      depth: 0
+    };
+    const promise = this.discover(ctx);
+    promise.then(tree => this.lastResult = { rootPath, tree }, error => error);
+    if (cb) promise.then(tree => cb(null, tree), error => cb(error));
+    return promise;
+  }
+
+  watch(path: string, watchFn = watch) {
     const rootPath = this.providers.resolve(path);
     let pathsStack: string[] = [];
     let ready = false;
@@ -83,7 +97,7 @@ export class TreeView {
         ready = true;
       }
     };
-    const watcher = watch(rootPath, (fullpaths) => {
+    const watcher = watchFn(rootPath, (fullpaths) => {
       pathsStack.push(...fullpaths);
       if (ready) {
         refresh();
@@ -94,20 +108,6 @@ export class TreeView {
       refresh();
     });
     return watcher;
-  }
-
-  process(path: string, cb?: Model.ProcessCb) {
-    const rootPath = this.providers.resolve(path);
-    const ctx: Model.ICtx = {
-      rootPath,
-      getPath: this.getPathFactory(rootPath),
-      path: rootPath,
-      depth: 0
-    };
-    const promise = this.discover(ctx);
-    promise.then(tree => this.lastResult = { rootPath, tree }, error => error);
-    if (cb) promise.then(tree => cb(null, tree), error => cb(error));
-    return promise;
   }
 
   refreshResult(paths: string[] | string) {
@@ -163,10 +163,10 @@ export class TreeView {
   }
 
   private getTreeNode(ctx: Model.ICtx, name: string) {
-    // `ctx.path` and `pathname` are always absolute
+    // `ctx.path` and `pathname` are always absolute...
     const pathname = this.providers.resolve(ctx.path, name);
 
-    // while `itemPath` and `itemPathname` are relative when the option `relative` is `true`.
+    // ...while `itemPath` and `itemPathname` are relative when the option `relative` is `true`.
     const itemPath = this.opts.relative ? this.providers.relative(ctx.rootPath, ctx.path) : ctx.path;
     const itemPathname = this.opts.relative ? this.providers.join(itemPath, name) : pathname;
 
@@ -208,8 +208,8 @@ export class TreeView {
 
   private checkFile(file: string, search: Model.ISearch = {}) {
     const globList = [...this.opts.glob, ...(search.glob || [])];
-    const glogCb = (glob: string) => minimatch(file, glob);
-    return !globList.length || globList.findIndex(glogCb) !== -1;
+    const globCb = (glob: string) => minimatch(file, glob);
+    return !globList.length || globList.findIndex(globCb) !== -1;
   }
 
   private checkDirectory(dir: string, search: Model.ISearch = {}, strict = false) {

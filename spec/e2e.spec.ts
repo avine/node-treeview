@@ -9,7 +9,7 @@ import { appendFile, copy, move, remove } from 'fs-extra';
 import { TreeView } from '../src/index';
 import * as Model from '../src/model';
 
-import { DEF_PROVIDER } from '../src/watch';
+import { DEF_WATCH_MODULE } from '../src/watch';
 
 // tslint:disable-next-line:no-console
 // const log = (data: any) => console.log(JSON.stringify(data, undefined, 2));
@@ -60,13 +60,8 @@ describe('TreeView e2e', () => {
  * In the following spec, chokidar doesn't report unlink on file 'a' and unlinkDir on directory 'deep'.
  * Thus, we had disabled the spec... :-(
  */
-if (DEF_PROVIDER === 'fs') {
+if (DEF_WATCH_MODULE === 'fs') {
   describe('TreeView e2e', () => {
-    const doAndWait = (action: () => Promise<void>) =>
-      new Promise<void>(done => action().then(() => {
-        setTimeout(done, 0);
-      }));
-
     beforeEach((done) => {
       jasmine.addMatchers(customMatchers);
 
@@ -87,9 +82,9 @@ if (DEF_PROVIDER === 'fs') {
       // When tree is ready, modify the file system...
       treeview.on('ready', () => {
         doAndWait(() => move(resolve('dist/tmp/a'), resolve('dist/tmp/z')))
-        .then(() => doAndWait(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple'))))
-        .then(() => doAndWait(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' })))
-        .then(() => changesDone = true);
+          .then(() => doAndWait(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple'))))
+          .then(() => doAndWait(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' })))
+          .then(() => changesDone = true);
       });
 
       // Expected items to be emitted
@@ -211,4 +206,10 @@ if (DEF_PROVIDER === 'fs') {
       const watcher = treeview.watch('dist/tmp');
     });
   });
+}
+
+function doAndWait(action: () => Promise<void>) {
+  return new Promise<void>(done => action().then(() => {
+    setTimeout(done, 0);
+  }));
 }
