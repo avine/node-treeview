@@ -163,7 +163,7 @@ export class TreeView {
   }
 
   private getTreeNode(ctx: Model.ICtx, name: string) {
-    // `path` and `pathname` are always absolute
+    // `ctx.path` and `pathname` are always absolute
     const pathname = this.providers.resolve(ctx.path, name);
 
     // while `itemPath` and `itemPathname` are relative when the option `relative` is `true`.
@@ -331,11 +331,13 @@ export class TreeView {
   }
 
   private updateResult(match: Model.IMatch) {
+    // Remember! `ctx.path` is always absolute!
+    const ctxPath = this.providers.resolve(this.opts.relative ? this.lastResult.rootPath : '', match.item.path);
     return new Promise<void>((success) => {
       const ctx: Model.ICtx = {
         rootPath: this.lastResult.rootPath,
         getPath: this.getPathFactory(this.lastResult.rootPath),
-        path: match.item.path,
+        path: ctxPath,
         depth: match.item.depth
       };
       this.getTreeNode(ctx, match.item.name).then((item) => {

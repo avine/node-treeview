@@ -145,11 +145,7 @@ if (DEF_PROVIDER === 'fs') {
       const watcher = treeview.watch('dist/tmp');
     });
 
-    // FIXME: Actually, it's NOT working!
-    // An infinite loop occurs... :-(
-    // The problem seems to come from the method: `updateResult`... (?!?)
-
-    /*it('should watch with absolute path', (done) => {
+    it('should watch with relative path', (done) => {
       const treeview = new TreeView({ relative: true });
 
       let changesDone = false;
@@ -213,6 +209,6 @@ if (DEF_PROVIDER === 'fs') {
 
       // Start watching...
       const watcher = treeview.watch('dist/tmp');
-    });*/
+    });
   });
 }
