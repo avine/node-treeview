@@ -148,9 +148,9 @@ if (DEF_WATCH_MODULE === 'fs') {
       // When tree is ready, modify the file system...
       treeview.on('ready', () => {
         doAndWait(() => move(resolve('dist/tmp/a'), resolve('dist/tmp/z')))
-        .then(() => doAndWait(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple'))))
-        .then(() => doAndWait(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' })))
-        .then(() => changesDone = true);
+          .then(() => doAndWait(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple'))))
+          .then(() => doAndWait(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' })))
+          .then(() => changesDone = true);
       });
 
       // Expected items to be emitted
@@ -208,8 +208,8 @@ if (DEF_WATCH_MODULE === 'fs') {
   });
 }
 
-function doAndWait(action: () => Promise<void>) {
+function doAndWait(action: () => Promise<void>, delay = 0) {
   return new Promise<void>(done => action().then(() => {
-    setTimeout(done, 0);
+    setTimeout(done, delay);
   }));
 }

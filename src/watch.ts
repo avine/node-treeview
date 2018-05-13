@@ -4,7 +4,9 @@ import { relative, resolve } from 'path';
 
 import * as Model from './model';
 
-export const fWatchFn: Model.WatchFn = (rootPath: string, cb: Model.WatchCb, debounceTime = 100) => {
+export const DEF_DEBOUNCE_TIME = 100; // ms
+
+export const fWatchFn: Model.WatchFn = (rootPath: string, cb: Model.WatchCb, debounceTime = DEF_DEBOUNCE_TIME) => {
   let fullpaths: string[] = [];
   let timeout: NodeJS.Timer | null = null;
 
@@ -28,7 +30,7 @@ export const fWatchFn: Model.WatchFn = (rootPath: string, cb: Model.WatchCb, deb
   return { close: () => watcher.close() };
 };
 
-export const cWatchFn: Model.WatchFn = (rootPath: string, cb: Model.WatchCb, debounceTime = 100) => {
+export const cWatchFn: Model.WatchFn = (rootPath: string, cb: Model.WatchCb, debounceTime = DEF_DEBOUNCE_TIME) => {
   let fullpaths: string[] = [];
   let timeout: NodeJS.Timer | null = null;
 

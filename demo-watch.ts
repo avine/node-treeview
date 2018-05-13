@@ -1,21 +1,43 @@
+import { mkdirSync } from 'fs';
+import { resolve } from 'path';
+import { appendFile, copy, copySync, emptyDirSync, ensureDirSync, move } from 'fs-extra';
 
 import { TreeView } from './src/index';
 import * as Model from './src/model';
-
+import { cWatchFn, fWatchFn } from './src/watch';
 import { pretty } from './src/helper';
 
 // tslint:disable:no-console
+
+// Prepare the filesystem
+ensureDirSync('dist/tmp');
+emptyDirSync('dist/tmp');
+copySync(resolve('spec/fixture'), resolve('dist/tmp'));
 
 const treeview = new TreeView();
 
 treeview
   .on('all', (event, data) => {
     if (event === 'ready') {
-      console.log(event);
+      // Check the original state
+      console.log('\nready!');
+      console.log(pretty(data as Model.TreeNode[]));
+      console.log('');
+
+      // Modify the filesystem
+      setTimeout(() => {
+        doAndWait(() => move(resolve('dist/tmp/a'), resolve('dist/tmp/z')))
+          .then(() => doAndWait(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple'))))
+          .then(() => doAndWait(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' })));
+      }, 1000);
     } else if (event === 'tree') {
-      // console.log('');
-      // console.log(pretty(data as Model.TreeNode[]));
-      // console.log('');
+      // Check the final state
+      console.log('\ntree');
+      console.log(pretty(data as Model.TreeNode[]));
+      console.log('');
+
+      // Stop watching
+      watcher.close();
     } else if (event !== 'item') {
       console.log(event, (data as Model.TreeNode).pathname);
     } else {
@@ -23,6 +45,13 @@ treeview
     }
   });
 
-const watcher = treeview.watch('./dist');
+console.log('Let\'s go!');
 
-setTimeout(watcher.close, 20000);
+let watcher: any;
+setTimeout(() => watcher = treeview.watch('./dist/tmp', cWatchFn), 1000);
+
+function doAndWait(action: () => Promise<void>, delay = 0) {
+  return new Promise<void>(done => action().then(() => {
+    setTimeout(done, delay);
+  }));
+}
