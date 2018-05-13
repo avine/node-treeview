@@ -28,7 +28,7 @@ export const fWatchFn: Model.WatchFn = (rootPath: string, cb: Model.WatchCb, deb
   });
 
   return {
-    ready: Promise.resolve(watcher),
+    ready: Promise.resolve(),
     close: () => watcher.close()
   };
 };
@@ -59,11 +59,12 @@ export const cWatchFn: Model.WatchFn = (rootPath: string, cb: Model.WatchCb, deb
   });
 
   return {
-    ready: new Promise(done => watcher.on('ready', () => done(watcher))),
+    ready: new Promise(done => watcher.on('ready', () => done())),
     close: () => watcher.close()
   };
 };
 
+ // `fs.watch` with option `recursive` only supported on MacOS and Windows!
 const fsWatchSupport = process.platform === 'darwin' || process.platform === 'win32';
 
 export const DEF_WATCH_MODULE = fsWatchSupport ? 'fs' : 'chokidar';

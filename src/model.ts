@@ -132,7 +132,7 @@ export type ProcessCb = (error: Err, tree?: TreeNode[]) => any;
 export type Err = Error | null | undefined;
 
 export type WatchFn = (rootPath: string, cb: WatchCb, debounceTime?: number) => {
-  ready: Promise<any>;
+  ready: Promise<void>;
   close: () => void;
 };
 export type WatchCb = (fullpaths: string[]) => void;

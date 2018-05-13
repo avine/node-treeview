@@ -60,25 +60,25 @@ describe('TreeView e2e', () => {
     jasmine.addMatchers(customMatchers);
 
     // Copy fixture to temporary directory
-    doAndWait(() => copy(basePath, resolve('dist/tmp'))).then(done);
+    copy(basePath, resolve('dist/tmp')).then(done);
   });
 
   afterEach((done) => {
     // Delete temporary directory
-    doAndWait(() => remove(resolve('dist/tmp'))).then(done);
+    remove(resolve('dist/tmp')).then(done);
   });
 
   if (DEF_WATCH_MODULE === 'fs') {
-    it('should watch provided by fs with absolute path', (done) => {
+    it('should watch using fs provider and absolute path', (done) => {
       const treeview = new TreeView(/*{ relative: false }*/);
 
       let changesDone = false;
 
       // When tree is ready, modify the file system...
       treeview.on('ready', () => {
-        doAndWait(() => move(resolve('dist/tmp/a'), resolve('dist/tmp/z')))
-          .then(() => doAndWait(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple'))))
-          .then(() => doAndWait(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' })))
+        move(resolve('dist/tmp/a'), resolve('dist/tmp/z'))
+          .then(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple')))
+          .then(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' }))
           .then(() => changesDone = true);
       });
 
@@ -135,16 +135,16 @@ describe('TreeView e2e', () => {
       const watcher = treeview.watch('dist/tmp'/*, fWatchFn*/);
     });
 
-    it('should watch provided by fs with relative path', (done) => {
+    it('should watch using fs provider and relative path', (done) => {
       const treeview = new TreeView({ relative: true });
 
       let changesDone = false;
 
       // When tree is ready, modify the file system...
       treeview.on('ready', () => {
-        doAndWait(() => move(resolve('dist/tmp/a'), resolve('dist/tmp/z')))
-          .then(() => doAndWait(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple'))))
-          .then(() => doAndWait(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' })))
+        move(resolve('dist/tmp/a'), resolve('dist/tmp/z'))
+          .then(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple')))
+          .then(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' }))
           .then(() => changesDone = true);
       });
 
@@ -202,16 +202,16 @@ describe('TreeView e2e', () => {
     });
   }
 
-  it('should watch provided by chokidar with absolute path', (done) => {
+  it('should watch using chokidar provider and absolute path', (done) => {
     const treeview = new TreeView(/*{ relative: false }*/);
 
     let changesDone = false;
 
     // When tree is ready, modify the file system...
     treeview.on('ready', () => {
-      doAndWait(() => move(resolve('dist/tmp/a'), resolve('dist/tmp/z')))
-        .then(() => doAndWait(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple'))))
-        .then(() => doAndWait(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' })))
+      move(resolve('dist/tmp/a'), resolve('dist/tmp/z'))
+        .then(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple')))
+        .then(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' }))
         .then(() => changesDone = true);
     });
 
@@ -268,16 +268,16 @@ describe('TreeView e2e', () => {
     const watcher = treeview.watch('dist/tmp', cWatchFn);
   });
 
-  it('should watch provided by chokidar with relative path', (done) => {
+  it('should watch using chokidar provider and relative path', (done) => {
     const treeview = new TreeView({ relative: true });
 
     let changesDone = false;
 
     // When tree is ready, modify the file system...
     treeview.on('ready', () => {
-      doAndWait(() => move(resolve('dist/tmp/a'), resolve('dist/tmp/z')))
-        .then(() => doAndWait(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple'))))
-        .then(() => doAndWait(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' })))
+      move(resolve('dist/tmp/a'), resolve('dist/tmp/z'))
+        .then(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple')))
+        .then(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' }))
         .then(() => changesDone = true);
     });
 
@@ -334,9 +334,3 @@ describe('TreeView e2e', () => {
     const watcher = treeview.watch('dist/tmp', cWatchFn);
   });
 });
-
-function doAndWait(action: () => Promise<void>, delay = 0) {
-  return new Promise<void>(done => action().then(() => {
-    setTimeout(done, delay);
-  }));
-}

@@ -25,9 +25,9 @@ treeview
       console.log('');
 
       // Modify the filesystem
-      doAndWait(() => move(resolve('dist/tmp/a'), resolve('dist/tmp/z')))
-        .then(() => doAndWait(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple'))))
-        .then(() => doAndWait(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' })));
+      move(resolve('dist/tmp/a'), resolve('dist/tmp/z'))
+        .then(() => move(resolve('dist/tmp/sub/deep'), resolve('dist/tmp/sub/purple')))
+        .then(() => appendFile(resolve('dist/tmp/sub/b.txt'), 'BBB', { encoding: 'utf8' }));
     } else if (event === 'tree') {
       // Check the final state
       console.log('\ntree');
@@ -47,9 +47,3 @@ console.log('Let\'s go!');
 
 let watcher: any;
 setTimeout(() => watcher = treeview.watch('./dist/tmp', cWatchFn), 1000);
-
-function doAndWait(action: () => Promise<void>, delay = 0) {
-  return new Promise<void>(done => action().then(() => {
-    setTimeout(done, delay);
-  }));
-}

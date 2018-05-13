@@ -107,7 +107,7 @@ export class TreeView {
       this.emit('ready', tree);
       refresh();
     });
-    return watcher;
+    return { close: watcher.close };
   }
 
   refreshResult(paths: string[] | string) {
