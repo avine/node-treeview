@@ -64,9 +64,9 @@ export const cWatchFn: Model.WatchFn = (rootPath: string, cb: Model.WatchCb, deb
   };
 };
 
- // `fs.watch` with option `recursive` only supported on MacOS and Windows!
-const fsWatchSupport = process.platform === 'darwin' || process.platform === 'win32';
+// `fs.watch` with option `recursive` only supported on MacOS and Windows!
+export const FS_WATCH_SUPPORTED = process.platform === 'darwin' || process.platform === 'win32';
 
-export const DEF_WATCH_MODULE = fsWatchSupport ? 'fs' : 'chokidar';
+export const DEF_WATCH_MODULE = FS_WATCH_SUPPORTED ? 'fs' : 'chokidar';
 
-export default fsWatchSupport ? fWatchFn : cWatchFn;
+export default FS_WATCH_SUPPORTED ? fWatchFn : cWatchFn;

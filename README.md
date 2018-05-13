@@ -2,9 +2,6 @@
 
 Asynchronous filesystem tree view for node.
 
-- 100% TypeScript
-- 100% Jasmine test coverage
-
 [![Build Status](https://travis-ci.org/avine/node-treeview.svg?branch=master)](https://travis-ci.org/avine/node-treeview)
 
 ## Javascript (quick start)
@@ -153,7 +150,7 @@ Promise.all[
 });
 ```
 
-The `TreeView` lets you watch the filesystem *(Beta version)*.
+The `TreeView` lets you watch the filesystem.
 
 > Under the hood, the `watch` feature is provided by `fs.watch` on Mac and Windows, and `chokidar` on other platforms.
 

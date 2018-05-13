@@ -1,6 +1,6 @@
 {
   "name": "node-treeview",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "description": "Asynchronous filesystem tree view for node",
   "main": "./index.js",
   "types": "./index.d.ts",
@@ -10,9 +10,9 @@
     "build": "tsc",
     "test": "istanbul cover ./node_modules/jasmine/bin/jasmine.js",
     "all": "npm run clean && npm run build && npm test",
-    "dist:prepare": "shx cp ./package.json ./LICENSE ./README.md ./dist/src",
-    "dist:publish": "npm publish ./dist/src",
-    "dist": "npm run dist:prepare && npm run dist:publish"
+    "deploy:prepare": "shx cp ./package.json ./LICENSE ./README.md ./dist/src",
+    "deploy:publish": "npm publish ./dist/src",
+    "deploy": "npm run deploy:prepare && npm run deploy:publish"
   },
   "bin": {
     "node-treeview": "./bin/cli.js"
@@ -22,12 +22,17 @@
     "url": "git+https://github.com/avine/node-treeview.git"
   },
   "keywords": [
-    "treeview",
     "filesystem",
+    "asynchronous",
+    "tree",
     "json",
+    "watch",
+    "glob",
+    "terminal",
+    "command-line",
     "typescript",
     "node",
-    "asynchronous"
+    "treeview"
   ],
   "author": "Stéphane Francel <contact@avine.io>",
   "license": "MIT",
