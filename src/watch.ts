@@ -27,7 +27,10 @@ export const fWatchFn: Model.WatchFn = (rootPath: string, cb: Model.WatchCb, deb
     }, debounceTime);
   });
 
-  return { close: () => watcher.close() };
+  return {
+    ready: Promise.resolve(watcher),
+    close: () => watcher.close()
+  };
 };
 
 export const cWatchFn: Model.WatchFn = (rootPath: string, cb: Model.WatchCb, debounceTime = DEF_DEBOUNCE_TIME) => {
@@ -55,7 +58,10 @@ export const cWatchFn: Model.WatchFn = (rootPath: string, cb: Model.WatchCb, deb
     }, debounceTime);
   });
 
-  return { close: () => watcher.close() };
+  return {
+    ready: new Promise(done => watcher.on('ready', () => done(watcher))),
+    close: () => watcher.close()
+  };
 };
 
 const fsWatchSupport = process.platform === 'darwin' || process.platform === 'win32';

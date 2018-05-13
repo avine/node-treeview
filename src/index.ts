@@ -103,7 +103,7 @@ export class TreeView {
         refresh();
       }
     });
-    this.process(rootPath).then((tree) => {
+    Promise.all([this.process(rootPath), watcher.ready]).then(([tree]) => {
       this.emit('ready', tree);
       refresh();
     });
