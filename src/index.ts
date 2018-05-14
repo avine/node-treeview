@@ -352,6 +352,7 @@ export class TreeView {
           }
         } else if (item && !item.error) {
           match.parentNodes.push(item); // Add
+          this.sort(match.parentNodes);
           this.emit('add', item);
         }
         success();
