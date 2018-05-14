@@ -318,10 +318,12 @@ export class TreeView {
             return acc;
           }
         }
-        for (const pathname of remains) {
-          if (pathname.startsWith(item.pathname)) {
-            acc = acc.concat(filter((item as Model.IDir).nodes));
-            break;
+        if ((item as Model.IDir).type === 'dir') {
+          for (const pathname of remains) {
+            if (pathname.startsWith(item.pathname)) {
+              acc = acc.concat(filter((item as Model.IDir).nodes));
+              break;
+            }
           }
         }
         return acc;

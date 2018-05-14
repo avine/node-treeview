@@ -460,6 +460,7 @@ Options:
   --clean, -n     Clean empty directories from output                             [boolean]
   --flatten, -f   Flatten output                                                  [boolean]
   --pretty, -p    Pretty-print output                                              [string]
+  --watch, -w     Watch filesystem                                                [boolean]
   --output, -o    Output file path                                                 [string]
   --debug         Add debugging information to output                             [boolean]
 ```

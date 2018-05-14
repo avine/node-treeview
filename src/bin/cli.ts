@@ -87,6 +87,11 @@ yargs
     describe: 'Pretty-print output',
     type: 'string'
 
+  }).option('watch', {
+    alias: 'w',
+    describe: 'Watch filesystem',
+    type: 'boolean'
+
   }).option('output', {
     alias: 'o',
     describe: 'Output file path',
@@ -121,45 +126,51 @@ const helper: IDebugHelper = {
   pretty: a.pretty
 };
 
+const watchMode: boolean = a.watch;
 const outputPath = a.output as string || undefined;
 const debugMode: boolean = a.debug;
 
+const handleTree = (tree: Model.TreeNode[]) => {
+  // Note that if the output is flattened there's no need to clean it!
+  // Because the flatten version only contains the files (and not the directories).
+  const output =
+    helper.flatten ? flatten(tree) :
+    helper.clean ? clean(tree) :
+    tree;
+
+  let outputStr: string;
+  if (helper.pretty) {
+    const render = (renderer as { [index: string]: Renderer })[helper.pretty as string];
+    outputStr = pretty(output, render) + '\n';
+  } else {
+    outputStr = stringify(output);
+  }
+
+  if (debugMode) {
+    const debug: IDebug = {
+      opts,
+      path,
+      helper,
+      output: helper.pretty ? outputStr : output,
+      outputPath
+    };
+    process.stdout.write(stringify(debug));
+  } else {
+    if (outputPath) {
+      writeFile(resolve(outputPath), outputStr, (error) => {
+        if (error) throw error;
+      });
+    } else {
+      process.stdout.write(outputStr);
+    }
+  }
+};
+
 if (path) {
-  new TreeView(opts)
-    .process(path)
-    .then((tree) => {
-      // Note that if the output is flattened there's no need to clean it!
-      // Because the flatten version only contains the files (and not the directories).
-      const output =
-        helper.flatten ? flatten(tree) :
-        helper.clean ? clean(tree) :
-        tree;
-
-      let outputStr: string;
-      if (helper.pretty) {
-        const render = (renderer as { [index: string]: Renderer })[helper.pretty as string];
-        outputStr = pretty(output, render) + '\n';
-      } else {
-        outputStr = stringify(output);
-      }
-
-      if (debugMode) {
-        const debug: IDebug = {
-          opts,
-          path,
-          helper,
-          output: helper.pretty ? outputStr : output,
-          outputPath
-        };
-        process.stdout.write(stringify(debug));
-      } else {
-        if (outputPath) {
-          writeFile(resolve(outputPath), outputStr, (error) => {
-            if (error) throw error;
-          });
-        } else {
-          process.stdout.write(outputStr);
-        }
-      }
-    }).catch(exit);
+  const treeview = new TreeView(opts);
+  if (!watchMode) {
+    treeview.process(path).then(handleTree).catch(exit);
+  } else {
+    treeview.on('ready', handleTree).on('tree', handleTree).watch(path);
+  }
 }
