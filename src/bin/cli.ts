@@ -151,6 +151,7 @@ const handleTree = (tree: Model.TreeNode[]) => {
       opts,
       path,
       helper,
+      watchMode,
       output: helper.pretty ? outputStr : output,
       outputPath
     };

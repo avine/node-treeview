@@ -4,6 +4,7 @@ export interface IDebug {
   opts: Model.IOpts;
   path: string;
   helper: IDebugHelper;
+  watchMode: boolean;
   output: DebugOutput;
   outputPath?: string;
 }
