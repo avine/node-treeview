@@ -2,7 +2,7 @@
 
 import * as yargs from 'yargs';
 
-import { resolve } from 'path';
+import { join, resolve } from 'path';
 import { writeFile } from 'fs';
 
 import { INFINITE_DEPTH, TreeView } from '../index';
@@ -18,8 +18,14 @@ import { DebugOutput, IDebug, IDebugHelper } from './cli.model';
 
 const stringify = (data: any) => JSON.stringify(data, undefined, 2) + '\n';
 
-// tslint:disable-next-line:no-var-requires
-const pkgVersion = require(resolve('package.json')).version;
+let pkgVersion;
+try {
+  // Note: the `package.json` should be available in the directory `./dist/src/package.json`.
+  // But that's not true until we run `npm run all` and `npm run deploy:prepare`.
+  pkgVersion = require(join(__dirname, '../package.json')).version; // tslint:disable-line:no-var-requires
+} catch (e) {
+  pkgVersion = '0.0.0';
+}
 
 yargs
   .locale('en')

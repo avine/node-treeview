@@ -1,6 +1,6 @@
 {
   "name": "node-treeview",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "description": "Asynchronous filesystem tree view for node",
   "main": "./index.js",
   "types": "./index.d.ts",
