@@ -16,7 +16,7 @@ import { DebugOutput, IDebug, IDebugHelper } from './cli.model';
 
 const stringify = (data: any) => JSON.stringify(data, undefined, 2) + '\n';
 
-// Note: the following path refers to the directory: `./dist/src/package.json`
+// Note: After TS transpilation, the following path refers to the directory: `./dist/src/package.json`
 // (for details see the script: `npm run postbuild`).
 const pkgVersion = require(join(__dirname, '../package.json')).version; // tslint:disable-line:no-var-requires
 

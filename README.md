@@ -143,8 +143,7 @@ Promise.all[
   // paths in parallel with the same options
   treeView.process('path/to/dir1'),
   treeView.process('path/to/dir2')
-].then((trees) => {
-  const [tree1, tree2] = trees;
+].then(([tree1, tree2]) => {
   console.log(tree1);
   console.log(tree2);
 });
@@ -180,7 +179,7 @@ setTimeout(watcher.close, 60000);
 ```
 
 > You should NOT process trees in parallel when you watch the filesystem.
-Otherwise the `watch` method will NOT work properly.
+Otherwise the `watch` method will not work properly.
 
 ## TypeScript
 
