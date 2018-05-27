@@ -1,6 +1,6 @@
 {
   "name": "node-treeview",
-  "version": "1.4.9",
+  "version": "1.4.95",
   "description": "Asynchronous filesystem tree view for node",
   "main": "./index.js",
   "types": "./index.d.ts",
@@ -8,11 +8,10 @@
     "lint": "tslint -p ./tsconfig.json",
     "clean": "shx rm -rf ./dist ./coverage",
     "build": "tsc",
+    "postbuild": "shx cp ./package.json ./LICENSE ./README.md ./dist/src",
     "test": "istanbul cover ./node_modules/jasmine/bin/jasmine.js",
     "all": "npm run clean && npm run build && npm test",
-    "deploy:prepare": "shx cp ./package.json ./LICENSE ./README.md ./dist/src",
-    "deploy:publish": "npm publish ./dist/src",
-    "deploy": "npm run deploy:prepare && npm run deploy:publish"
+    "publish": "npm publish ./dist/src"
   },
   "bin": {
     "node-treeview": "./bin/cli.js"
@@ -45,16 +44,16 @@
     "@types/fs-extra": "^5.0.2",
     "@types/jasmine": "^2.8.7",
     "@types/minimatch": "^3.0.3",
-    "@types/node": "^10.0.6",
+    "@types/node": "^10.1.2",
     "@types/yargs": "^11.0.0",
-    "fs-extra": "^6.0.0",
+    "fs-extra": "^6.0.1",
     "istanbul": "^0.4.5",
     "jasmine": "^3.1.0",
     "jasmine-spec-reporter": "^4.2.1",
     "shx": "^0.2.2",
-    "ts-node": "^6.0.3",
+    "ts-node": "^6.0.5",
     "tslint": "^5.10.0",
-    "tslint-eslint-rules": "^5.2.0",
+    "tslint-eslint-rules": "^5.3.1",
     "typescript": "^2.8.3"
   },
   "dependencies": {

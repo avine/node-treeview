@@ -14,18 +14,11 @@ import { pretty, renderer, Renderer } from '../helper/pretty';
 import { exit, getDepthArg, getPrettyArg, getSortArg, getSortDesc } from './cli.helper';
 import { DebugOutput, IDebug, IDebugHelper } from './cli.model';
 
-// Don't forget to update cli version according to `package.json` version
-
 const stringify = (data: any) => JSON.stringify(data, undefined, 2) + '\n';
 
-let pkgVersion;
-try {
-  // Note: the `package.json` should be available in the directory `./dist/src/package.json`.
-  // But that's not true until we run `npm run all` and `npm run deploy:prepare`.
-  pkgVersion = require(join(__dirname, '../package.json')).version; // tslint:disable-line:no-var-requires
-} catch (e) {
-  pkgVersion = '0.0.0';
-}
+// Note: the following path refers to the directory: `./dist/src/package.json`
+// (for details see the script: `npm run postbuild`).
+const pkgVersion = require(join(__dirname, '../package.json')).version; // tslint:disable-line:no-var-requires
 
 yargs
   .locale('en')

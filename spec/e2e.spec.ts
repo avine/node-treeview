@@ -43,7 +43,7 @@ describe('TreeView e2e', () => {
       const deep = filtered[0] as Model.IDir;
 
       const png = 'ccc'; // this is the real content of the dummy file `c.png`
-      const pngContent = new Buffer(png).toString('base64');
+      const pngContent = Buffer.from(png).toString('base64');
       const pngSize = png.length;
 
       expect(deep.nodes).toContainItem({
