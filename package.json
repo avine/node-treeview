@@ -1,6 +1,6 @@
 {
   "name": "node-treeview",
-  "version": "1.4.96",
+  "version": "1.4.97",
   "description": "Asynchronous filesystem tree view for node",
   "main": "./index.js",
   "types": "./index.d.ts",
@@ -11,7 +11,7 @@
     "postbuild": "shx cp ./package.json ./LICENSE ./README.md ./dist/src",
     "test": "istanbul cover ./node_modules/jasmine/bin/jasmine.js",
     "all": "npm run clean && npm run build && npm test",
-    "publish": "npm publish ./dist/src"
+    "deploy": "npm publish ./dist/src"
   },
   "bin": {
     "node-treeview": "./bin/cli.js"
