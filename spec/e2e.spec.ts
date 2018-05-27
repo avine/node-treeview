@@ -18,7 +18,7 @@ const basePath = resolve('spec/fixture');
 const subPath = resolve(basePath, 'sub');
 const deepPath = resolve(subPath, 'deep');
 
-describe('TreeView e2e', () => {
+describe('TreeView e2e process', () => {
   beforeEach(() => jasmine.addMatchers(customMatchers));
 
   it('should process', (done) => {
@@ -55,7 +55,7 @@ describe('TreeView e2e', () => {
   });
 });
 
-describe('TreeView e2e', () => {
+describe('TreeView e2e watch', () => {
   beforeEach((done) => {
     jasmine.addMatchers(customMatchers);
 
