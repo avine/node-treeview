@@ -71,17 +71,9 @@ describe('TreeView e2e', () => {
   [
     { watchFn: fWatchFn, relative: false, expectation: 'should watch using fs provider and absolute path' },
     { watchFn: fWatchFn, relative: true, expectation: 'should watch using fs provider and relative path' },
-    { watchFn: cWatchFn, relative: false, expectation: 'should watch using chokidar provider and absolute path' }
-
-    // FIXME: if you add another object to test `cWatchFn` then an error occurs randomly (tested on MacOS):
-    //
-    //        "sh: line 1:  5388 Segmentation fault: 11  npm test"
-    //
-    // It seems that testing twice `cWatchFn` is not possible !?!
-    // Perharps something goes wrong with the first `watcher.close();`...
-
-    /*{ watchFn: cWatchFn, relative: true, expectation: 'should watch using chokidar provider and relative path' }*/
-  ].forEach(({ watchFn, relative, expectation }) => {
+    { watchFn: cWatchFn, relative: false, expectation: 'should watch using chokidar provider and absolute path' },
+    { watchFn: cWatchFn, relative: true, expectation: 'should watch using chokidar provider and relative path' }
+ ].forEach(({ watchFn, relative, expectation }) => {
 
     if (!FS_WATCH_SUPPORTED && watchFn === fWatchFn) {
       return; // `fs.watch` with option `recursive` only supported on MacOS and Windows!
