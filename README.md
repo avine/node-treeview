@@ -103,9 +103,6 @@ Here is what the `json` output looks like:
 
 The `TreeView` lets you listen to `item` events.
 
-> Emitted file never have `content` property,
-emitted dir always have `nodes` property equal to an empty array.
-
 ```js
 const { TreeView } = require('node-treeview');
 
@@ -124,6 +121,9 @@ file: path/to/dir/subdir/file2.txt
 file: path/to/dir/subdir/logo.png
 done!
 ```
+
+> Emitted file never have `content` property,
+emitted dir always have `nodes` property equal to an empty array.
 
 The `TreeView` lets you process trees in parallel.
 
@@ -151,8 +151,6 @@ Promise.all[
 
 The `TreeView` lets you watch the filesystem.
 
-> Under the hood, the `watch` feature is provided by `fs.watch` on Mac and Windows, and `chokidar` on other platforms.
-
 ```js
 const { TreeView } = require('node-treeview');
 
@@ -177,6 +175,8 @@ const watcher = treeview.watch('path/to/dir');
 // Stop watching after 1mn
 setTimeout(watcher.close, 60000);
 ```
+
+Under the hood, the `watch` feature is provided by `fs.watch` on Mac and Windows, and `chokidar` on other platforms.
 
 > You should NOT process trees in parallel when you watch the filesystem.
 Otherwise the `watch` method will not work properly.

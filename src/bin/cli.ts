@@ -29,12 +29,14 @@ yargs
   .option('all', {
     alias: 'a',
     describe: 'Include hidden files in output',
-    type: 'boolean'
+    type: 'boolean',
+    default: false
 
   }).option('content', {
     alias: 'c',
     describe: 'Add files content to output',
-    type: 'boolean'
+    type: 'boolean',
+    default: false
 
   }).option('depth', {
     alias: 'd',
@@ -46,7 +48,8 @@ yargs
   }).option('relative', {
     alias: 'r',
     describe: 'Use relative path',
-    type: 'boolean'
+    type: 'boolean',
+    default: false
 
   }).option('include', {
     alias: 'i',
@@ -73,12 +76,14 @@ yargs
   }).option('clean', {
     alias: 'n', // notice: it's "n" (and not "c" which is already used for "content")
     describe: 'Clean empty directories from output',
-    type: 'boolean'
+    type: 'boolean',
+    default: false
 
   }).option('flatten', {
     alias: 'f',
     describe: 'Flatten output',
-    type: 'boolean'
+    type: 'boolean',
+    default: false
 
   }).option('pretty', {
     alias: 'p',
@@ -89,7 +94,8 @@ yargs
   }).option('watch', {
     alias: 'w',
     describe: 'Watch filesystem',
-    type: 'boolean'
+    type: 'boolean',
+    default: false
 
   }).option('output', {
     alias: 'o',
@@ -98,7 +104,8 @@ yargs
 
   }).option('debug', {
     describe: 'Add debugging information to output',
-    type: 'boolean'
+    type: 'boolean',
+    default: false
 
   });
 
